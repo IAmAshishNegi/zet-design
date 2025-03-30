@@ -28,13 +28,11 @@ const OnboardingScreen = ({ onGetStarted }: OnboardingScreenProps) => {
         </View>
         
         <View style={styles.textContainer}>
+          
           <View className="flex flex-col gap-2 text-center justify-center items-center">
-          <H2>Welcome to Zet</H2>
-          </View>
-          <View className="flex flex-col gap-2 text-center justify-center items-center">
-          <B1 className="text-center">
-            The easiest way to manage your finances and investments in one place
-          </B1>
+          <H4 className="text-center">
+            The fastest way to improve your credit score
+          </H4>
           </View>
         </View>
         

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link, useRouter } from 'expo-router';
 import { Typography } from '../components/ui/typography/typography';
@@ -30,6 +30,30 @@ export default function HomePage() {
 
     checkOnboardingStatus();
   }, [router]);
+
+  const resetOnboarding = async () => {
+    try {
+      // Remove the onboarding status
+      await AsyncStorage.removeItem(HAS_SEEN_ONBOARDING);
+      Alert.alert(
+        "Onboarding Reset", 
+        "Onboarding status has been reset. Restart the app to see the splash screen again.",
+        [
+          { 
+            text: "Restart Now", 
+            onPress: () => router.replace('/onboarding') 
+          },
+          { 
+            text: "Later", 
+            style: "cancel" 
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error resetting onboarding status:', error);
+      Alert.alert("Error", "Failed to reset onboarding status.");
+    }
+  };
 
   if (isLoading) {
     return null; // Don't render anything while checking onboarding status
@@ -65,6 +89,15 @@ export default function HomePage() {
             </Typography>
           </Pressable>
         </Link>
+        
+        <Pressable 
+          style={[styles.button, { marginTop: 24, backgroundColor: '#ef4444' }]}
+          onPress={resetOnboarding}
+        >
+          <Typography variant="lg" weight="medium" className="text-neutral-50">
+            Reset Onboarding
+          </Typography>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
