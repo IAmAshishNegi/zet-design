@@ -181,6 +181,10 @@ export const letterSpacing = {
   tight: "-0.025em",
   normal: "0em",
   wide: "0.025em",
+  extraWide: "0.05em",
+  superWide: "0.1em",
+  ultraTight: "-0.05em",
+  superTight: "-0.075em"
 };
 
 export const lineHeight = {
@@ -193,16 +197,41 @@ export const lineHeight = {
   '2xl': "36px",
   '3xl': "40px",
   '4xl': "48px",
+  
   h1: "52px",
-  h2: "40px",
+  h2: "48px",
   h3: "30px",
-  h4: "26px",
+  h4: "32px",
   h5: "24px",
   h6: "22px",
+  h7: "24px",
+  
+  sh1: "20px",
+  sh2: "18px",
+  sh3: "18px",
+  sh4: "16px",
+  sh5: "16px",
+  
   b1: "22px",
   b2: "20px",
+  b3: "20px",
   b4: "18px",
+  b5: "18px",
+  b6: "22px",
+  b7: "18px",
+  b8: "18px",
   b9: "16px",
+  
+  buttonLg: "22px",
+  buttonMd: "20px",
+  buttonSm: "16px",
+  
+  linkText: "22px",
+  linkTextSm: "20px",
+  linkTextXs: "16px",
+  
+  overlineMd: "16px",
+  overlineSm: "14px",
 };
 
 export const letterSpacingValues = {
@@ -212,7 +241,32 @@ export const letterSpacingValues = {
   h4: -0.4,
   h5: -0.36,
   h6: -0.32,
+  h7: -0.36,
+  
+  sh1: -0.32,
+  sh2: -0.28,
+  sh3: -0.28,
+  sh4: -0.24,
+  sh5: -0.24,
+  
   b1: -0.32,
   b2: -0.28,
+  b3: -0.28,
   b4: -0.24,
+  b5: -0.24,
+  b6: -0.32,
+  b7: 0,
+  b8: 0,
+  b9: 0,
+  
+  buttonLg: -0.32,
+  buttonMd: -0.28,
+  buttonSm: -0.24,
+  
+  linkText: -0.32,
+  linkTextSm: -0.28,
+  linkTextXs: -0.24,
+  
+  overlineMd: 0.05,
+  overlineSm: 0.025,
 };

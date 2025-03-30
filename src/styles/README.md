@@ -22,16 +22,18 @@ We provide several predefined typography components for common use cases:
 - **Links**: `LinkText`, `LinkTextSm`, `LinkTextXs`
 - **Button Text**: `ButtonLg`, `ButtonMd`, `ButtonSm`
 - **Overlines**: `OverlineMd`, `OverlineSm`
+- **Special**: `SpacedText` (example with custom letter spacing)
 
 Example:
 ```jsx
-import { H1, B1 } from '../components/ui/typography/typography';
+import { H1, B1, SpacedText } from '../components/ui/typography/typography';
 
 function MyComponent() {
   return (
     <>
       <H1>Main Heading</H1>
       <B1>Body text</B1>
+      <SpacedText>Text with wide letter spacing</SpacedText>
     </>
   );
 }
@@ -50,7 +52,7 @@ function CustomText() {
       variant="16" 
       weight="medium" 
       tracking="tight"
-      className="text-primary-600 leading-lg"
+      className="text-primary-600"
     >
       Custom text
     </Typography>
@@ -63,17 +65,51 @@ function CustomText() {
 ### To change line heights:
 
 1. Update the `lineHeight` object in `src/styles/theme.ts`
-2. Apply line heights using Tailwind classes (e.g., `leading-md`, `leading-lg`)
+2. Values are automatically applied to the corresponding typography components
+
+For example, to change the line height of H4:
+```typescript
+// In theme.ts
+export const lineHeight = {
+  // ...
+  h4: "32px", // Changed from 26px to 32px
+  // ...
+};
+```
+
+### To change letter spacing:
+
+1. Update the `letterSpacingValues` object in `src/styles/theme.ts`
+2. Values are automatically applied to the corresponding typography components
+
+For example, to change the letter spacing of H2:
+```typescript
+// In theme.ts
+export const letterSpacingValues = {
+  // ...
+  h2: -0.5, // Changed from -0.64 to -0.5 (tighter spacing)
+  // ...
+};
+```
+
+You can also use predefined letter spacing classes:
+- `tracking-tight`: -0.025em 
+- `tracking-normal`: 0em
+- `tracking-wide`: 0.025em
+- `tracking-extraWide`: 0.05em
+- `tracking-superWide`: 0.1em 
+- `tracking-ultraTight`: -0.05em
+- `tracking-superTight`: -0.075em
+
+Or apply letter spacing directly in your component:
+```jsx
+<Typography style={{ letterSpacing: 2 }}>Custom letter spacing (2px)</Typography>
+```
 
 ### To change font sizes:
 
 1. Update the `fontSize` object in `src/styles/theme.ts`
 2. Apply font sizes using Tailwind classes (e.g., `text-base`, `text-lg`)
-
-### To change letter spacing:
-
-1. Update the `letterSpacing` object in `src/styles/theme.ts`
-2. Apply letter spacing using Tailwind classes (e.g., `tracking-tight`, `tracking-wide`)
 
 ## Responsive Typography
 

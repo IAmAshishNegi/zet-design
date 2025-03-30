@@ -30,9 +30,9 @@ const OnboardingScreen = ({ onGetStarted }: OnboardingScreenProps) => {
         <View style={styles.textContainer}>
           
           <View className="flex flex-col gap-2 text-center justify-center items-center">
-          <H4 className="text-center">
+          <H2 className="text-center">
             The fastest way to improve your credit score
-          </H4>
+          </H2>
           </View>
         </View>
         
