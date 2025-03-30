@@ -1,4 +1,4 @@
-const { colors, spacing, borderRadius, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = require('./src/styles/theme');
+const { colors, spacing, borderRadius, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing, letterSpacingValues } = require('./src/styles/theme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -31,6 +31,8 @@ module.exports = {
       },
       lineHeight,
       letterSpacing,
+      // Add specific letter spacing values
+      letterSpacingSpecific: letterSpacingValues,
       // Explicit font weights
       fontWeight: {
         regular: 400,

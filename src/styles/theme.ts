@@ -193,4 +193,26 @@ export const lineHeight = {
   '2xl': "36px",
   '3xl': "40px",
   '4xl': "48px",
+  h1: "52px",
+  h2: "40px",
+  h3: "30px",
+  h4: "26px",
+  h5: "24px",
+  h6: "22px",
+  b1: "22px",
+  b2: "20px",
+  b4: "18px",
+  b9: "16px",
+};
+
+export const letterSpacingValues = {
+  h1: -0.8,
+  h2: -0.64,
+  h3: -0.48,
+  h4: -0.4,
+  h5: -0.36,
+  h6: -0.32,
+  b1: -0.32,
+  b2: -0.28,
+  b4: -0.24,
 };

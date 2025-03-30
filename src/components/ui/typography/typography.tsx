@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
-import { fontFamily } from '../../../styles/theme';
+import { fontFamily, lineHeight as themeLineHeight } from '../../../styles/theme';
 import { responsive } from '../../../utils/responsive';
 
 // Define simplified types
@@ -55,6 +55,20 @@ const fontSizeMap = {
   '24': 24,
   '32': 32,
   '40': 40,
+};
+
+// Map component types to their specific line heights
+const lineHeightMap = {
+  'h1': themeLineHeight.h1,
+  'h2': themeLineHeight.h2,
+  'h3': themeLineHeight.h3,
+  'h4': themeLineHeight.h4,
+  'h5': themeLineHeight.h5,
+  'h6': themeLineHeight.h6,
+  'b1': themeLineHeight.b1,
+  'b2': themeLineHeight.b2,
+  'b4': themeLineHeight.b4,
+  'b9': themeLineHeight.b9,
 };
 
 function Typography({ 
