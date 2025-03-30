@@ -9,67 +9,11 @@ You are an expert in TypeScript, React Native, Expo, and Mobile UI development.
 
 ## Code Style and Structure
 
-### Entry Point Guidelines
-
-- Ensure the entry point remains [App.tsx](mdc:App.tsx) at the root of your project unless intentionally changed.
-
-- Avoid renaming or relocating [App.tsx](mdc:App.tsx) without updating the `main` field in @package.json and any relevant Expo configuration.
-
-- For consistency, avoid creating alternative entry points like `index.tsx` unless necessary for custom setups.
-
-- When using `expo-router`, make sure your file structure under `app/` adheres to the router's expectations and `App.tsx` still serves as the primary entry point.
-
 ### Folder Structure Best Practices
 
 - Organize by **feature** or **domain**, not by type (e.g., avoid `components/`, `screens/`, `utils/` as top-level folders unless they serve shared/global purposes).
 
-- Example structure:
-
-```bash
-
-src/
-
-├── assets/ *# Images, fonts, Rive files, etc.*
-
-│ ├── fonts/ *# Custom fonts (e.g., .ttf, .otf)*
-
-│ ├── images/ *# Static images (e.g., .png, .jpg, .webp)*
-
-│ └── rive/ *# Rive animation files (.riv)*
-
-├── components/ *# Reusable components (buttons, cards, inputs)*
-
-├── features/ *# Feature-based folders (e.g., auth/, profile/, dashboard/)*
-
-│ ├── auth/
-
-│ │ ├── screens/
-
-│ │ ├── components/
-
-│ │ └── hooks/
-
-├── navigation/ *# Navigation setup (e.g., stack, tabs)*
-
-├── context/ *# React Contexts and global state*
-
-├── hooks/ *# Reusable custom hooks*
-
-├── services/ *# API services and data logic*
-
-├── store/ *# Global state logic (reducers, Zustand stores)*
-
-├── styles/ *# Global styles, themes, tailwind config*
-
-├── utils/ *# Helper functions*
-
-├── types/ *# Global TypeScript types and interfaces*
-
-├── constants/ *# Static configuration (e.g., routes, env keys)*
-
-└── App.tsx *# Entry point*
-
-```
+- use best practices for folder structuring.
 
 - Group related files close together: keep screen, components, and styles within the same feature folder.
 
