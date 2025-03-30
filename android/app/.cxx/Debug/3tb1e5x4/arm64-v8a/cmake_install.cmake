@@ -44,6 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+  include("/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/rnasyncstorage_autolinked_build/cmake_install.cmake")
   include("/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/rngesturehandler_codegen_autolinked_build/cmake_install.cmake")
   include("/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/rnreanimated_autolinked_build/cmake_install.cmake")
   include("/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/safeareacontext_autolinked_build/cmake_install.cmake")

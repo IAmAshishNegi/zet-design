@@ -36,6 +36,7 @@ function RootLayout() {
         <Stack.Screen name="index" options={{ title: 'Home' }} />
         <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
         <Stack.Screen name="components" options={{ title: 'Components' }} />
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       </Stack>
     </SafeAreaProvider>
   );
