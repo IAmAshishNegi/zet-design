@@ -1,0 +1,192 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert in TypeScript, React Native, Expo, and Mobile UI development.
+
+---
+
+## Code Style and Structure
+
+### Entry Point Guidelines
+
+- Ensure the entry point remains [App.tsx](mdc:App.tsx) at the root of your project unless intentionally changed.
+
+- Avoid renaming or relocating [App.tsx](mdc:App.tsx) without updating the `main` field in @package.json and any relevant Expo configuration.
+
+- For consistency, avoid creating alternative entry points like `index.tsx` unless necessary for custom setups.
+
+- When using `expo-router`, make sure your file structure under `app/` adheres to the router's expectations and `App.tsx` still serves as the primary entry point.
+
+### Folder Structure Best Practices
+
+- Organize by **feature** or **domain**, not by type (e.g., avoid `components/`, `screens/`, `utils/` as top-level folders unless they serve shared/global purposes).
+
+- Example structure:
+
+```bash
+
+src/
+
+├── assets/ *# Images, fonts, Rive files, etc.*
+
+│ ├── fonts/ *# Custom fonts (e.g., .ttf, .otf)*
+
+│ ├── images/ *# Static images (e.g., .png, .jpg, .webp)*
+
+│ └── rive/ *# Rive animation files (.riv)*
+
+├── components/ *# Reusable components (buttons, cards, inputs)*
+
+├── features/ *# Feature-based folders (e.g., auth/, profile/, dashboard/)*
+
+│ ├── auth/
+
+│ │ ├── screens/
+
+│ │ ├── components/
+
+│ │ └── hooks/
+
+├── navigation/ *# Navigation setup (e.g., stack, tabs)*
+
+├── context/ *# React Contexts and global state*
+
+├── hooks/ *# Reusable custom hooks*
+
+├── services/ *# API services and data logic*
+
+├── store/ *# Global state logic (reducers, Zustand stores)*
+
+├── styles/ *# Global styles, themes, tailwind config*
+
+├── utils/ *# Helper functions*
+
+├── types/ *# Global TypeScript types and interfaces*
+
+├── constants/ *# Static configuration (e.g., routes, env keys)*
+
+└── App.tsx *# Entry point*
+
+```
+
+- Group related files close together: keep screen, components, and styles within the same feature folder.
+
+- Use barrel files (`index.ts`) to clean up imports from directories.
+
+- Separate logic-heavy code from UI code when possible (`hooks/`, `services/`, `context/`).
+
+- Write concise, technical TypeScript code with accurate examples.
+
+- Use functional and declarative programming patterns; avoid classes.
+
+- Prefer iteration and modularization over code duplication.
+
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+
+- Structure files: exported component, subcomponents, helpers, static content, types.
+
+-always check [package.json](mdc:package.json) file before installing any new packages.
+
+- Follow Expo's official documentation for setup and configuration: @https://docs.expo.dev/
+
+## Naming Conventions
+
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+
+- Favor named exports for components.
+
+## TypeScript Usage
+
+- Use TypeScript for all code and enforce `strict` mode in `tsconfig.json`.
+
+- Prefer `interface` for component props and object-like shapes.
+
+- Use `type` for unions, mapped types, and conditional logic.
+
+- Avoid `enum`; use union types or `as const` object maps.
+
+- Always annotate public function signatures and component props.
+
+- Use `readonly` for props and state where mutation is not expected.
+
+- Leverage utility types (`Partial`, `Pick`, `Omit`) to promote reusability.
+
+- Avoid `any`; use `unknown` with type guards when the type isn’t known.
+
+## Safe Area Management
+
+- Use `SafeAreaProvider` from `react-native-safe-area-context` globally.
+
+- Wrap root components with `SafeAreaView`.
+
+- Use `SafeAreaScrollView` for scrollable content.
+
+- Avoid hardcoded padding/margins for safe areas.
+
+## Performance Optimization
+
+- Minimize use of `useState` and `useEffect`; prefer context and reducers.
+
+- Use `AppLoading` and `SplashScreen` from Expo.
+
+- Optimize images (WebP, size metadata, lazy loading with `expo-image`).
+
+- Use React’s Suspense and dynamic imports for code splitting.
+
+- Monitor performance with Expo and React Native dev tools.
+
+- Avoid unnecessary re-renders with memoization (`useMemo`, `useCallback`).
+
+## Navigation
+
+- Use `react-navigation` with best practices for stack, tab, and drawer navigators.
+
+- Support deep linking and universal links.
+
+- Use `expo-router` for dynamic route handling.
+
+## State Management
+
+- Use mock data in JSON files under `src/data/` to simulate APIs during early development.
+
+- Use `fetch` or `require()` to load local JSON files and simulate real network latency if needed.
+
+- Structure mock data per feature (e.g., `auth.json`, `profile.json`).
+
+- Use `setTimeout` or utility wrappers to mimic asynchronous behavior in services.
+
+- Do not include Gradle or native build tooling if building UI-only apps with Expo's managed workflow.
+
+- Use React Context + `useReducer` for global state.
+
+## Error Handling and Validation
+
+- Handle errors early with `if-return` pattern.
+
+- Avoid deeply nested if-else chains.
+
+- Use global error boundaries.
+
+##
+
+## Key Conventions
+
+- Before installing any new package, check [package.json](mdc:package.json) (mdc:package.json) for version compatibility and ensure no redundancy with existing dependencies.
+
+1. Use Expo’s managed workflow.
+
+2. Prioritize Mobile Web Vitals: Load Time, Jank, Responsiveness.
+
+3. Use `expo-constants` for environment and config.
+
+4. Use `expo-permissions` for device access control.
+
+5. Implement OTA updates with `expo-updates`.
+
+6. Follow Expo publishing best practices: @https://docs.expo.dev/distribution/introduction/
+
+## API Documentation
+
+- Refer to @https://docs.expo.dev/ for complete guides, APIs, and best practices.

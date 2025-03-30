@@ -1,0 +1,54 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## UI and Styling
+
+### Design System and Theming Guidelines
+
+- Define design tokens (colors, spacing, typography, etc.) in a **single source of truth** file under `src/styles/theme.ts`.
+
+- Avoid scattering color or spacing values across multiple files; centralize them in the theme file.
+
+- Only import values from the theme file or Tailwind config inside components.
+
+- Maintain consistent usage of color, radius, shadow, fontSize, etc., by referencing theme values.
+
+- Keep Tailwind customizations (if needed) inside `tailwind.config.js` only; do not replicate them in JS/TS files.
+
+- Use Expo's built-in components for common UI patterns.
+
+- Implement responsive design with Flexbox and `useWindowDimensions`.
+
+- Use styled-components or Tailwind CSS.
+
+- Support dark mode with `useColorScheme`.
+
+- Ensure accessibility using ARIA roles and native props.
+
+- Use `react-native-reanimated` and `react-native-gesture-handler` for animations and gestures.
+
+**NativeWind Integration**
+
+- Lock NativeWind to a tested version; maintain compatibility with Expo SDK in `compatibility.json`.
+
+- Use a script to validate NativeWind setup (`tailwind.config.js`, `babel.config.js`, and `app.json`) after install.
+
+- Add a `postinstall` hook to run `expo doctor` and verify proper setup.
+
+- Include a clean-up script (`expo start --clear`) to fix potential Metro bundler cache issues.
+
+- Avoid using bleeding-edge versions of NativeWind or React Native unless verified.
+
+**Rive Integration**
+
+- Use `rive-react-native` for animations; ensure compatibility with the current Expo SDK.
+
+- Use `.riv` files exported from Rive and store them in a dedicated `assets/rive` directory.
+
+- Wrap Rive animations in reusable components and expose props for dynamic control (e.g., play, pause, state machine input).
+
+- Avoid re-rendering entire Rive views unnecessarily; use `useRef` and `useEffect` for precise control.
+
+- Validate Rive version compatibility on every upgrade and clear Metro cache when integration issues arise.

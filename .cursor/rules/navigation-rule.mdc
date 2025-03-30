@@ -1,0 +1,12 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Navigation
+
+- Use `react-navigation` with best practices for stack, tab, and drawer navigators.
+
+- Support deep linking and universal links.
+
+- Use `expo-router` for dynamic route handling.
