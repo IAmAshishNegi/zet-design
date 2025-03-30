@@ -34,3 +34,17 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Android/IntelliJ
+android/app/build/
+android/.gradle
+android/.idea
+android/captures/
+android/local.properties
+android/*.iml
+android/.cxx/
+
+# Large files
+*.apk
+*.aab
+*.so
