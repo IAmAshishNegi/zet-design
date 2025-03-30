@@ -1,10 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Typography } from '../components/ui/typography/typography';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function HomeScreen() {
+const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
+
+export default function HomePage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function checkOnboardingStatus() {
+      try {
+        const value = await AsyncStorage.getItem(HAS_SEEN_ONBOARDING);
+        
+        if (value !== 'true') {
+          // User hasn't completed onboarding, redirect them
+          router.replace('/onboarding');
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
+        setIsLoading(false);
+      }
+    }
+
+    checkOnboardingStatus();
+  }, [router]);
+
+  if (isLoading) {
+    return null; // Don't render anything while checking onboarding status
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.mainContent}>
@@ -24,6 +54,14 @@ function HomeScreen() {
           <Pressable style={[styles.button, { marginTop: 16, backgroundColor: '#3b82f6' }]}>
             <Typography variant="lg" weight="medium" className="text-neutral-50">
               Go to Components
+            </Typography>
+          </Pressable>
+        </Link>
+
+        <Link href="/rive-test" asChild>
+          <Pressable style={[styles.button, { marginTop: 16, backgroundColor: '#7F29BD' }]}>
+            <Typography variant="lg" weight="medium" className="text-neutral-50">
+              Test Rive Animations
             </Typography>
           </Pressable>
         </Link>
@@ -50,6 +88,4 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 16,
   },
-});
-
-export default HomeScreen; 
+}); 

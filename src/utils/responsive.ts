@@ -10,7 +10,7 @@ const baseHeight = 812; // iPhone 11 Pro height
 
 // App-wide font scale factor (default: 1)
 // This can be changed to scale all fonts up or down
-let fontScaleFactor = 1;
+let fontScaleFactor = 1.05;
 
 /**
  * Sets the app-wide font scale factor
