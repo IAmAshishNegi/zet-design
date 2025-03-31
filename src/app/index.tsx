@@ -120,7 +120,14 @@ export default function App() {
           ),
         })}
       >
-        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{
+            headerShown: false,
+            header: () => null
+          }}
+        />
         <Tab.Screen name="Score" component={ScoreScreen} />
         <Tab.Screen name="Cards" component={CardsScreen} />
         <Tab.Screen name="Rewards" component={RewardsScreen} />

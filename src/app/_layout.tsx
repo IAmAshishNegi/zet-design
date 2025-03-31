@@ -32,11 +32,11 @@ function RootLayout() {
   // Render the layout
   return (
     <SafeAreaProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ title: 'Home' }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
         <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
         <Stack.Screen name="components" options={{ title: 'Components' }} />
-        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding" />
       </Stack>
     </SafeAreaProvider>
   );
