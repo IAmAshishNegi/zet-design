@@ -21,6 +21,8 @@ import Reanimated, {
   cancelAnimation
 } from 'react-native-reanimated';
 import { PanGestureHandler, GestureHandlerRootView, ScrollView as GHScrollView } from 'react-native-gesture-handler';
+import { RiveRef } from 'rive-react-native';
+import { RiveAnimation } from '../../components/ui/rive-animation';
 
 // Use GestureHandler's ScrollView to prevent gesture conflicts
 const ReanimatedScrollView = Reanimated.createAnimatedComponent(GHScrollView);
@@ -59,6 +61,9 @@ export default function HomeScreen() {
   // Shared values for drawer state
   const scrollEnabledWorklet = useSharedValue(false);
   const drawerHeightWorklet = useSharedValue(SCREEN_HEIGHT * 0.75);
+  
+  const [userScore, setUserScore] = useState(750); // Example credit score
+  const riveScoreRef = useRef<RiveRef>(null);
   
   // Dynamic height calculation based on drawer position
   const animatedHeight = useDerivedValue(() => {
@@ -122,6 +127,18 @@ export default function HomeScreen() {
       setDrawerPosition('middle');
     }
   }, [isDrawerAtTop.value, drawerY.value]);
+
+  // Update the score value in Rive animation when score changes
+  useEffect(() => {
+    if (riveScoreRef.current) {
+      try {
+        // Set the score input value in the Rive animation using the correct method
+        riveScoreRef.current.setInputState('State Machine 1', 'score', userScore);
+      } catch (error) {
+        console.error('Failed to update Rive score:', error);
+      }
+    }
+  }, [userScore]);
 
   // Reset onboarding status
   const resetOnboarding = async () => {
@@ -324,6 +341,53 @@ export default function HomeScreen() {
         {/* Header Content */}
         <Reanimated.View style={[styles.headerContent, headerAnimatedStyle]}>
           <B2 style={styles.headerText}>Your financial overview</B2>
+          
+          <View style={styles.scoreContainer}>
+            <RiveAnimation
+              ref={riveScoreRef}
+              source={require('../../assets/rive/scorebubble.riv')}
+              autoplay={true}
+              style={styles.scoreAnimation}
+              artboardName="creditBubble"
+              stateMachineName="State Machine 1"
+              onPlay={(animName, isStateMachine) => {
+                console.log('Score animation playing:', animName, isStateMachine);
+                // When animation starts playing, try to update the score
+                setTimeout(() => {
+                  try {
+                    riveScoreRef.current?.setInputState('State Machine 1', 'score', userScore);
+                    console.log('Set initial score value to:', userScore);
+                  } catch (error) {
+                    console.error('Failed to set initial score:', error);
+                  }
+                }, 500); // Small delay to ensure animation is fully loaded
+              }}
+              onStop={(animName, isStateMachine) => {
+                console.log('Score animation stopped:', animName, isStateMachine);
+              }} 
+              onError={(error) => {
+                console.error('Score animation error:', error);
+              }}
+            />
+            
+            <View style={styles.scoreControls}>
+              <Pressable 
+                style={styles.scoreButton}
+                onPress={() => setUserScore(Math.max(0, userScore - 50))}
+              >
+                <B2 style={styles.scoreButtonText}>-</B2>
+              </Pressable>
+              
+              <B2 style={styles.scoreText}>{userScore}</B2>
+              
+              <Pressable 
+                style={styles.scoreButton}
+                onPress={() => setUserScore(Math.min(900, userScore + 50))}
+              >
+                <B2 style={styles.scoreButtonText}>+</B2>
+              </Pressable>
+            </View>
+          </View>
         </Reanimated.View>
         
         {/* Drawer Content */}
@@ -436,6 +500,42 @@ const styles = StyleSheet.create({
   headerText: {
     color: colors.neutral[100],
     marginBottom: 24,
+    textAlign: 'center',
+  },
+  scoreContainer: {
+    width: 200,
+    height: 250,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scoreAnimation: {
+    width: '100%',
+    height: '80%',
+  },
+  scoreControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 8,
+  },
+  scoreButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primary[700],
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 10,
+  },
+  scoreButtonText: {
+    color: colors.neutral[50],
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  scoreText: {
+    color: colors.neutral[50],
+    width: 60,
     textAlign: 'center',
   },
   buttonsContainer: {
