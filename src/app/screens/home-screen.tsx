@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { View, StyleSheet, Pressable, ScrollView, Platform, Dimensions } from 'react-native';
 import { colors } from '../../styles/theme';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
   H3, H4, B2, B3, ButtonLg, SH2, ScoreDigit, 
-  SH3, B4, SH5, SH1, Avatar, RiveAnimation 
+  SH3, B4, SH5, SH1, Avatar, RiveAnimation, 
+  H6
 } from '../../components/ui';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,7 +22,8 @@ import Reanimated, {
   withTiming,
   Easing,
   useDerivedValue,
-  cancelAnimation
+  cancelAnimation,
+  withSequence
 } from 'react-native-reanimated';
 import { PanGestureHandler, GestureHandlerRootView, ScrollView as GHScrollView } from 'react-native-gesture-handler';
 import { RiveRef } from 'rive-react-native';
@@ -66,43 +68,101 @@ const creditScoreData: CreditScoreData = {
 
 // SlotMachineDigit Component for displaying individual digits
 const SlotMachineDigit = ({ digit, animationDelay = 0 }: { digit: number, animationDelay?: number }) => {
-  const translateY = useSharedValue(300);
+  // Instead of a full reel, we'll create just enough digits for a convincing animation
+  // The last digit will always be our target digit
+  const slotDigits = useMemo(() => {
+    const digits = [];
+    
+    // Add 10 random digits
+    for (let i = 0; i < 10; i++) {
+      digits.push(Math.floor(Math.random() * 10));
+    }
+    
+    // Add our target digit at the end
+    digits.push(digit);
+    
+    return digits;
+  }, [digit]);
+  
+  // Track current displayed digit index
+  const currentIndex = useSharedValue(0);
   const opacity = useSharedValue(0);
-
+  // Shared value for bounce effect - moved to component top level
+  const translateY = useSharedValue(0);
+  
+  // Track if animation is complete
+  const [isComplete, setIsComplete] = useState(false);
+  const [displayDigit, setDisplayDigit] = useState(slotDigits[0]);
+  
   useEffect(() => {
-    // Start the animation after the specified delay
-    const animationTimer = setTimeout(() => {
-      // Animate the digit coming up from below with a bouncy effect
-      translateY.value = withTiming(0, {
-        duration: 900, // Slower animation (was 600)
-        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-      });
+    // Start animation after delay
+    const startTimer = setTimeout(() => {
+      // Fade in
+      opacity.value = 1;
       
-      // Fade in the digit
-      opacity.value = withTiming(1, {
-        duration: 400,
-        easing: Easing.inOut(Easing.ease),
-      });
+      // Setup timing for rapid digit changes (simulating slot machine)
+      let currentStep = 0;
+      const totalSteps = slotDigits.length;
+      
+      // Start with faster changes, then slow down
+      const updateInterval = (step: number) => {
+        // Start with 40ms between changes, gradually slow down
+        const baseInterval = 40;
+        const slowdownFactor = Math.pow(step / totalSteps, 2) * 300; // Exponential slowdown
+        return baseInterval + slowdownFactor;
+      };
+      
+      // Recursive function to update digits with variable timing
+      const updateDigit = () => {
+        if (currentStep < totalSteps) {
+          // Update the displayed digit
+          setDisplayDigit(slotDigits[currentStep]);
+          currentIndex.value = currentStep;
+          
+          // Calculate next update time (slowing down gradually)
+          const nextUpdateTime = updateInterval(currentStep);
+          currentStep++;
+          
+          // Schedule next update with variable timing
+          setTimeout(updateDigit, nextUpdateTime);
+        } else {
+          // Animation complete, ensure we display the final digit
+          setDisplayDigit(digit);
+          setIsComplete(true);
+          
+          // Add a final bounce effect - apply directly to the translateY value
+          translateY.value = withSequence(
+            withTiming(-10, { duration: 100, easing: Easing.out(Easing.cubic) }),
+            withTiming(0, { duration: 300, easing: Easing.elastic(2) })
+          );
+        }
+      };
+      
+      // Start the update sequence
+      updateDigit();
     }, animationDelay);
     
-    return () => clearTimeout(animationTimer);
-  }, [digit, animationDelay]);
-
+    return () => clearTimeout(startTimer);
+  }, [digit, animationDelay, slotDigits]);
+  
+  // Style for the digit
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: translateY.value }],
       opacity: opacity.value,
+      transform: [{ translateY: translateY.value }]
     };
   });
-
+  
   return (
     <View style={styles.digitContainer}>
-      <Reanimated.View style={[styles.digitFrame, animatedStyle]}>
+      <Reanimated.View style={[styles.digitDisplay, animatedStyle]}>
         <ScoreDigit 
           style={styles.digitText}
           scoreWeight="scoreSemibold"
           variant="5xl"
-        >{digit}</ScoreDigit>
+        >
+          {displayDigit}
+        </ScoreDigit>
       </Reanimated.View>
     </View>
   );
@@ -458,6 +518,19 @@ export default function HomeScreen() {
     opacity: Math.max(0, Math.min(1, drawerY.value / (DRAWER_SNAP_MIDDLE * 0.6))),
   }), []);
 
+  // Add animation for drawer handle visibility
+  const drawerHandleAnimatedStyle = useAnimatedStyle(() => {
+    // Calculate opacity based on drawer position - visible only near bottom position
+    const opacity = interpolate(
+      drawerY.value,
+      [DRAWER_SNAP_BOTTOM - 50, DRAWER_SNAP_BOTTOM],
+      [0, 1],
+      Extrapolate.CLAMP
+    );
+    
+    return { opacity };
+  }, []);
+
   // Add this animation calculation to control score container scale and position
   const scoreContainerAnimatedStyle = useAnimatedStyle(() => {
     // Calculate progress from middle to bottom (0 at middle, 1 at bottom)
@@ -639,7 +712,7 @@ export default function HomeScreen() {
         <PanGestureHandler onGestureEvent={gestureHandler}>
           <Reanimated.View style={[styles.drawerContainer, drawerAnimatedStyle]}>
             <View style={styles.drawerHandleContainer}>
-              <View style={styles.drawerHandle} />
+              <Reanimated.View style={[styles.drawerHandle, drawerHandleAnimatedStyle]} />
             </View>
             
             <ReanimatedScrollView
@@ -658,7 +731,7 @@ export default function HomeScreen() {
               removeClippedSubviews={true}
             >
               <View style={styles.drawerContent}>
-                <SH2 style={styles.drawerTitle}>Your Financial Summary</SH2>
+                <H6 style={styles.drawerTitle}>Credit Builder Membership</H6>
                 
                 {/* Placeholder content */}
                 {[...Array(15)].map((_, index) => (
@@ -801,12 +874,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  digitFrame: {
-    height: 70,
+  digitDisplay: {
+    height: 60,
     width: 25,
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
+    alignItems: 'center',
   },
   digitText: {
     color: colors.neutral[50],
