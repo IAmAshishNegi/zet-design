@@ -14,7 +14,7 @@ const OnboardingFlow = () => {
 
   // Use useCallback to ensure function identity is stable
   const handleSplashComplete = useCallback(() => {
-    console.log('Splash animation complete');
+    // console.log('Splash animation complete');
     setShowSplash(false);
     setShowOnboarding(true);
   }, []);

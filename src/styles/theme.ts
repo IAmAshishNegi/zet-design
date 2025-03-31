@@ -11,6 +11,7 @@ export const colors = {
     "800": "#340953",
     "900": "#2F0A49",
     "950": "#1D042E",
+    "1000": "#160323",
   },
   secondary: {
     "50": "#fdf2f8",
@@ -37,6 +38,7 @@ export const colors = {
     "900": "#134e4a",
   },
   neutral: {
+    "0": "#ffffff",
     "50": "#fafafa",
     "100": "#f4f4f5",
     "200": "#e4e4e7",
@@ -136,23 +138,35 @@ export const borderRadius = {
 // Define fonts directly for NativeWind - this will correctly map font weights
 export const fontFamily = {
   // Standard font families
-  sans: ["THICCCBOI-Regular"],
-  serif: ["THICCCBOI-Regular"],
-  mono: ["THICCCBOI-Regular"],
+  sans: "THICCCBOI-Regular",
+  serif: "THICCCBOI-Regular",
+  mono: "THICCCBOI-Regular",
   
   // Font weight-specific font families - this is the NativeWind way
-  regular: ["THICCCBOI-Regular"],
-  medium: ["THICCCBOI-Medium"],
-  semibold: ["THICCCBOI-SemiBold"],
-  bold: ["THICCCBOI-Bold"]
+  regular: "THICCCBOI-Regular",
+  medium: "THICCCBOI-Medium",
+  semibold: "THICCCBOI-SemiBold",
+  bold: "THICCCBOI-Bold",
+  
+  // Stratos font family for score counter
+  scoreBlack: "Stratos-Black",
+  scoreBold: "Stratos-Bold",
+  scoreSemibold: "Stratos-SemiBold"
 };
+
+// Add debug log to check theme settings at initialization
+console.log('Theme fontFamily configuration:', fontFamily);
 
 // Font weights that match the fontFamily keys
 export const fontWeight = {
   regular: "400",
   medium: "500", 
   semibold: "600",
-  bold: "700"
+  bold: "700",
+  // Stratos font weights
+  scoreBlack: "900",
+  scoreBold: "700",
+  scoreSemibold: "600"
 };
 
 export const fontSize = {
@@ -175,6 +189,8 @@ export const fontSize = {
   '3xl': "32px",
   '40': "40px",
   '4xl': "40px",
+  '5xl': "50px",
+  '6xl': "60px",
 };
 
 export const letterSpacing = {

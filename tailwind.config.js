@@ -1,4 +1,4 @@
-const { colors, spacing, borderRadius, fontFamily, fontWeight, fontSize, lineHeight, letterSpacing, letterSpacingValues } = require('./src/styles/theme');
+const { colors, spacing, borderRadius, fontSize, lineHeight, letterSpacing, letterSpacingValues } = require('./src/styles/theme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
       colors,
       spacing,
       borderRadius,
-      fontFamily,
+      // Remove fontFamily extension - we're handling this directly in component styles
       // Define fontSize with direct numeric values for React Native
       fontSize: {
         // Numeric sizes - using direct numbers without px for React Native

@@ -15,12 +15,6 @@ function RootLayout() {
     'THICCCBOI-Medium': require('../assets/fonts/THICCCBOI-Medium.ttf'),
     'THICCCBOI-SemiBold': require('../assets/fonts/THICCCBOI-SemiBold.ttf'),
     'THICCCBOI-Bold': require('../assets/fonts/THICCCBOI-Bold.ttf'),
-    // Add Stratos fonts
-    'Stratos-Black': require('../assets/fonts/stratos-black.ttf'),
-    'Stratos-Bold': require('../assets/fonts/stratos-bold.ttf'),
-    'Stratos-SemiBold': require('../assets/fonts/stratos-semibold.ttf'),
-
-    'Glow-Regular': require('../assets/fonts/Glowworm.ttf'),
   });
 
   useEffect(() => {
@@ -43,7 +37,6 @@ function RootLayout() {
         <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
         <Stack.Screen name="components" options={{ title: 'Components' }} />
         <Stack.Screen name="onboarding" />
-        <Stack.Screen name="typography-debug" options={{ title: 'Typography Debug' }} />
       </Stack>
     </SafeAreaProvider>
   );

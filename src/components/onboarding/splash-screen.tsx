@@ -60,7 +60,7 @@ const SplashScreen = ({ onAnimationComplete }: SplashScreenProps) => {
     if (typeof onAnimationComplete === 'function') {
       onAnimationComplete();
     } else {
-      console.warn('onAnimationComplete is not a function:', onAnimationComplete);
+      // console.warn('onAnimationComplete is not a function:', onAnimationComplete);
     }
   };
   

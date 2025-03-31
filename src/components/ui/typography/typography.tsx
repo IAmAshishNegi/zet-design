@@ -6,7 +6,7 @@ import { responsive } from '../../../utils/responsive';
 // Define simplified types
 type FontSizeVariant = 
   | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '32' | '40'
-  | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
+  | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
 
 type FontFamilyVariant = 'regular' | 'medium' | 'semibold' | 'bold';
 
@@ -35,7 +35,7 @@ interface TypographyProps extends TextProps {
 }
 
 // Map weights directly to font family names to ensure correct font selection
-const fontFamilyMap = {
+export const fontFamilyMap = {
   'regular': 'THICCCBOI-Regular',
   'medium': 'THICCCBOI-Medium',
   'semibold': 'THICCCBOI-SemiBold',
@@ -53,6 +53,8 @@ const fontSizeMap = {
   '2xl': 24,
   '3xl': 32,
   '4xl': 40,
+  '5xl': 48,
+  '6xl': 56,
   
   // Numeric sizes
   '10': 10,
@@ -66,6 +68,16 @@ const fontSizeMap = {
   '24': 24,
   '32': 32,
   '40': 40,
+};
+
+// Also export for debugging
+export { fontSizeMap };
+
+// Create custom Score font map for Stratos font
+export const stratosMap = {
+  'scoreBlack': 'Stratos-Black',
+  'scoreBold': 'Stratos-Bold',
+  'scoreSemibold': 'Stratos-SemiBold',
 };
 
 function Typography({ 
@@ -82,6 +94,9 @@ function Typography({
   children, 
   ...rest 
 }: TypographyProps) {
+  
+  // Log incoming style for debugging
+  console.log('Typography received style:', style);
   
   // Construct class names using standard Tailwind patterns
   const classes = [
@@ -113,19 +128,39 @@ function Typography({
     letterSpacing = letterSpacingValues[componentVariant];
   }
   
-  // Apply styles directly
-  const combinedStyle = {
-    fontFamily: fontFamilyMap[weight],
+  // Apply styles directly - Use fontFamily directly and remove NativeWind for font-family
+  const baseStyle = {
+    fontFamily: fontFamilyMap[weight], // Direct application of font family
     fontSize: fontSize,
     ...(lineHeight ? { lineHeight } : {}),
     ...(letterSpacing !== undefined ? { letterSpacing } : {}),
-    ...(typeof style === 'object' ? style : {}),
   };
+  
+  // Handle different style types properly
+  let finalStyle;
+  if (Array.isArray(style)) {
+    // If style is an array, keep it as array with baseStyle first (lower priority)
+    finalStyle = [baseStyle, ...style];
+  } else {
+    // Otherwise, merge objects - user style has priority 
+    finalStyle = {
+      ...baseStyle,
+      ...(typeof style === 'object' ? style : {})
+    };
+  }
+
+  // Ensure color from style gets priority
+  if (style && !Array.isArray(style) && typeof style === 'object' && 'color' in style) {
+    console.log('Color found in style:', style.color);
+  }
+
+  // Log the final combined style for debugging
+  console.log('Typography finalStyle:', finalStyle);
 
   return (
     <Text 
       className={classes} 
-      style={combinedStyle}
+      style={finalStyle}
       {...rest}
     >
       {children}
@@ -135,65 +170,107 @@ function Typography({
 
 // ----- Heading Components -----
 
-const H1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="40" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="h1"
-    {...props} 
-  />
-);
+const H1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="40" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="h1"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const H2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="32" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="h2"
-    {...props} 
-  />
-);
+const H2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="32" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="h2"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const H3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="24" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="h3"
-    {...props} 
-  />
-);
+const H3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="24" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="h3"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const H4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="20" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="h4"
-    {...props} 
-  />
-);
+const H4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="20" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="h4"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const H5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="18" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="h5"
-    {...props} 
-  />
-);
+const H5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="18" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="h5"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const H6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="16" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="h6"
-    {...props} 
-  />
-);
+const H6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="16" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="h6"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 const H7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
   <Typography 
@@ -217,15 +294,25 @@ const SH1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'c
   />
 );
 
-const SH2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="14" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="sh2"
-    {...props} 
-  />
-);
+const SH2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  // Special handling for SH2 which has font issues
+  const { style, ...otherProps } = props;
+  
+  return (
+    <Typography 
+      variant="14" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="sh2"
+      style={{
+        // Explicitly set the font family to override any potential issues
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 const SH3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
   <Typography 
@@ -247,15 +334,22 @@ const SH4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'c
   />
 );
 
-const SH5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="12" 
-    weight="bold" 
-    tracking="tight" 
-    componentVariant="sh5"
-    {...props} 
-  />
-);
+const SH5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="12" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="sh5"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 // ----- Body Components -----
 
@@ -269,15 +363,24 @@ const B1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'co
   />
 );
 
-const B2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="14" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="b2"
-    {...props} 
-  />
-);
+const B2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  
+  // Debug log to see incoming style
+  console.log('B2 received style:', style);
+  
+  // Just pass the style directly - Typography will handle arrays properly now
+  return (
+    <Typography 
+      variant="14" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="b2"
+      style={style}
+      {...otherProps} 
+    />
+  );
+};
 
 const B3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
   <Typography 
@@ -440,6 +543,80 @@ const OverlineSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
   />
 );
 
+// ----- Score Font Components -----
+
+// Score Typography with Stratos font
+const ScoreTypography: React.FC<TypographyProps & { scoreWeight?: 'scoreBlack' | 'scoreBold' | 'scoreSemibold' }> = ({ 
+  variant = '40',
+  scoreWeight = 'scoreBlack', 
+  tracking = 'normal',
+  className = '', 
+  style = {},
+  componentVariant,
+  children, 
+  ...rest 
+}) => {
+  // Get the numeric font size from our map
+  const baseFontSize = fontSizeMap[variant] || 40; // Default to 40 if not found
+  
+  // Apply styles directly - remove the className font handling
+  const combinedStyle = {
+    fontFamily: stratosMap[scoreWeight], // Direct application of font family
+    fontSize: baseFontSize,
+    ...(typeof style === 'object' ? style : {}),
+  };
+
+  return (
+    <Text 
+      className={className} 
+      style={combinedStyle}
+      {...rest}
+    >
+      {children}
+    </Text>
+  );
+};
+
+// Score display components
+const ScoreDisplay: React.FC<{ className?: string, style?: any }> = (props) => (
+  <ScoreTypography 
+    variant="40" 
+    scoreWeight="scoreBlack"
+    {...props} 
+  />
+);
+
+const ScoreDisplayMd: React.FC<{ className?: string, style?: any }> = (props) => (
+  <ScoreTypography 
+    variant="32" 
+    scoreWeight="scoreBlack"
+    {...props} 
+  />
+);
+
+const ScoreDisplaySm: React.FC<{ className?: string, style?: any }> = (props) => (
+  <ScoreTypography 
+    variant="24" 
+    scoreWeight="scoreBold"
+    {...props} 
+  />
+);
+
+// Individual digits for score display
+const ScoreDigit: React.FC<{ 
+  className?: string, 
+  style?: any, 
+  children?: React.ReactNode,
+  scoreWeight?: 'scoreBlack' | 'scoreBold' | 'scoreSemibold',
+  variant?: FontSizeVariant
+}> = ({ scoreWeight = 'scoreBlack', variant = '40', ...props }) => (
+  <ScoreTypography 
+    variant={variant} 
+    scoreWeight={scoreWeight}
+    {...props} 
+  />
+);
+
 // Utility function to set the app-wide font scale
 // This can be called from settings or elsewhere to adjust all text sizes
 export const setAppFontScale = (scale: number) => {
@@ -455,7 +632,9 @@ const SpacedText: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
     variant="16" 
     weight="bold" 
     tracking="superWide" // Using one of our new letter spacing values
+    className={`font-bold ${className}`} // Add font-bold class
     style={{
+      fontFamily: fontFamilyMap['bold'], // Ensure fontFamily is set
       letterSpacing: 2, // Direct numeric value in pixels
       ...(style as any) // Type assertion to avoid the spread error
     }}
@@ -485,5 +664,12 @@ export {
   OverlineMd, OverlineSm,
   
   // Custom example
-  SpacedText
+  SpacedText,
+
+  // Score Typography
+  ScoreTypography,
+  ScoreDisplay,
+  ScoreDisplayMd,
+  ScoreDisplaySm,
+  ScoreDigit
 };

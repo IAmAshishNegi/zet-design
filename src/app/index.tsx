@@ -64,7 +64,7 @@ export default function App() {
         
         setIsLoading(false);
       } catch (error) {
-        console.log('Error checking onboarding status:', error);
+        // console.log('Error checking onboarding status:', error);
         setIsLoading(false);
       }
     };
@@ -82,8 +82,8 @@ export default function App() {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarActiveTintColor: colors.primary[100],
-          tabBarInactiveTintColor: colors.neutral[400],
+          tabBarActiveTintColor: colors.primary[700],
+          tabBarInactiveTintColor: colors.neutral[500],
           tabBarStyle: styles.tabBar,
           tabBarShowLabel: true,
           tabBarButton: props => <TabBarButton {...props} />,
@@ -99,20 +99,20 @@ export default function App() {
             const variant = focused ? 'filled' : 'stroke';
             
             // Use direct hex colors that match theme values
-            const activeColor = colors.primary[100]; // Same as primary[500] from theme
-            const inactiveColor = colors.neutral[400]; // Same as neutral[300] from theme
+            const activeColor = colors.primary[700]; // Same as primary[500] from theme
+            const inactiveColor = colors.neutral[500]; // Same as neutral[300] from theme
             
             const iconColor = focused ? activeColor : inactiveColor;
             const iconSize = focused ? 26 : 24;
 
             if (route.name === 'Home') {
-              return <HomeIcon color={iconColor} variant={variant} size={iconSize} />;
+              return <HomeIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
             } else if (route.name === 'Score') {
-              return <ScoreIcon color={iconColor} variant={variant} size={iconSize} />;
+              return <ScoreIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
             } else if (route.name === 'Cards') {
-              return <CreditCardIcon color={iconColor} variant={variant} size={iconSize} />;
+              return <CreditCardIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
             } else if (route.name === 'Rewards') {
-              return <RewardIcon color={iconColor} variant={variant} size={iconSize} />;
+              return <RewardIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
             }
           },
           tabBarBackground: () => (
@@ -165,11 +165,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: colors.primary['950'],
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.098)',
+    backgroundColor: colors.neutral['0'],
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -5 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
    
-    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   tabButton: {
     flex: 1,

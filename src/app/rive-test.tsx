@@ -22,14 +22,14 @@ const RiveTestScreen = () => {
   const riveRef = useRef<RiveRef>(null);
 
   const handlePlay = (animName: string, isStateMachine: boolean) => {
-    console.log(`Animation played: ${animName}, isStateMachine: ${isStateMachine}`);
+    // console.log(`Animation played: ${animName}, isStateMachine: ${isStateMachine}`);
     setLoading(false);
     setError(null);
     setSuccessMessage(`Animation "${animName}" is playing`);
   };
 
   const handleError = (err: any) => {
-    console.error('Rive error:', err);
+    // console.error('Rive error:', err);
     setLoading(false);
     setSuccessMessage(null);
     setError(err?.message || 'Unknown error with Rive animation');

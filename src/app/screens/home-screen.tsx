@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Pressable, ScrollView, Image, Platform, Dimensions, Text } from 'react-native';
+import { View, StyleSheet, Pressable, ScrollView, Platform, Dimensions } from 'react-native';
 import { colors } from '../../styles/theme';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Typography, H3, H4, B2, B3, ButtonLg, SH2 } from '../../components/ui/typography/typography';
+import { 
+  H3, H4, B2, B3, ButtonLg, SH2, ScoreDigit, 
+  SH3, B4, SH5, SH1, Avatar, RiveAnimation 
+} from '../../components/ui';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Reanimated, {
@@ -22,17 +25,16 @@ import Reanimated, {
 } from 'react-native-reanimated';
 import { PanGestureHandler, GestureHandlerRootView, ScrollView as GHScrollView } from 'react-native-gesture-handler';
 import { RiveRef } from 'rive-react-native';
-import { RiveAnimation } from '../../components/ui/rive-animation';
 
 // Use GestureHandler's ScrollView to prevent gesture conflicts
 const ReanimatedScrollView = Reanimated.createAnimatedComponent(GHScrollView);
 
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const HEADER_HEIGHT = SCREEN_HEIGHT * 0.14;
+const HEADER_HEIGHT = SCREEN_HEIGHT * 0.13;
 const DRAWER_SNAP_TOP = 0;
-const DRAWER_SNAP_MIDDLE = SCREEN_HEIGHT * 0.35;
-const DRAWER_SNAP_BOTTOM = SCREEN_HEIGHT * 0.65;
+const DRAWER_SNAP_MIDDLE = SCREEN_HEIGHT * 0.42;
+const DRAWER_SNAP_BOTTOM = SCREEN_HEIGHT * 0.73;
 
 // Spring animation config for smooth transitions
 const SPRING_CONFIG = {
@@ -44,10 +46,136 @@ const SPRING_CONFIG = {
   restSpeedThreshold: 0.05
 };
 
+// Define credit score data type
+type CreditScoreData = {
+  score: number;
+  name: string;
+  lastUpdated: string;
+  change: number;
+  status: 'good' | 'fair' | 'poor';
+};
+
+// Sample credit score data
+const creditScoreData: CreditScoreData = {
+  score: 580,
+  name: 'Ashish',
+  lastUpdated: '2023-06-15',
+  change: 25,
+  status: 'good'
+};
+
+// SlotMachineDigit Component for displaying individual digits
+const SlotMachineDigit = ({ digit, animationDelay = 0 }: { digit: number, animationDelay?: number }) => {
+  const translateY = useSharedValue(300);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    // Start the animation after the specified delay
+    const animationTimer = setTimeout(() => {
+      // Animate the digit coming up from below with a bouncy effect
+      translateY.value = withTiming(0, {
+        duration: 900, // Slower animation (was 600)
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+      });
+      
+      // Fade in the digit
+      opacity.value = withTiming(1, {
+        duration: 400,
+        easing: Easing.inOut(Easing.ease),
+      });
+    }, animationDelay);
+    
+    return () => clearTimeout(animationTimer);
+  }, [digit, animationDelay]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+      opacity: opacity.value,
+    };
+  });
+
+  return (
+    <View style={styles.digitContainer}>
+      <Reanimated.View style={[styles.digitFrame, animatedStyle]}>
+        <ScoreDigit 
+          style={styles.digitText}
+          scoreWeight="scoreSemibold"
+          variant="5xl"
+        >{digit}</ScoreDigit>
+      </Reanimated.View>
+    </View>
+  );
+};
+
+// CreditScoreCounter component
+const CreditScoreCounter = ({ score, onScoreAnimationComplete, isPageLoaded = false }: { 
+  score: number, 
+  onScoreAnimationComplete?: () => void,
+  isPageLoaded?: boolean
+}) => {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const previousScore = useRef(score);
+  const [shouldAnimateDigits, setShouldAnimateDigits] = useState(false);
+  
+  // Wait for the page to be loaded before starting the animation
+  useEffect(() => {
+    if (isPageLoaded) {
+      // Add a small delay to ensure everything is ready
+      const animationStartTimer = setTimeout(() => {
+        setShouldAnimateDigits(true);
+      }, 300);
+      
+      return () => clearTimeout(animationStartTimer);
+    }
+  }, [isPageLoaded]);
+  
+  // Track when animation starts and completes
+  useEffect(() => {
+    if (shouldAnimateDigits && previousScore.current !== score) {
+      setIsAnimating(true);
+      previousScore.current = score;
+      
+      // Estimate when animation completes based on longest animation delay + duration
+      const longestDelay = score.toString().length * 200; // Based on delay between digits
+      const animationDuration = 600; // Based on final digit animation duration (updated to be slower)
+      const buffer = 100; // Extra buffer increased
+      
+      const completionTimeout = setTimeout(() => {
+        setIsAnimating(false);
+        if (onScoreAnimationComplete) onScoreAnimationComplete();
+      }, longestDelay + animationDuration + buffer);
+      
+      return () => clearTimeout(completionTimeout);
+    }
+  }, [score, onScoreAnimationComplete, shouldAnimateDigits]);
+  
+  // Convert score to array of digits
+  const digits = score.toString().split('').map(Number);
+  
+  return (
+    <View style={styles.scoreCounterContainer}>
+      <View style={styles.digitsRow}>
+        {shouldAnimateDigits && digits.map((digit, index) => (
+          <SlotMachineDigit 
+            key={index} 
+            digit={digit} 
+            animationDelay={index * 200} // Cascade animation from left to right
+          />
+        ))}
+      </View>
+      <View className='mt-1'>
+        <B3 style={styles.digitText}>Your Score</B3>
+      </View>
+    </View>
+  );
+};
+
 export default function HomeScreen() {
   const router = useRouter();
   const [greeting, setGreeting] = useState('');
-  const [username, setUsername] = useState('Ashley');
+  const [username, setUsername] = useState('');
+  const [avatarImageUrl, setAvatarImageUrl] = useState<string | null>('https://placekitten.com/100/100');
   const scrollY = useSharedValue(0);
   const drawerY = useSharedValue(DRAWER_SNAP_MIDDLE);
   const scrollViewRef = useRef(null);
@@ -62,8 +190,15 @@ export default function HomeScreen() {
   const scrollEnabledWorklet = useSharedValue(false);
   const drawerHeightWorklet = useSharedValue(SCREEN_HEIGHT * 0.75);
   
-  const [userScore, setUserScore] = useState(750); // Example credit score
+  // Initialize userScore with creditScoreData.score
+  const [userScore, setUserScore] = useState(creditScoreData.score);
   const riveScoreRef = useRef<RiveRef>(null);
+  
+  // Ensure userScore always reflects creditScoreData.score (add this effect)
+  useEffect(() => {
+    // Force synchronize the state with the latest data
+    setUserScore(creditScoreData.score);
+  }, [creditScoreData.score]);
   
   // Dynamic height calculation based on drawer position
   const animatedHeight = useDerivedValue(() => {
@@ -128,17 +263,29 @@ export default function HomeScreen() {
     }
   }, [isDrawerAtTop.value, drawerY.value]);
 
-  // Update the score value in Rive animation when score changes
+  // Update Rive animation when userScore changes
   useEffect(() => {
-    if (riveScoreRef.current) {
-      try {
-        // Set the score input value in the Rive animation using the correct method
-        riveScoreRef.current.setInputState('State Machine 1', 'score', userScore);
-      } catch (error) {
-        console.error('Failed to update Rive score:', error);
+    // Update Rive animation with new score
+    const updateRiveScore = () => {
+      if (riveScoreRef.current) {
+        try {
+          // Set the score input value in the Rive animation using the correct method
+          riveScoreRef.current.setInputState('State Machine 1', 'score', creditScoreData.score);
+          // console.log('Updated Rive score to:', creditScoreData.score);
+        } catch (error) {
+          // console.error('Failed to update Rive score:', error);
+        }
       }
-    }
-  }, [userScore]);
+    };
+    
+    // Immediate update attempt
+    updateRiveScore();
+    
+    // Also attempt update after a short delay to ensure Rive is ready
+    const delayedUpdate = setTimeout(updateRiveScore, 300);
+    
+    return () => clearTimeout(delayedUpdate);
+  }, [userScore, creditScoreData.score]);
 
   // Reset onboarding status
   const resetOnboarding = async () => {
@@ -311,83 +458,181 @@ export default function HomeScreen() {
     opacity: Math.max(0, Math.min(1, drawerY.value / (DRAWER_SNAP_MIDDLE * 0.6))),
   }), []);
 
+  // Add this animation calculation to control score container scale and position
+  const scoreContainerAnimatedStyle = useAnimatedStyle(() => {
+    // Calculate progress from middle to bottom (0 at middle, 1 at bottom)
+    const progressToBottom = interpolate(
+      drawerY.value,
+      [DRAWER_SNAP_MIDDLE, DRAWER_SNAP_BOTTOM],
+      [0, 1],
+      Extrapolate.CLAMP
+    );
+    
+    // Scale factor increases as drawer moves down (1.0 to 1.18)
+    const scale = interpolate(
+      progressToBottom,
+      [0, 1],
+      [1, 1.18],
+      Extrapolate.CLAMP
+    );
+    
+    // Move down as drawer moves down (0 to 20)
+    const translateY = interpolate(
+      progressToBottom,
+      [0, 1],
+      [0, 20],
+      Extrapolate.CLAMP
+    );
+    
+    // Add a subtle rotation effect (0 to 2 degrees)
+    const rotate = interpolate(
+      progressToBottom,
+      [0, 1],
+      [0, 2],
+      Extrapolate.CLAMP
+    );
+    
+    return {
+      transform: [
+        { scale },
+        { translateY },
+        
+      ]
+    };
+  }, []);
+
+  const [pageLoaded, setPageLoaded] = useState(false);
+  
+  // Add this before other useEffects
+  useEffect(() => {
+    // Mark the page as loaded after its initial render
+    const loadTimer = setTimeout(() => {
+      setPageLoaded(true);
+    }, 100);
+    
+    return () => clearTimeout(loadTimer);
+  }, []);
+
+  const [avatarVariant, setAvatarVariant] = useState<'default' | 'outline' | 'small'>('default');
+  
+  // Function to toggle avatar image for testing
+  const toggleAvatarImage = () => {
+    setAvatarImageUrl(prev => prev ? null : 'https://placekitten.com/100/100');
+    // Also toggle through the variants
+    setAvatarVariant(current => {
+      if (current === 'default') return 'outline';
+      if (current === 'outline') return 'small';
+      return 'default';
+    });
+  };
+
   return (
     <GestureHandlerRootView style={styles.rootContainer}>
       <View style={styles.container}>
         <StatusBar style="light" />
         
-        {/* Debug info overlay */}
-        {/* <View style={styles.debugInfo}>
-          <Text style={styles.debugText}>Position: {drawerPosition}</Text>
-          <Text style={styles.debugText}>Height: {Math.round(drawerHeightLog)}</Text>
-          <Text style={styles.debugText}>Scroll Enabled: {scrollEnabled ? 'Yes' : 'No'}</Text>
-          <Text style={styles.debugText}>Content Height: {Math.round(contentHeight)}</Text>
-        </View> */}
-        
         {/* App Bar */}
         <View style={styles.appBar}>
-          <View style={styles.greetingContainer}>
-            <H4 style={styles.greeting}>{greeting}</H4>
-            <H3 style={styles.username}>{username}</H3>
-          </View>
-          <Pressable style={styles.avatarContainer}>
-            <Image
-              source={{ uri: 'https://placekitten.com/100/100' }}
-              style={styles.avatar}
+          
+          <Pressable 
+            style={styles.avatarContainer}
+            onPress={toggleAvatarImage}
+          >
+            <Avatar 
+              source={avatarImageUrl} 
+              name={creditScoreData.name}
+              borderRadius={12}
+              size={52}
+              className={creditScoreData.change >= 0 ? "shadow-success" : "shadow-error"}
+              variant={avatarVariant}
             />
           </Pressable>
+          <View style={styles.greetingContainer}>
+            <SH3 className="text-white opacity-50 my-1">{greeting}</SH3>
+            <H4 className="text-white opacity-80">{creditScoreData.name}</H4>
+          </View>
         </View>
         
         {/* Header Content */}
         <Reanimated.View style={[styles.headerContent, headerAnimatedStyle]}>
-          <B2 style={styles.headerText}>Your financial overview</B2>
+          {/* <B2 style={styles.headerText}>Your financial overview</B2> */}
           
-          <View style={styles.scoreContainer}>
-            <RiveAnimation
-              ref={riveScoreRef}
-              source={require('../../assets/rive/scorebubble.riv')}
-              autoplay={true}
-              style={styles.scoreAnimation}
-              artboardName="creditBubble"
-              stateMachineName="State Machine 1"
-              onPlay={(animName, isStateMachine) => {
-                console.log('Score animation playing:', animName, isStateMachine);
-                // When animation starts playing, try to update the score
-                setTimeout(() => {
-                  try {
-                    riveScoreRef.current?.setInputState('State Machine 1', 'score', userScore);
-                    console.log('Set initial score value to:', userScore);
-                  } catch (error) {
-                    console.error('Failed to set initial score:', error);
-                  }
-                }, 500); // Small delay to ensure animation is fully loaded
-              }}
-              onStop={(animName, isStateMachine) => {
-                console.log('Score animation stopped:', animName, isStateMachine);
-              }} 
-              onError={(error) => {
-                console.error('Score animation error:', error);
-              }}
-            />
-            
-            <View style={styles.scoreControls}>
-              <Pressable 
-                style={styles.scoreButton}
-                onPress={() => setUserScore(Math.max(0, userScore - 50))}
-              >
-                <B2 style={styles.scoreButtonText}>-</B2>
-              </Pressable>
+          <Reanimated.View style={[styles.scoreContainer, scoreContainerAnimatedStyle]}>
+            <View style={styles.riveAnimationContainer}>
+              <RiveAnimation
+                ref={riveScoreRef}
+                source={require('../../assets/rive/scorebubble.riv')}
+                autoplay={true}
+                style={styles.scoreAnimation}
+                artboardName="creditBubble"
+                stateMachineName="State Machine 1"
+                onPlay={(animName, isStateMachine) => {
+                  // console.log('Score animation playing:', animName, isStateMachine);
+                  
+                  // When animation starts playing, set the score on both the Rive animation and update our state
+                  const syncScoreWithRive = () => {
+                    try {
+                      // First make sure our React state matches the creditScoreData
+                      if (userScore !== creditScoreData.score) {
+                        setUserScore(creditScoreData.score);
+                      }
+                      
+                      // Then update Rive with this value
+                      riveScoreRef.current?.setInputState('State Machine 1', 'score', creditScoreData.score);
+                      // console.log('Set initial Rive score value to:', creditScoreData.score);
+                    } catch (error) {
+                      // console.error('Failed to set initial score:', error);
+                    }
+                  };
+                  
+                  // Try immediately and with a delay to ensure it works
+                  syncScoreWithRive();
+                  setTimeout(syncScoreWithRive, 500);
+                }}
+                onStop={(animName, isStateMachine) => {
+                  // console.log('Score animation stopped:', animName, isStateMachine);
+                }} 
+                onError={(error) => {
+                  // console.error('Score animation error:', error);
+                }}
+              />
               
-              <B2 style={styles.scoreText}>{userScore}</B2>
-              
-              <Pressable 
-                style={styles.scoreButton}
-                onPress={() => setUserScore(Math.min(900, userScore + 50))}
-              >
-                <B2 style={styles.scoreButtonText}>+</B2>
-              </Pressable>
+              {/* Overlay the counter in the center of Rive animation */}
+              <View style={styles.overlayCounterContainer}>
+                <CreditScoreCounter 
+                  score={creditScoreData.score} 
+                  isPageLoaded={pageLoaded} 
+                  onScoreAnimationComplete={() => {
+                    // Ensure Rive animation is in sync after digits finish animating
+                    if (riveScoreRef.current) {
+                      try {
+                        riveScoreRef.current.setInputState('State Machine 1', 'score', creditScoreData.score);
+                      } catch (error) {
+                        console.error('Failed to sync Rive after counter animation:', error);
+                      }
+                    }
+                  }}
+                />
+              </View>
             </View>
-          </View>
+            <View className='mt-1 items-center'>
+              <SH1 className='text-white mb-1'>
+                Your Credit Score is {
+                  creditScoreData.score <= 350 ? 'Poor' :
+                  creditScoreData.score <= 600 ? 'Average' :
+                  creditScoreData.score <= 750 ? 'Good' : 'Excellent'
+                }
+              </SH1>
+              <B4 className='text-white opacity-50 mt-1'>Last updated on: {creditScoreData.lastUpdated}</B4>
+              <View className='flex-row items-center'>
+                <View className={`px-2 py-1 mt-2 rounded-full ${creditScoreData.change >= 0 ? 'bg-success-100' : 'bg-error-100'}`}>
+                  <B4 className={creditScoreData.change >= 0 ? 'text-success-900' : 'text-error-500'}>
+                    {creditScoreData.change >= 0 ? '+' : ''}{creditScoreData.change} pts since last update
+                  </B4>
+                </View>
+              </View>
+            </View>
+          </Reanimated.View>
         </Reanimated.View>
         
         {/* Drawer Content */}
@@ -430,6 +675,12 @@ export default function HomeScreen() {
                       </Pressable>
                     </Link>
                     
+                    <Link href="/typography-debug" asChild>
+                      <Pressable style={[styles.button, {marginTop: 16, backgroundColor: colors.info[500]}]}>
+                        <ButtonLg style={styles.buttonText}>Debug Typography</ButtonLg>
+                      </Pressable>
+                    </Link>
+                    
                     <Pressable 
                       style={[styles.button, { backgroundColor: colors.error[500], marginTop: 16, marginBottom: 30 }]}
                       onPress={resetOnboarding}
@@ -453,16 +704,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: colors.primary[900],
+    backgroundColor: colors.primary[1000],
   },
   appBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'android' ? 40 : 60, // Add more padding at top
     paddingBottom: 12,
-    backgroundColor: colors.primary[900],
+    backgroundColor: colors.primary[1000],
   },
   greetingContainer: {
     flex: 1,
@@ -476,19 +728,11 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   avatarContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginLeft: 16,
-  },
-  avatar: {
-    width: '100%',
-    height: '100%',
+    marginRight: 16,
   },
   headerContent: {
-    height: SCREEN_HEIGHT * 0.35,
-    backgroundColor: colors.primary[900],
+    height: SCREEN_HEIGHT * 0.33,
+    backgroundColor: colors.primary[1000],
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 24,
@@ -503,21 +747,114 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   scoreContainer: {
-    width: 200,
-    height: 250,
+    width: '100%',
+    height: 350,
+    paddingTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  riveAnimationContainer: {
+    width: '100%',
+    height: 240,
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
   },
   scoreAnimation: {
+    width: '85%',
+    height: '85%',
+  },
+  overlayCounterContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '44%',
+    left: '62.5%',
+    transform: [
+      { translateX: -100 }, // Adjusted for the wider counter with new font
+      { translateY: -30 }  // Half the height of the counter
+    ],
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    borderRadius: 8,
+    padding: 8,
+  },
+  scoreCounterContainer: {
     width: '100%',
-    height: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  digitsRow: {
+    flexDirection: 'row',
+    height: 55,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  digitContainer: {
+    width: 25,
+    height: 60,
+    overflow: 'hidden',
+    marginHorizontal: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  digitFrame: {
+    height: 70,
+    width: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  digitText: {
+    color: colors.neutral[50],
+    textShadowColor: 'rgba(0, 0, 0, 0.168)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+  },
+  scoreLabel: {
+    fontSize: 14,
+    color: colors.neutral[200],
+    marginBottom: 2,
+  },
+  scoreDate: {
+    fontSize: 12,
+    color: colors.neutral[300],
+    marginBottom: 2,
+  },
+  
+  scoreChangeIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  scoreChange: {
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  positiveChange: {
+    color: colors.success[700],
+  },
+  negativeChange: {
+    color: colors.error[700],
+  },
+  positiveChangeContainer: {
+    backgroundColor: colors.success[100],
+  },
+  negativeChangeContainer: {
+    backgroundColor: colors.error[100],
   },
   scoreControls: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    marginTop: 8,
+    marginTop: 5,
   },
   scoreButton: {
     width: 36,
@@ -538,21 +875,7 @@ const styles = StyleSheet.create({
     width: 60,
     textAlign: 'center',
   },
-  buttonsContainer: {
-    width: '100%',
-    maxWidth: 300,
-    alignSelf: 'center',
-  },
-  button: {
-    backgroundColor: colors.primary[500],
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-  },
+ 
   drawerContainer: {
     
     position: 'absolute',
@@ -595,7 +918,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   drawerTitle: {
-    color: colors.primary[900],
+    color: colors.primary[1000],
     marginBottom: 16,
   },
   card: {
@@ -613,17 +936,18 @@ const styles = StyleSheet.create({
   cardDescription: {
     color: colors.neutral[600],
   },
-  debugInfo: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    padding: 5,
-    borderRadius: 5,
-    zIndex: 9999,
+  buttonsContainer: {
+    marginTop: 16,
+    paddingHorizontal: 8,
   },
-  debugText: {
-    color: 'white',
-    fontSize: 10,
+  button: {
+    backgroundColor: colors.primary[700],
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: colors.neutral[50],
   },
 }); 
