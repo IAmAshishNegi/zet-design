@@ -52,7 +52,7 @@ interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
 
 const Button: React.FC<ButtonProps> = ({
   variant = 'filled',
-  color = 'primary-100',
+  color = 'primary',
   size = 'md',
   fullWidth = false,
   startIcon,
@@ -70,10 +70,7 @@ const Button: React.FC<ButtonProps> = ({
   // Parse the color into base and shade (e.g., "primary-600" -> "primary" and "600")
   const colorParts = color.split('-');
   const colorBase = colorParts[0] || 'primary';
-  const colorShade = colorParts.length > 1 ? colorParts[1] : '100';
-  
-  // For filled buttons, use a darker shade (600) if not specified for better contrast
-  const filledShade = variant === 'filled' && colorParts.length === 1 ? '600' : colorShade;
+  const colorShade = colorParts.length > 1 ? colorParts[1] : '600';
   
   // Helper to get color from theme
   const getThemeColor = (base: string, shade: string) => {
@@ -90,7 +87,7 @@ const Button: React.FC<ButtonProps> = ({
   const getColors = () => {
     // Default styles
     let backgroundColor = 'transparent';
-    let textColor = getThemeColor(colorBase, filledShade);
+    let textColor = getThemeColor(colorBase, colorShade);
     let borderColor = 'transparent';
     
     if (disabled) {
@@ -107,12 +104,12 @@ const Button: React.FC<ButtonProps> = ({
     } else {
       // Enabled state styling
       if (variant === 'filled') {
-        backgroundColor = getThemeColor(colorBase, filledShade);
+        backgroundColor = getThemeColor(colorBase, colorShade);
         // Use white text for dark backgrounds, dark text for light backgrounds
         const shadeNum = parseInt(colorShade);
         textColor = shadeNum <= 300 ? getThemeColor(colorBase, '800') : '#ffffff';
       } else if (variant === 'outlined') {
-        borderColor = getThemeColor(colorBase, filledShade);
+        borderColor = getThemeColor(colorBase, colorShade);
       }
     }
     
@@ -122,8 +119,17 @@ const Button: React.FC<ButtonProps> = ({
   // Get calculated colors
   const { backgroundColor, textColor, borderColor } = getColors();
 
-  // Determine the width class based on fullWidth
-  const getWidthClass = () => fullWidth ? 'w-full' : '';
+  // Check for text color class in className
+  const hasTextColorClass = className.includes('text-');
+  
+  // Check for width class in className
+  const hasWidthClass = className.includes('w-');
+
+  // Determine the width class based on fullWidth or className
+  const getWidthClass = () => {
+    if (hasWidthClass) return '';
+    return fullWidth ? 'w-full' : '';
+  };
 
   // Combine all Tailwind classes
   const buttonClasses = [
@@ -162,7 +168,11 @@ const Button: React.FC<ButtonProps> = ({
     // If children is a string, wrap it in the appropriate text component
     if (typeof children === 'string') {
       return (
-        <TextComponent style={{ color: textColor }} responsive={isResponsive}>
+        <TextComponent 
+          style={{ color: hasTextColorClass ? undefined : textColor }} 
+          responsive={isResponsive}
+          className={hasTextColorClass ? className.match(/text-[a-z]+-\d+/)?.[0] : undefined}
+        >
           {children}
         </TextComponent>
       );
@@ -193,7 +203,11 @@ const Button: React.FC<ButtonProps> = ({
           )}
           
           {label && (
-            <TextComponent style={{ color: textColor }} responsive={isResponsive}>
+            <TextComponent 
+              style={{ color: hasTextColorClass ? undefined : textColor }} 
+              responsive={isResponsive}
+              className={hasTextColorClass ? className.match(/text-[a-z]+-\d+/)?.[0] : undefined}
+            >
               {label}
             </TextComponent>
           )}

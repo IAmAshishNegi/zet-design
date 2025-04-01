@@ -27,13 +27,14 @@ import Reanimated, {
 } from 'react-native-reanimated';
 import { PanGestureHandler, GestureHandlerRootView, ScrollView as GHScrollView } from 'react-native-gesture-handler';
 import { RiveRef } from 'rive-react-native';
+import { CreditBuilderMemberCards, SectionHeader } from '../../components/credit-builder';
 
 // Use GestureHandler's ScrollView to prevent gesture conflicts
 const ReanimatedScrollView = Reanimated.createAnimatedComponent(GHScrollView);
 
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const HEADER_HEIGHT = SCREEN_HEIGHT * 0.13;
+const HEADER_HEIGHT = SCREEN_HEIGHT * 0.115;
 const DRAWER_SNAP_TOP = 0;
 const DRAWER_SNAP_MIDDLE = SCREEN_HEIGHT * 0.42;
 const DRAWER_SNAP_BOTTOM = SCREEN_HEIGHT * 0.73;
@@ -59,7 +60,7 @@ type CreditScoreData = {
 
 // Sample credit score data
 const creditScoreData: CreditScoreData = {
-  score: 580,
+  score: 320,
   name: 'Ashish',
   lastUpdated: '2023-06-15',
   change: 25,
@@ -689,7 +690,7 @@ export default function HomeScreen() {
               </View>
             </View>
             <View className='mt-1 items-center'>
-              <SH1 className='text-white mb-1'>
+              <SH1 className='text-white mb-1 mt-2'>
                 Your Credit Score is {
                   creditScoreData.score <= 350 ? 'Poor' :
                   creditScoreData.score <= 600 ? 'Average' :
@@ -730,37 +731,50 @@ export default function HomeScreen() {
               nestedScrollEnabled={true}
               removeClippedSubviews={true}
             >
-              <View style={styles.drawerContent}>
-                <H6 style={styles.drawerTitle}>Credit Builder Membership</H6>
+              <View className='px-4'>
+                <SectionHeader 
+                  title="Credit Builder Membership" 
+                  actionLabel="View All Benefits"
+                  onActionPress={() => {
+                    // Handle view all press
+                    console.log('View all pressed');
+                  }}
+                />
                 
-                {/* Placeholder content */}
-                {[...Array(15)].map((_, index) => (
+                <View className='mt-1 mb-8'>
+                  <CreditBuilderMemberCards />
+                </View>
+                
+                <SectionHeader 
+                  title="Your Financial Tips" 
+                  actionLabel="More"
+                  onActionPress={() => {
+                    // Handle more press
+                    console.log('More tips pressed');
+                  }}
+                />
+                
+                {/* Sample content after the credit builder cards */}
+                {[...Array(5)].map((_, index) => (
                   <View key={index} style={styles.card}>
-                    <B3 style={styles.cardTitle}>Financial Item {index + 1}</B3>
-                    <B2 style={styles.cardDescription}>This is a sample card with placeholder content.</B2>
+                    <B3 style={styles.cardTitle}>Financial Tip {index + 1}</B3>
+                    <B2 style={styles.cardDescription}>This is a sample financial tip with placeholder content.</B2>
                   </View>
                 ))}
-                <View>
-                  <View style={styles.buttonsContainer}>
-                    <Link href="/design-system" asChild>
-                      <Pressable style={styles.button}>
-                        <ButtonLg style={styles.buttonText}>Design System</ButtonLg>
-                      </Pressable>
-                    </Link>
-                    
-                    <Link href="/typography-debug" asChild>
-                      <Pressable style={[styles.button, {marginTop: 16, backgroundColor: colors.info[500]}]}>
-                        <ButtonLg style={styles.buttonText}>Debug Typography</ButtonLg>
-                      </Pressable>
-                    </Link>
-                    
-                    <Pressable 
-                      style={[styles.button, { backgroundColor: colors.error[500], marginTop: 16, marginBottom: 30 }]}
-                      onPress={resetOnboarding}
-                    >
-                      <ButtonLg style={styles.buttonText}>Reset Onboarding</ButtonLg>
+                
+                <View style={styles.buttonsContainer}>
+                  <Link href="/design-system" asChild>
+                    <Pressable style={styles.button}>
+                      <ButtonLg style={styles.buttonText}>Design System</ButtonLg>
                     </Pressable>
-                  </View>
+                  </Link>
+                 
+                  <Pressable 
+                    style={[styles.button, { backgroundColor: colors.error[500], marginTop: 16, marginBottom: 30 }]}
+                    onPress={resetOnboarding}
+                  >
+                    <ButtonLg style={styles.buttonText}>Reset Onboarding</ButtonLg>
+                  </Pressable>
                 </View>
               </View>
             </ReanimatedScrollView>
@@ -785,7 +799,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 40 : 60, // Add more padding at top
+    paddingTop: Platform.OS === 'android' ? 20 : 60, // Add more padding at top
     paddingBottom: 12,
     backgroundColor: colors.primary[1000],
   },
@@ -986,13 +1000,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 120, // Extra padding for bottom tab bar
   },
-  drawerContent: {
-    padding: 16,
-  },
-  drawerTitle: {
-    color: colors.primary[1000],
-    marginBottom: 16,
-  },
+  
+ 
   card: {
     backgroundColor: colors.neutral[50],
     borderRadius: 12,

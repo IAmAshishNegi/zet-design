@@ -4,7 +4,8 @@ import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { fontFamily } from '../styles/theme';
+import { fontFamily, colors } from '../styles/theme';
+import { StatusBar } from 'expo-status-bar';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -38,6 +39,7 @@ function RootLayout() {
   // Render the layout
   return (
     <SafeAreaProvider>
+      <StatusBar style="light" backgroundColor={colors.primary[900]} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
