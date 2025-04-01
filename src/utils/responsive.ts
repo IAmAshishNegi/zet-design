@@ -72,17 +72,14 @@ export const scaleFontSize = (size: number, minScale = 0.85, maxScale = 1.2): nu
 };
 
 /**
- * Scales a spacing value (margins, paddings, etc.) based on screen width
+ * Scales spacing values based on the width of the screen
  * @param size - The spacing size to scale
- * @returns The responsive spacing size
+ * @returns The scaled spacing size
  */
 export const scaleSpacing = (size: number): number => {
-  // Calculate scale based on screen width
+  // Calculate scale based on screen width relative to base width
   const scale = SCREEN_WIDTH / baseWidth;
-  
-  // Apply scaling with some clamping to avoid too large or too small values
-  const newSize = size * Math.min(Math.max(scale, 0.9), 1.15);
-  
+  const newSize = size * scale;
   return Math.round(newSize);
 };
 
@@ -98,4 +95,4 @@ export const responsive = {
     get: getFontScaleFactor,
     set: setFontScaleFactor
   }
-}; 
+};

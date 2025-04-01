@@ -41,14 +41,14 @@ export function CreditBuilderMemberCards() {
             description="Improve your credit score"
             showDescription={false}
             showSubheading={false}
-            titleVariant="SH3"
+            titleVariant="SH2"
             imageSource={placeholderImages.checkerImage}
             variant="primary"
+            height={110}
             imageSize={{ width: 60, height: 60 }}
             badge={{ text: "NEW", variant: "new" }}
             onPress={() => handleCardPress('Build Credit')}
             className="bg-neutral-0"
-         
           />
         </View>
         <View className='flex-1'>
@@ -57,7 +57,8 @@ export function CreditBuilderMemberCards() {
             description="Set aside funds and build your savings automatically"
             showDescription={false}
             showSubheading={false}
-            titleVariant="SH3"
+            titleVariant="SH2"
+            height={110}
             imageSource={placeholderImages.AIVideoImage}
             variant="secondary"
             imageSize={{ width: 56, height: 56 }}
@@ -66,13 +67,14 @@ export function CreditBuilderMemberCards() {
           />
         </View>
       </View>
-      <View className='mt-5'>
+      <View className='mt-7'>
         <Card
           title="Credit Builder Membership"
           description="A one of a kind membership that helps you build your credit score"
           showDescription={true}
           titleVariant="H6"
           imageSource={placeholderImages.cblImage}
+          imageSize={{ width: 66, height: 66 }}
           variant="secondary"
           badge={{ text: "PRE APPROVED", variant: "success" }}
           onPress={() => handleCardPress('Member Benefits')}

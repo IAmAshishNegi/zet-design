@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, StyleSheet, Pressable, ViewStyle, ImageStyle, TextStyle } from 'react-native';
-import { H4, H5, H6, H7, SH1, SH2, SH3, B1, B3, B4 } from './typography/typography';
+import { H4, H5, H6, H7, SH1, SH2, SH3, B1, B3, B4, OverlineSm } from './typography/typography';
 import { colors } from '../../styles/theme';
 import Reanimated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { Button, ButtonProps } from './button/button';
@@ -41,8 +41,8 @@ function Badge({ text, variant = 'info', style }: BadgeProps) {
   ];
 
   return (
-    <View style={badgeStyles}>
-      <B4 style={textStyles}>{text}</B4>
+    <View style={badgeStyles} className='px-3 py-0.5'>
+      <OverlineSm>{text}</OverlineSm>
     </View>
   );
 }
@@ -242,7 +242,7 @@ export function Card({
               style={styles.badgeInline}
             />
           )}
-          <View style={badge ? styles.titleWithBadge : styles.titleContainer}>
+          <View style={styles.titleContainer}>
             <TitleComponent style={titleStyles}>{title}</TitleComponent>
           </View>
         </View>
@@ -317,19 +317,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: 58, // Space for the image
     position: 'relative',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   headerSection: {
     flexDirection: 'column',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    width: '100%',
+    paddingTop: 4,
   },
   titleContainer: {
-    flex: 1,
-  },
-  titleWithBadge: {
-    flex: 1,
-    marginLeft: 8,
+    width: '100%',
+    alignSelf: 'flex-start',
   },
   buttonContainer: {
     marginTop: 4,
@@ -353,32 +351,14 @@ const styles = StyleSheet.create({
     color: colors.neutral[900], // Default black
     marginBottom: 8,
   },
-  secondaryTitle: {
-    // removed specific color
-  },
-  highlightTitle: {
-    // removed specific color
-  },
   cardSubheading: {
     color: colors.neutral[700],
     marginBottom: 6,
-  },
-  secondarySubheading: {
-    // removed specific color
-  },
-  highlightSubheading: {
-    // removed specific color
   },
   cardDescription: {
     color: colors.neutral[500], // Changed to neutral 500 as requested
     marginBottom: 12,
     marginTop: 4,
-  },
-  secondaryDescription: {
-    // removed specific color
-  },
-  highlightDescription: {
-    // removed specific color
   },
   badge: {
     paddingHorizontal: 8,
@@ -391,7 +371,7 @@ const styles = StyleSheet.create({
   },
   badgeInline: {
     alignSelf: 'flex-start',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   badgeTop: {
     position: 'absolute',

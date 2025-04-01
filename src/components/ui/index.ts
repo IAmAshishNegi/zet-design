@@ -10,3 +10,6 @@ export * from './card';
 
 // Rive Animation
 export { RiveAnimation } from './rive-animation';
+
+// Divider
+export { Divider } from './divider';

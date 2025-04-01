@@ -3,10 +3,11 @@ import { View, StyleSheet, Pressable, ScrollView, Platform, Dimensions } from 'r
 import { colors } from '../../styles/theme';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsive } from '../../utils/responsive';
 import { 
   H3, H4, B2, B3, ButtonLg, SH2, ScoreDigit, 
   SH3, B4, SH5, SH1, Avatar, RiveAnimation, 
-  H6
+  H6, Divider
 } from '../../components/ui';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -28,16 +29,17 @@ import Reanimated, {
 import { PanGestureHandler, GestureHandlerRootView, ScrollView as GHScrollView } from 'react-native-gesture-handler';
 import { RiveRef } from 'rive-react-native';
 import { CreditBuilderMemberCards, SectionHeader } from '../../components/credit-builder';
+import { PromoBanner, BannerItem } from '../../components/carousel';
 
 // Use GestureHandler's ScrollView to prevent gesture conflicts
 const ReanimatedScrollView = Reanimated.createAnimatedComponent(GHScrollView);
 
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const HEADER_HEIGHT = SCREEN_HEIGHT * 0.115;
+const HEADER_HEIGHT = responsive.height(SCREEN_HEIGHT * 0.115);
 const DRAWER_SNAP_TOP = 0;
-const DRAWER_SNAP_MIDDLE = SCREEN_HEIGHT * 0.42;
-const DRAWER_SNAP_BOTTOM = SCREEN_HEIGHT * 0.73;
+const DRAWER_SNAP_MIDDLE = responsive.height(SCREEN_HEIGHT * 0.38);
+const DRAWER_SNAP_BOTTOM = responsive.height(SCREEN_HEIGHT * 0.73);
 
 // Spring animation config for smooth transitions
 const SPRING_CONFIG = {
@@ -60,12 +62,26 @@ type CreditScoreData = {
 
 // Sample credit score data
 const creditScoreData: CreditScoreData = {
-  score: 320,
+  score: 350,
   name: 'Ashish',
   lastUpdated: '2023-06-15',
   change: 25,
   status: 'good'
 };
+
+// Banner data for carousel
+const bannerData: BannerItem[] = [
+  {
+    id: '1',
+    imageUrl: require('../../assets/images/upi.webp'),
+    onPress: () => console.log('UPI banner pressed')
+  },
+  {
+    id: '2',
+    imageUrl: require('../../assets/images/abhibus.webp'),
+    onPress: () => console.log('Abhibus banner pressed')
+  }
+];
 
 // SlotMachineDigit Component for displaying individual digits
 const SlotMachineDigit = ({ digit, animationDelay = 0 }: { digit: number, animationDelay?: number }) => {
@@ -133,7 +149,7 @@ const SlotMachineDigit = ({ digit, animationDelay = 0 }: { digit: number, animat
           
           // Add a final bounce effect - apply directly to the translateY value
           translateY.value = withSequence(
-            withTiming(-10, { duration: 100, easing: Easing.out(Easing.cubic) }),
+            withTiming(responsive.height(-10), { duration: 100, easing: Easing.out(Easing.cubic) }),
             withTiming(0, { duration: 300, easing: Easing.elastic(2) })
           );
         }
@@ -263,32 +279,27 @@ export default function HomeScreen() {
   
   // Dynamic height calculation based on drawer position
   const animatedHeight = useDerivedValue(() => {
-    let progress;
+    // Use the constant drawer snap positions but apply the content height calculations
+    // These should be updated to use the current user-preferred snap points
     
     // Calculate progress based on position between snap points
     if (drawerY.value <= DRAWER_SNAP_MIDDLE) {
-      progress = interpolate(
+      // Use original calculation but with current snap values
+      return interpolate(
         drawerY.value,
         [DRAWER_SNAP_MIDDLE, DRAWER_SNAP_TOP],
-        [0.5, 1],
+        [SCREEN_HEIGHT * 0.75, SCREEN_HEIGHT - HEADER_HEIGHT],
         Extrapolate.CLAMP
       );
     } else {
-      progress = interpolate(
+      // Use original calculation but with current snap values
+      return interpolate(
         drawerY.value,
         [DRAWER_SNAP_BOTTOM, DRAWER_SNAP_MIDDLE],
-        [0, 0.5],
+        [SCREEN_HEIGHT * 0.35, SCREEN_HEIGHT * 0.75],
         Extrapolate.CLAMP
       );
     }
-    
-    // Interpolate height based on position
-    return interpolate(
-      progress,
-      [0, 0.5, 1],
-      [SCREEN_HEIGHT * 0.35, SCREEN_HEIGHT * 0.75, SCREEN_HEIGHT - HEADER_HEIGHT],
-      Extrapolate.CLAMP
-    );
   }, []);
   
   // Update UI state when drawer position changes
@@ -515,16 +526,23 @@ export default function HomeScreen() {
     height: animatedHeight.value,
   }), []);
 
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: Math.max(0, Math.min(1, drawerY.value / (DRAWER_SNAP_MIDDLE * 0.6))),
-  }), []);
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    // Use fixed value for the denominator instead of DRAWER_SNAP_MIDDLE
+    const fixedMiddleY = SCREEN_HEIGHT * 0.45; // Original fixed position
+    return {
+      opacity: Math.max(0, Math.min(1, drawerY.value / (fixedMiddleY * 0.6))),
+    };
+  }, []);
 
   // Add animation for drawer handle visibility
   const drawerHandleAnimatedStyle = useAnimatedStyle(() => {
+    // Use fixed values instead of DRAWER_SNAP_BOTTOM
+    const fixedBottomY = SCREEN_HEIGHT * 0.73; // Original fixed position
+    
     // Calculate opacity based on drawer position - visible only near bottom position
     const opacity = interpolate(
       drawerY.value,
-      [DRAWER_SNAP_BOTTOM - 50, DRAWER_SNAP_BOTTOM],
+      [fixedBottomY - 50, fixedBottomY],
       [0, 1],
       Extrapolate.CLAMP
     );
@@ -534,10 +552,14 @@ export default function HomeScreen() {
 
   // Add this animation calculation to control score container scale and position
   const scoreContainerAnimatedStyle = useAnimatedStyle(() => {
+    // Use fixed positions for progress calculation - independent of drawer snap points
+    const fixedMiddleY = SCREEN_HEIGHT * 0.45; // Original fixed position
+    const fixedBottomY = SCREEN_HEIGHT * 0.73; // Original fixed position
+    
     // Calculate progress from middle to bottom (0 at middle, 1 at bottom)
     const progressToBottom = interpolate(
       drawerY.value,
-      [DRAWER_SNAP_MIDDLE, DRAWER_SNAP_BOTTOM],
+      [fixedMiddleY, fixedBottomY],
       [0, 1],
       Extrapolate.CLAMP
     );
@@ -558,19 +580,10 @@ export default function HomeScreen() {
       Extrapolate.CLAMP
     );
     
-    // Add a subtle rotation effect (0 to 2 degrees)
-    const rotate = interpolate(
-      progressToBottom,
-      [0, 1],
-      [0, 2],
-      Extrapolate.CLAMP
-    );
-    
     return {
       transform: [
         { scale },
         { translateY },
-        
       ]
     };
   }, []);
@@ -616,13 +629,13 @@ export default function HomeScreen() {
               source={avatarImageUrl} 
               name={creditScoreData.name}
               borderRadius={12}
-              size={52}
+              size={48}
               className={creditScoreData.change >= 0 ? "shadow-success" : "shadow-error"}
               variant={avatarVariant}
             />
           </Pressable>
           <View style={styles.greetingContainer}>
-            <SH3 className="text-white opacity-50 my-1">{greeting}</SH3>
+            <SH3 className="text-white opacity-50">{greeting}</SH3>
             <H4 className="text-white opacity-80">{creditScoreData.name}</H4>
           </View>
         </View>
@@ -690,7 +703,7 @@ export default function HomeScreen() {
               </View>
             </View>
             <View className='mt-1 items-center'>
-              <SH1 className='text-white mb-1 mt-2'>
+              <SH1 className='text-white mt-2'>
                 Your Credit Score is {
                   creditScoreData.score <= 350 ? 'Poor' :
                   creditScoreData.score <= 600 ? 'Average' :
@@ -731,7 +744,8 @@ export default function HomeScreen() {
               nestedScrollEnabled={true}
               removeClippedSubviews={true}
             >
-              <View className='px-4'>
+              <View>
+                <View className='px-4'>
                 <SectionHeader 
                   title="Credit Builder Membership" 
                   actionLabel="View All Benefits"
@@ -740,12 +754,28 @@ export default function HomeScreen() {
                     console.log('View all pressed');
                   }}
                 />
-                
-                <View className='mt-1 mb-8'>
+                </View>
+                <View className='mt-1 mb-2 px-4'>
                   <CreditBuilderMemberCards />
                 </View>
                 
-                <SectionHeader 
+                <Divider variant="section" className="my-4" />
+
+                <PromoBanner
+                  bannerData={bannerData}
+                  autoPlay={true}
+                  duration={5000}
+                  showIndicators={true}
+                  bannerHeight={200}
+                  indicatorPosition="bottom"
+                  onActionPress={() => {
+                    console.log('View all offers pressed');
+                  }}
+                />
+
+                <Divider variant="section" className="my-4" />
+                
+                  <SectionHeader 
                   title="Your Financial Tips" 
                   actionLabel="More"
                   onActionPress={() => {
@@ -759,6 +789,20 @@ export default function HomeScreen() {
                   <View key={index} style={styles.card}>
                     <B3 style={styles.cardTitle}>Financial Tip {index + 1}</B3>
                     <B2 style={styles.cardDescription}>This is a sample financial tip with placeholder content.</B2>
+                    
+                    {/* Add line divider within each card */}
+                    <Divider variant="line" color={colors.neutral[200]} className="my-3" />
+                    
+                    <View style={styles.cardFooter}>
+                      <B4 style={styles.cardDate}>Updated 2 days ago</B4>
+                      
+                      {/* Add vertical divider in card footer */}
+                      <View style={styles.footerDivider}>
+                        <Divider variant="vertical" height={16} thickness={1} color={colors.neutral[300]} />
+                      </View>
+                      
+                      <B4 style={styles.cardCategory}>Finance</B4>
+                    </View>
                   </View>
                 ))}
                 
@@ -799,7 +843,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 20 : 60, // Add more padding at top
+    paddingTop: Platform.OS === 'android' ? 30 : 60, // Add more padding at top
     paddingBottom: 12,
     backgroundColor: colors.primary[1000],
   },
@@ -818,7 +862,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerContent: {
-    height: SCREEN_HEIGHT * 0.33,
+    height: responsive.height(276), // Fixed height equivalent to 0.34 of base height (812 * 0.34)
     backgroundColor: colors.primary[1000],
     paddingHorizontal: 16,
     paddingTop: 16,
@@ -835,14 +879,14 @@ const styles = StyleSheet.create({
   },
   scoreContainer: {
     width: '100%',
-    height: 350,
-    paddingTop: 50,
+    height: responsive.height(350),
+    paddingTop: responsive.height(50),
     alignItems: 'center',
     justifyContent: 'center',
   },
   riveAnimationContainer: {
     width: '100%',
-    height: 240,
+    height: responsive.height(210),
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
@@ -855,15 +899,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
-    top: '44%',
-    left: '62.5%',
+    top: '50%',
+    left: '50%',
     transform: [
-      { translateX: -100 }, // Adjusted for the wider counter with new font
-      { translateY: -30 }  // Half the height of the counter
+      { translateX: responsive.width(-45) }, // Responsive horizontal offset
+      { translateY: responsive.height(-45) } // Responsive vertical offset
     ],
     backgroundColor: 'rgba(0, 0, 0, 0)',
     borderRadius: 8,
-    padding: 8,
+    padding: responsive.spacing(8),
   },
   scoreCounterContainer: {
     width: '100%',
@@ -873,14 +917,14 @@ const styles = StyleSheet.create({
   },
   digitsRow: {
     flexDirection: 'row',
-    height: 55,
+    height: responsive.height(55),
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
   digitContainer: {
-    width: 25,
-    height: 60,
+    width: responsive.width(25),
+    height: responsive.height(60),
     overflow: 'hidden',
     marginHorizontal: 0,
     backgroundColor: 'rgba(0, 0, 0, 0)',
@@ -889,8 +933,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   digitDisplay: {
-    height: 60,
-    width: 25,
+    height: responsive.height(60),
+    width: responsive.width(25),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1016,6 +1060,19 @@ const styles = StyleSheet.create({
   },
   cardDescription: {
     color: colors.neutral[600],
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardDate: {
+    color: colors.neutral[500],
+  },
+  footerDivider: {
+    marginHorizontal: 8,
+  },
+  cardCategory: {
+    color: colors.primary[700],
   },
   buttonsContainer: {
     marginTop: 16,

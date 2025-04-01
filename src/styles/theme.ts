@@ -224,7 +224,7 @@ export const lineHeight = {
   
   sh1: "20px",
   sh2: "18px",
-  sh3: "21px",
+  sh3: "19px",
   sh4: "16px",
   sh5: "16px",
   
