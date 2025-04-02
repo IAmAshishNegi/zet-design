@@ -10,7 +10,6 @@ import {
   H6, Divider
 } from '../../components/ui';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Reanimated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -32,25 +31,12 @@ import { CreditBuilderMemberCards, SectionHeader } from '../../components/credit
 import { PromoBanner, BannerItem } from '../../components/carousel';
 import { Audio } from 'expo-av';
 
-// Use GestureHandler's ScrollView to prevent gesture conflicts
+// Use GestureHandler's ScrollView for better performance
 const ReanimatedScrollView = Reanimated.createAnimatedComponent(GHScrollView);
 
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const HEADER_HEIGHT = responsive.height(SCREEN_HEIGHT * 0.115);
-const DRAWER_SNAP_TOP = 0;
-const DRAWER_SNAP_MIDDLE = responsive.height(SCREEN_HEIGHT * 0.34);
-const DRAWER_SNAP_BOTTOM = responsive.height(SCREEN_HEIGHT * 0.73);
-
-// Spring animation config for smooth transitions
-const SPRING_CONFIG = {
-  damping: 55,
-  stiffness: 320,
-  mass: 0.7,
-  overshootClamping: false,
-  restDisplacementThreshold: 0.05,
-  restSpeedThreshold: 0.05
-};
+const APP_BAR_HEIGHT =  100;
 
 // Define credit score data type
 type CreditScoreData = {
@@ -255,18 +241,7 @@ export default function HomeScreen() {
   const [username, setUsername] = useState('');
   const [avatarImageUrl, setAvatarImageUrl] = useState<string | null>('https://placekitten.com/100/100');
   const scrollY = useSharedValue(0);
-  const drawerY = useSharedValue(DRAWER_SNAP_MIDDLE);
   const scrollViewRef = useRef(null);
-  const isDrawerAtTop = useSharedValue(false);
-  const lastScrollY = useSharedValue(0);
-  const [scrollEnabled, setScrollEnabled] = useState(false);
-  const [drawerPosition, setDrawerPosition] = useState('middle');
-  const [drawerHeightLog, setDrawerHeightLog] = useState(0);
-  const [contentHeight, setContentHeight] = useState(SCREEN_HEIGHT * 0.75);
-  
-  // Shared values for drawer state
-  const scrollEnabledWorklet = useSharedValue(false);
-  const drawerHeightWorklet = useSharedValue(SCREEN_HEIGHT * 0.75);
   
   // Initialize userScore with creditScoreData.score
   const [userScore, setUserScore] = useState(creditScoreData.score);
@@ -277,6 +252,64 @@ export default function HomeScreen() {
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const [isBubblePressed, setIsBubblePressed] = useState(false);
   const audioDelayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Animated values for the app bar
+  const appBarTranslateY = useSharedValue(0);
+  const lastScrollY = useSharedValue(0);
+  
+  // Animated values for header content
+  const headerScale = useSharedValue(1);
+  const headerOpacity = useSharedValue(1);
+  
+  // Scroll handler with app bar hide/show logic
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      const currentScrollY = event.contentOffset.y;
+      scrollY.value = currentScrollY;
+      
+      // Determine scroll direction and update app bar position
+      if (currentScrollY > lastScrollY.value && currentScrollY > 50) {
+        // Scrolling down - hide app bar
+        appBarTranslateY.value = withTiming(-APP_BAR_HEIGHT, { duration: 200 });
+      } else if (currentScrollY < lastScrollY.value || currentScrollY < 10) {
+        // Scrolling up or near top - show app bar
+        appBarTranslateY.value = withTiming(0, { duration: 200 });
+      }
+      
+      // Animate header content scale and opacity based on scroll position
+      // Start the animation when we've scrolled 10px and complete by 200px
+      const scrollRange = 200;
+      const scrollProgress = Math.min(Math.max(currentScrollY - 10, 0) / scrollRange, 1);
+      
+      // Scale from 1 to 0.8 as scrolling progresses
+      headerScale.value = 1 - (0.2 * scrollProgress);
+      
+      // Opacity from 1 to 0.2 as scrolling progresses
+      headerOpacity.value = 1 - (0.8 * scrollProgress);
+      
+      lastScrollY.value = currentScrollY;
+    }
+  });
+  
+  // Animated style for the app bar - ensure zIndex is high enough
+  const appBarAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: appBarTranslateY.value }],
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 100,
+    };
+  });
+  
+  // Animated style for header content
+  const headerContentAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: headerScale.value }],
+      opacity: headerOpacity.value,
+    };
+  });
   
   // Load audio file
   useEffect(() => {
@@ -448,46 +481,11 @@ export default function HomeScreen() {
     }
   };
   
-  // Ensure userScore always reflects creditScoreData.score (add this effect)
+  // Ensure userScore always reflects creditScoreData.score
   useEffect(() => {
     // Force synchronize the state with the latest data
     setUserScore(creditScoreData.score);
   }, [creditScoreData.score]);
-  
-  // Dynamic height calculation based on drawer position
-  const animatedHeight = useDerivedValue(() => {
-    // Use the constant drawer snap positions but apply the content height calculations
-    // These should be updated to use the current user-preferred snap points
-    
-    // Calculate progress based on position between snap points
-    if (drawerY.value <= DRAWER_SNAP_MIDDLE) {
-      // Use original calculation but with current snap values
-      return interpolate(
-        drawerY.value,
-        [DRAWER_SNAP_MIDDLE, DRAWER_SNAP_TOP],
-        [SCREEN_HEIGHT * 0.75, SCREEN_HEIGHT - HEADER_HEIGHT],
-        Extrapolate.CLAMP
-      );
-    } else {
-      // Use original calculation but with current snap values
-      return interpolate(
-        drawerY.value,
-        [DRAWER_SNAP_BOTTOM, DRAWER_SNAP_MIDDLE],
-        [SCREEN_HEIGHT * 0.35, SCREEN_HEIGHT * 0.75],
-        Extrapolate.CLAMP
-      );
-    }
-  }, []);
-  
-  // Update UI state when drawer position changes
-  useEffect(() => {
-    const currentHeight = isDrawerAtTop.value 
-      ? SCREEN_HEIGHT - HEADER_HEIGHT 
-      : SCREEN_HEIGHT * 0.75;
-    
-    setContentHeight(currentHeight);
-    setDrawerHeightLog(currentHeight);
-  }, [isDrawerAtTop.value]);
   
   // Set time-based greeting
   useEffect(() => {
@@ -497,21 +495,6 @@ export default function HomeScreen() {
     else setGreeting('Good evening');
   }, []);
 
-  // Sync React state with shared values
-  useEffect(() => {
-    setScrollEnabled(isDrawerAtTop.value);
-    scrollEnabledWorklet.value = isDrawerAtTop.value;
-    
-    // Update drawer position state for UI
-    if (isDrawerAtTop.value) {
-      setDrawerPosition('top');
-    } else if (drawerY.value >= DRAWER_SNAP_BOTTOM - 10) {
-      setDrawerPosition('bottom');
-    } else {
-      setDrawerPosition('middle');
-    }
-  }, [isDrawerAtTop.value, drawerY.value]);
-
   // Update Rive animation when userScore changes
   useEffect(() => {
     // Update Rive animation with new score
@@ -520,7 +503,6 @@ export default function HomeScreen() {
         try {
           // Set the score input value in the Rive animation using the correct method
           riveScoreRef.current.setInputState('State Machine 1', 'score', creditScoreData.score);
-          // console.log('Updated Rive score to:', creditScoreData.score);
         } catch (error) {
           // console.error('Failed to update Rive score:', error);
         }
@@ -545,225 +527,6 @@ export default function HomeScreen() {
       // Error handling silently fails
     }
   };
-
-  // Update scroll state
-  const updateScrollEnabled = (enabled: boolean) => {
-    setScrollEnabled(enabled);
-    scrollEnabledWorklet.value = enabled;
-  };
-
-  // Scroll handler for drawer content
-  const scrollHandler = useAnimatedScrollHandler({
-    onBeginDrag: (_, ctx) => {
-      ctx.prevY = 0;
-    },
-    onScroll: (event, ctx) => {
-      // Only process scroll if drawer is at top
-      if (scrollEnabledWorklet.value) {
-        const prevScrollY = scrollY.value;
-        scrollY.value = event.contentOffset.y;
-        lastScrollY.value = scrollY.value;
-        ctx.prevY = prevScrollY;
-      }
-    },
-    onEndDrag: (event) => {
-      // If at the top of content and scrolling down, snap back to middle
-      const velocityY = event.velocity?.y ?? 0;
-      if (scrollEnabledWorklet.value && scrollY.value <= 0 && velocityY > 10) {
-        drawerY.value = withSpring(DRAWER_SNAP_MIDDLE, {
-          ...SPRING_CONFIG,
-          velocity: velocityY
-        });
-        
-        isDrawerAtTop.value = false;
-        scrollEnabledWorklet.value = false;
-        runOnJS(updateScrollEnabled)(false);
-      }
-    },
-    onMomentumEnd: () => {
-      // When momentum ends at the top, check if we should snap back
-      if (scrollEnabledWorklet.value && scrollY.value <= 0 && scrollY.value > -5) {
-        drawerY.value = withSpring(DRAWER_SNAP_MIDDLE, {
-          ...SPRING_CONFIG,
-        });
-        
-        isDrawerAtTop.value = false;
-        scrollEnabledWorklet.value = false;
-        runOnJS(updateScrollEnabled)(false);
-      }
-    },
-  });
-
-  // Gesture handler for drawer dragging
-  const gestureHandler = useAnimatedGestureHandler({
-    onStart: (_, ctx: { startY: number }) => {
-      cancelAnimation(drawerY);
-      ctx.startY = drawerY.value;
-    },
-    onActive: (event, ctx: { startY: number }) => {
-      // Constrain drawer movement between snap points
-      drawerY.value = Math.max(
-        DRAWER_SNAP_TOP,
-        Math.min(ctx.startY + event.translationY, DRAWER_SNAP_BOTTOM + 50)
-      );
-      
-      // Update height during drag for smoother transitions
-      if (Math.abs(event.translationY) > 5) {
-        let progress;
-        
-        if (drawerY.value <= DRAWER_SNAP_MIDDLE) {
-          progress = (DRAWER_SNAP_MIDDLE - drawerY.value) / (DRAWER_SNAP_MIDDLE - DRAWER_SNAP_TOP);
-          progress = Math.max(0, Math.min(1, progress)) * 0.5 + 0.5;
-        } else {
-          progress = (DRAWER_SNAP_BOTTOM - drawerY.value) / (DRAWER_SNAP_BOTTOM - DRAWER_SNAP_MIDDLE);
-          progress = Math.max(0, Math.min(1, progress)) * 0.5;
-        }
-        
-        drawerHeightWorklet.value = interpolate(
-          progress,
-          [0, 0.5, 1],
-          [SCREEN_HEIGHT * 0.35, SCREEN_HEIGHT * 0.75, SCREEN_HEIGHT - HEADER_HEIGHT]
-        );
-      }
-    },
-    onEnd: (event) => {
-      const velocity = event.velocityY;
-      
-      // High upward velocity - snap to top
-      if (velocity < -1000 && drawerY.value < DRAWER_SNAP_BOTTOM) {
-        drawerY.value = withSpring(DRAWER_SNAP_TOP, {
-          ...SPRING_CONFIG,
-          velocity: Math.min(Math.abs(velocity), 1000) * Math.sign(velocity)
-        });
-        isDrawerAtTop.value = true;
-        scrollEnabledWorklet.value = true;
-        runOnJS(updateScrollEnabled)(true);
-        return;
-      }
-      
-      // High downward velocity - snap to bottom
-      if (velocity > 1000 && drawerY.value > DRAWER_SNAP_TOP) {
-        drawerY.value = withSpring(DRAWER_SNAP_BOTTOM, {
-          ...SPRING_CONFIG,
-          velocity: Math.min(Math.abs(velocity), 1000) * Math.sign(velocity)
-        });
-        isDrawerAtTop.value = false;
-        scrollEnabledWorklet.value = false;
-        runOnJS(updateScrollEnabled)(false);
-        return;
-      }
-      
-      // Position-based snapping for moderate velocities
-      if (drawerY.value < DRAWER_SNAP_MIDDLE * 0.5) {
-        // Snap to top
-        drawerY.value = withSpring(DRAWER_SNAP_TOP, {
-          ...SPRING_CONFIG,
-          velocity: Math.min(Math.abs(velocity), 1000) * Math.sign(velocity)
-        });
-        isDrawerAtTop.value = true;
-        scrollEnabledWorklet.value = true;
-        runOnJS(updateScrollEnabled)(true);
-      } else if (drawerY.value < (DRAWER_SNAP_MIDDLE + DRAWER_SNAP_BOTTOM) / 2) {
-        // Snap to middle
-        drawerY.value = withSpring(DRAWER_SNAP_MIDDLE, {
-          ...SPRING_CONFIG,
-          velocity: Math.min(Math.abs(velocity), 1000) * Math.sign(velocity)
-        });
-        isDrawerAtTop.value = false;
-        scrollEnabledWorklet.value = false;
-        runOnJS(updateScrollEnabled)(false);
-        
-        // Reset scroll position
-        if (scrollViewRef.current) {
-          scrollY.value = 0;
-          lastScrollY.value = 0;
-        }
-      } else {
-        // Snap to bottom
-        drawerY.value = withSpring(DRAWER_SNAP_BOTTOM, {
-          ...SPRING_CONFIG,
-          velocity: Math.min(Math.abs(velocity), 1000) * Math.sign(velocity)
-        });
-        isDrawerAtTop.value = false;
-        scrollEnabledWorklet.value = false;
-        runOnJS(updateScrollEnabled)(false);
-        
-        // Reset scroll position
-        if (scrollViewRef.current) {
-          scrollY.value = 0;
-          lastScrollY.value = 0;
-        }
-      }
-    },
-  });
-
-  // Animated styles
-  const drawerAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: drawerY.value }],
-    height: animatedHeight.value,
-  }), []);
-
-  const headerAnimatedStyle = useAnimatedStyle(() => {
-    // Use fixed value for the denominator instead of DRAWER_SNAP_MIDDLE
-    const fixedMiddleY = SCREEN_HEIGHT * 0.45; // Original fixed position
-    return {
-      opacity: Math.max(0, Math.min(1, drawerY.value / (fixedMiddleY * 0.6))),
-    };
-  }, []);
-
-  // Add animation for drawer handle visibility
-  const drawerHandleAnimatedStyle = useAnimatedStyle(() => {
-    // Use fixed values instead of DRAWER_SNAP_BOTTOM
-    const fixedBottomY = SCREEN_HEIGHT * 0.73; // Original fixed position
-    
-    // Calculate opacity based on drawer position - visible only near bottom position
-    const opacity = interpolate(
-      drawerY.value,
-      [fixedBottomY - 50, fixedBottomY],
-      [0, 1],
-      Extrapolate.CLAMP
-    );
-    
-    return { opacity };
-  }, []);
-
-  // Add this animation calculation to control score container scale and position
-  const scoreContainerAnimatedStyle = useAnimatedStyle(() => {
-    // Use fixed positions for progress calculation - independent of drawer snap points
-    const fixedMiddleY = SCREEN_HEIGHT * 0.45; // Original fixed position
-    const fixedBottomY = SCREEN_HEIGHT * 0.73; // Original fixed position
-    
-    // Calculate progress from middle to bottom (0 at middle, 1 at bottom)
-    const progressToBottom = interpolate(
-      drawerY.value,
-      [fixedMiddleY, fixedBottomY],
-      [0, 1],
-      Extrapolate.CLAMP
-    );
-    
-    // Scale factor increases as drawer moves down (1.0 to 1.18)
-    const scale = interpolate(
-      progressToBottom,
-      [0, 1],
-      [1, 1.18],
-      Extrapolate.CLAMP
-    );
-    
-    // Move down as drawer moves down (0 to 20)
-    const translateY = interpolate(
-      progressToBottom,
-      [0, 1],
-      [0, 20],
-      Extrapolate.CLAMP
-    );
-    
-    return {
-      transform: [
-        { scale },
-        { translateY },
-      ]
-    };
-  }, []);
 
   const [pageLoaded, setPageLoaded] = useState(false);
   
@@ -795,9 +558,8 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <StatusBar style="light" />
         
-        {/* App Bar */}
-        <View style={styles.appBar}>
-          
+        {/* Sticky App Bar with hide on scroll */}
+        <Reanimated.View style={[styles.appBar, appBarAnimatedStyle]}>
           <Pressable 
             style={styles.avatarContainer}
             onPress={toggleAvatarImage}
@@ -815,198 +577,179 @@ export default function HomeScreen() {
             <SH3 className="text-white opacity-50">{greeting}</SH3>
             <H4 className="text-white opacity-80">{creditScoreData.name}</H4>
           </View>
-        </View>
-        
-        {/* Header Content */}
-        <Reanimated.View style={[styles.headerContent, headerAnimatedStyle]}>
-          {/* <B2 style={styles.headerText}>Your financial overview</B2> */}
-          
-          <Pressable 
-            style={[styles.scoreContainerPressable, isBubblePressed && styles.scoreContainerPressed]}
-            onPressIn={handleScorePress}
-            onPressOut={handleScoreRelease}
-          >
-            <Reanimated.View style={[styles.scoreContainer, scoreContainerAnimatedStyle]}>
-              <View style={styles.riveAnimationContainer}>
-                <RiveAnimation
-                  ref={riveScoreRef}
-                  source={require('../../assets/rive/scorebubble_int.riv')}
-                  autoplay={true}
-                  style={styles.scoreAnimation}
-                  artboardName="creditBubble"
-                  stateMachineName="State Machine 1"
-                  onPlay={(animName, isStateMachine) => {
-                    // console.log('Score animation playing:', animName, isStateMachine);
-                    
-                    // When animation starts playing, set the score on both the Rive animation and update our state
-                    const syncScoreWithRive = () => {
-                      try {
-                        // First make sure our React state matches the creditScoreData
-                        if (userScore !== creditScoreData.score) {
-                          setUserScore(creditScoreData.score);
-                        }
-                        
-                        // Then update Rive with this value
-                        riveScoreRef.current?.setInputState('State Machine 1', 'score', creditScoreData.score);
-                        // console.log('Set initial Rive score value to:', creditScoreData.score);
-                      } catch (error) {
-                        // console.error('Failed to set initial score:', error);
-                      }
-                    };
-                    
-                    // Try immediately and with a delay to ensure it works
-                    syncScoreWithRive();
-                    setTimeout(syncScoreWithRive, 500);
-                  }}
-                  onStop={(animName, isStateMachine) => {
-                    // console.log('Score animation stopped:', animName, isStateMachine);
-                  }} 
-                  onError={(error) => {
-                    // console.error('Score animation error:', error);
-                  }}
-                />
-                
-                {/* Overlay the counter in the center of Rive animation */}
-                <View style={styles.overlayCounterContainer}>
-                  <CreditScoreCounter 
-                    score={creditScoreData.score} 
-                    isPageLoaded={pageLoaded} 
-                    onScoreAnimationComplete={() => {
-                      // Ensure Rive animation is in sync after digits finish animating
-                      if (riveScoreRef.current) {
-                        try {
-                          riveScoreRef.current.setInputState('State Machine 1', 'score', creditScoreData.score);
-                        } catch (error) {
-                          console.error('Failed to sync Rive after counter animation:', error);
-                        }
-                      }
-                    }}
-                  />
-                </View>
-              </View>
-              <View className='items-center'>
-                <SH1 className='text-white'>
-                  Your Credit Score is {
-                    creditScoreData.score <= 350 ? 'Poor' :
-                    creditScoreData.score <= 600 ? 'Average' :
-                    creditScoreData.score <= 750 ? 'Good' : 'Excellent'
-                  }
-                </SH1>
-                <B4 className='text-white opacity-50 mt-1'>Last updated on: {creditScoreData.lastUpdated}</B4>
-                <View className='flex-row items-center'>
-                  <View className={`px-2 py-1 mt-2 rounded-full ${creditScoreData.change >= 0 ? 'bg-success-100' : 'bg-error-100'}`}>
-                    <B4 className={creditScoreData.change >= 0 ? 'text-success-900' : 'text-error-500'}>
-                      {creditScoreData.change >= 0 ? '+' : ''}{creditScoreData.change} pts since last update
-                    </B4>
-                  </View>
-                </View>
-              </View>
-            </Reanimated.View>
-          </Pressable>
         </Reanimated.View>
         
-        {/* Drawer Content */}
-        <PanGestureHandler onGestureEvent={gestureHandler}>
-          <Reanimated.View style={[styles.drawerContainer, drawerAnimatedStyle]}>
-            <View style={styles.drawerHandleContainer}>
-              <Reanimated.View style={[styles.drawerHandle, drawerHandleAnimatedStyle]} />
-            </View>
-            
-            <ReanimatedScrollView
-              ref={scrollViewRef}
-              onScroll={scrollHandler}
-              scrollEventThrottle={32}
-              contentContainerStyle={[
-                styles.scrollContent,
-                isDrawerAtTop.value ? { paddingBottom: 160 } : { paddingBottom: 120 }
-              ]}
-              showsVerticalScrollIndicator={true}
-              style={styles.scrollView}
-              scrollEnabled={scrollEnabled}
-              bounces={isDrawerAtTop.value}
-              nestedScrollEnabled={true}
-              removeClippedSubviews={true}
+        {/* Main Scrollable Content */}
+        <ReanimatedScrollView
+          ref={scrollViewRef}
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
+          showsVerticalScrollIndicator={false}
+          style={styles.mainScrollView}
+          bounces={true}
+        >
+          {/* Score Container */}
+          <Reanimated.View style={[styles.headerContent, headerContentAnimatedStyle]}>
+            <Pressable 
+              style={[styles.scoreContainerPressable, isBubblePressed && styles.scoreContainerPressed]}
+              onPressIn={handleScorePress}
+              onPressOut={handleScoreRelease}
             >
-              <View>
-                <View className='px-4'>
-                <SectionHeader 
-                  title="Credit Builder Membership" 
-                  actionLabel="View All Benefits"
-                  onActionPress={() => {
-                    // Handle view all press
-                    console.log('View all pressed');
-                  }}
-                />
-                </View>
-                <View className='mt-1 mb-2 px-4'>
-                  <CreditBuilderMemberCards />
-                </View>
-                
-                <Divider variant="section" className="my-4" />
-
-                <PromoBanner
-                  bannerData={bannerData}
-                  autoPlay={true}
-                  duration={5000}
-                  showIndicators={true}
-                  bannerHeight={200}
-                  indicatorPosition="bottom"
-                  onActionPress={() => {
-                    console.log('View all offers pressed');
-                  }}
-                />
-
-                <Divider variant="section" className="my-4" />
-                
-                  <SectionHeader 
-                  title="Your Financial Tips" 
-                  actionLabel="More"
-                  onActionPress={() => {
-                    // Handle more press
-                    console.log('More tips pressed');
-                  }}
-                />
-                
-                {/* Sample content after the credit builder cards */}
-                {[...Array(5)].map((_, index) => (
-                  <View key={index} style={styles.card}>
-                    <B3 style={styles.cardTitle}>Financial Tip {index + 1}</B3>
-                    <B2 style={styles.cardDescription}>This is a sample financial tip with placeholder content.</B2>
-                    
-                    {/* Add line divider within each card */}
-                    <Divider variant="line" color={colors.neutral[200]} className="my-3" />
-                    
-                    <View style={styles.cardFooter}>
-                      <B4 style={styles.cardDate}>Updated 2 days ago</B4>
+              <View style={styles.scoreContainer}>
+                <View style={styles.riveAnimationContainer}>
+                  <RiveAnimation
+                    ref={riveScoreRef}
+                    source={require('../../assets/rive/scorebubble_int.riv')}
+                    autoplay={true}
+                    style={styles.scoreAnimation}
+                    artboardName="creditBubble"
+                    stateMachineName="State Machine 1"
+                    onPlay={(animName, isStateMachine) => {
+                      // When animation starts playing, set the score on both the Rive animation and update our state
+                      const syncScoreWithRive = () => {
+                        try {
+                          // First make sure our React state matches the creditScoreData
+                          if (userScore !== creditScoreData.score) {
+                            setUserScore(creditScoreData.score);
+                          }
+                          
+                          // Then update Rive with this value
+                          riveScoreRef.current?.setInputState('State Machine 1', 'score', creditScoreData.score);
+                        } catch (error) {
+                          // console.error('Failed to set initial score:', error);
+                        }
+                      };
                       
-                      {/* Add vertical divider in card footer */}
-                      <View style={styles.footerDivider}>
-                        <Divider variant="vertical" height={16} thickness={1} color={colors.neutral[300]} />
-                      </View>
-                      
-                      <B4 style={styles.cardCategory}>Finance</B4>
+                      // Try immediately and with a delay to ensure it works
+                      syncScoreWithRive();
+                      setTimeout(syncScoreWithRive, 500);
+                    }}
+                    onStop={(animName, isStateMachine) => {
+                      // console.log('Score animation stopped:', animName, isStateMachine);
+                    }} 
+                    onError={(error) => {
+                      // console.error('Score animation error:', error);
+                    }}
+                  />
+                  
+                  {/* Overlay the counter in the center of Rive animation */}
+                  <View style={styles.overlayCounterContainer}>
+                    <CreditScoreCounter 
+                      score={creditScoreData.score} 
+                      isPageLoaded={pageLoaded} 
+                      onScoreAnimationComplete={() => {
+                        // Ensure Rive animation is in sync after digits finish animating
+                        if (riveScoreRef.current) {
+                          try {
+                            riveScoreRef.current.setInputState('State Machine 1', 'score', creditScoreData.score);
+                          } catch (error) {
+                            console.error('Failed to sync Rive after counter animation:', error);
+                          }
+                        }
+                      }}
+                    />
+                  </View>
+                </View>
+                <View className='items-center'>
+                  <SH1 className='text-white'>
+                    Your Credit Score is {
+                      creditScoreData.score <= 350 ? 'Poor' :
+                      creditScoreData.score <= 600 ? 'Average' :
+                      creditScoreData.score <= 750 ? 'Good' : 'Excellent'
+                    }
+                  </SH1>
+                  <B4 className='text-white opacity-50 mt-1'>Last updated on: {creditScoreData.lastUpdated}</B4>
+                  <View className='flex-row items-center'>
+                    <View className={`px-2 py-1 mt-2 rounded-full ${creditScoreData.change >= 0 ? 'bg-success-100' : 'bg-error-100'}`}>
+                      <B4 className={creditScoreData.change >= 0 ? 'text-success-900' : 'text-error-500'}>
+                        {creditScoreData.change >= 0 ? '+' : ''}{creditScoreData.change} pts since last update
+                      </B4>
                     </View>
                   </View>
-                ))}
-                
-                <View style={styles.buttonsContainer}>
-                  <Link href="/design-system" asChild>
-                    <Pressable style={styles.button}>
-                      <ButtonLg style={styles.buttonText}>Design System</ButtonLg>
-                    </Pressable>
-                  </Link>
-                 
-                  <Pressable 
-                    style={[styles.button, { backgroundColor: colors.error[500], marginTop: 16, marginBottom: 30 }]}
-                    onPress={resetOnboarding}
-                  >
-                    <ButtonLg style={styles.buttonText}>Reset Onboarding</ButtonLg>
-                  </Pressable>
                 </View>
               </View>
-            </ReanimatedScrollView>
+            </Pressable>
           </Reanimated.View>
-        </PanGestureHandler>
+          
+          {/* Content Area */}
+          <View className='bg-neutral-0 rounded-t-2xl pt-8'>
+            <View className='px-4'>
+              <SectionHeader 
+                title="Credit Builder Membership" 
+                actionLabel="View All Benefits"
+                onActionPress={() => {
+                  // Handle view all press
+                  console.log('View all pressed');
+                }}
+              />
+            </View>
+            <View className='mt-1 mb-2 px-4'>
+              <CreditBuilderMemberCards />
+            </View>
+            
+            <Divider variant="section" className="my-4" />
+
+            <PromoBanner
+              bannerData={bannerData}
+              autoPlay={true}
+              duration={5000}
+              showIndicators={true}
+              bannerHeight={200}
+              indicatorPosition="bottom"
+              onActionPress={() => {
+                console.log('View all offers pressed');
+              }}
+            />
+
+            <Divider variant="section" className="my-4" />
+            
+            <SectionHeader 
+              title="Your Financial Tips" 
+              actionLabel="More"
+              onActionPress={() => {
+                // Handle more press
+                console.log('More tips pressed');
+              }}
+            />
+            
+            {/* Sample content */}
+            {[...Array(5)].map((_, index) => (
+              <View key={index} style={styles.card}>
+                <B3 style={styles.cardTitle}>Financial Tip {index + 1}</B3>
+                <B2 style={styles.cardDescription}>This is a sample financial tip with placeholder content.</B2>
+                
+                {/* Add line divider within each card */}
+                <Divider variant="line" color={colors.neutral[200]} className="my-3" />
+                
+                <View style={styles.cardFooter}>
+                  <B4 style={styles.cardDate}>Updated 2 days ago</B4>
+                  
+                  {/* Add vertical divider in card footer */}
+                  <View style={styles.footerDivider}>
+                    <Divider variant="vertical" height={16} thickness={1} color={colors.neutral[300]} />
+                  </View>
+                  
+                  <B4 style={styles.cardCategory}>Finance</B4>
+                </View>
+              </View>
+            ))}
+            
+            <View style={styles.buttonsContainer}>
+              <Link href="/design-system" asChild>
+                <Pressable style={styles.button}>
+                  <ButtonLg style={styles.buttonText}>Design System</ButtonLg>
+                </Pressable>
+              </Link>
+             
+              <Pressable 
+                style={[styles.button, { backgroundColor: colors.error[500], marginTop: 16, marginBottom: 30 }]}
+                onPress={resetOnboarding}
+              >
+                <ButtonLg style={styles.buttonText}>Reset Onboarding</ButtonLg>
+              </Pressable>
+            </View>
+          </View>
+        </ReanimatedScrollView>
       </View>
     </GestureHandlerRootView>
   );
@@ -1024,11 +767,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 40 : 60, // Add more padding at top
+    paddingTop: 40,
     paddingBottom: 12,
     backgroundColor: colors.primary[1000],
+    height: APP_BAR_HEIGHT,
+    // Shadow for better visibility when floating
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
+    width: '100%',
   },
   greetingContainer: {
     flex: 1,
@@ -1044,33 +794,36 @@ const styles = StyleSheet.create({
   avatarContainer: {
     marginRight: 16,
   },
+  mainScrollView: {
+    flex: 1,
+    paddingTop: APP_BAR_HEIGHT - 20, // Offset to account for app bar, leaving some overlap for smoother transition
+  },
   headerContent: {
-    height: responsive.height(276), // Fixed height equivalent to 0.34 of base height (812 * 0.34)
+    // height: responsive.height(350),
     backgroundColor: colors.primary[1000],
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: 16, // Reduce padding to avoid double spacing with the appBar margin
     paddingBottom: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    // Make sure it's visible by default
     opacity: 1,
   },
-  headerText: {
-    color: colors.neutral[100],
-    marginBottom: 24,
-    textAlign: 'center',
-  },
+  // headerText: {
+  //   color: colors.neutral[100],
+  //   marginBottom: 24,
+  //   textAlign: 'center',
+  // },
   scoreContainerPressable: {
     width: '100%',
-    height: responsive.height(350),
+   
   },
   scoreContainerPressed: {
     opacity: 0.9,
   },
   scoreContainer: {
     width: '100%',
-    height: responsive.height(340),
-    paddingTop: responsive.height(10),
+    // height: responsive.height(340),
+    paddingTop: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1092,8 +845,8 @@ const styles = StyleSheet.create({
     top: '50%',
     left: '50%',
     transform: [
-      { translateX: responsive.width(-45) }, // Responsive horizontal offset
-      { translateY: responsive.height(-45) } // Responsive vertical offset
+      { translateX: responsive.width(-45) },
+      { translateY: responsive.height(-45) }
     ],
     backgroundColor: 'rgba(0, 0, 0, 0)',
     borderRadius: 8,
@@ -1192,50 +945,17 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     color: colors.neutral[50],
-   
     textAlign: 'center',
   },
  
-  drawerContainer: {
-    
-    position: 'absolute',
-    top: HEADER_HEIGHT, // Exactly at the bottom of the header
-    left: 0,
-    right: 0,
-    // Height is now dynamically set in the animation
+  contentContainer: {
     backgroundColor: 'white',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    overflow: 'hidden',
-    // Add shadow to make it more prominent
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  drawerHandleContainer: {
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 10,
-    // Make the handle container touch target bigger for easier dragging
-    width: '100%',
-  },
-  drawerHandle: {
-    width: 60,
-    height: 5,
-    backgroundColor: colors.neutral[300],
-    borderRadius: 3,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    paddingTop: 20,
     paddingBottom: 120, // Extra padding for bottom tab bar
   },
   
- 
   card: {
     backgroundColor: colors.neutral[50],
     borderRadius: 12,
