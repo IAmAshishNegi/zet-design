@@ -182,7 +182,7 @@ if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   file(TOUCH_NOCREATE "/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/CMakeFiles/cmake.verify_globs")
 endif()
 
-# rnsvg_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt:24 (file)
+# rnsvg_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt:19 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/*.cpp")
 set(OLD_GLOB
   "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/rnsvg.cpp"
@@ -192,20 +192,18 @@ if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   file(TOUCH_NOCREATE "/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/CMakeFiles/cmake.verify_globs")
 endif()
 
-# rnsvg_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt:24 (file)
+# rnsvg_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt:19 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/../../../../common/cpp/react/renderer/components/rnsvg/*.cpp")
 set(OLD_GLOB
   "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/../../../../common/cpp/react/renderer/components/rnsvg/RNSVGImageShadowNode.cpp"
   "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/../../../../common/cpp/react/renderer/components/rnsvg/RNSVGImageState.cpp"
-  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/../../../../common/cpp/react/renderer/components/rnsvg/RNSVGLayoutableShadowNode.cpp"
-  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/../../../../common/cpp/react/renderer/components/rnsvg/RNSVGShadowNodes.cpp"
   )
 if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   message("-- GLOB mismatch!")
   file(TOUCH_NOCREATE "/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/CMakeFiles/cmake.verify_globs")
 endif()
 
-# rnsvg_codegen_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt:25 (file)
+# rnsvg_codegen_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt:20 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/../../../build/generated/source/codegen/jni/react/renderer/components/rnsvg/*cpp")
 set(OLD_GLOB
   "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-svg/android/src/main/jni/../../../build/generated/source/codegen/jni/react/renderer/components/rnsvg/ComponentDescriptors.cpp"

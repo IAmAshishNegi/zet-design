@@ -30,6 +30,7 @@ import { PanGestureHandler, GestureHandlerRootView, ScrollView as GHScrollView }
 import { RiveRef } from 'rive-react-native';
 import { CreditBuilderMemberCards, SectionHeader } from '../../components/credit-builder';
 import { PromoBanner, BannerItem } from '../../components/carousel';
+import { Audio } from 'expo-av';
 
 // Use GestureHandler's ScrollView to prevent gesture conflicts
 const ReanimatedScrollView = Reanimated.createAnimatedComponent(GHScrollView);
@@ -38,7 +39,7 @@ const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const HEADER_HEIGHT = responsive.height(SCREEN_HEIGHT * 0.115);
 const DRAWER_SNAP_TOP = 0;
-const DRAWER_SNAP_MIDDLE = responsive.height(SCREEN_HEIGHT * 0.38);
+const DRAWER_SNAP_MIDDLE = responsive.height(SCREEN_HEIGHT * 0.34);
 const DRAWER_SNAP_BOTTOM = responsive.height(SCREEN_HEIGHT * 0.73);
 
 // Spring animation config for smooth transitions
@@ -241,8 +242,8 @@ const CreditScoreCounter = ({ score, onScoreAnimationComplete, isPageLoaded = fa
           />
         ))}
       </View>
-      <View className='mt-1'>
-        <B3 style={styles.digitText}>Your Score</B3>
+      <View>
+        <B3 className='text-neutral-0'>Your Score</B3>
       </View>
     </View>
   );
@@ -270,6 +271,182 @@ export default function HomeScreen() {
   // Initialize userScore with creditScoreData.score
   const [userScore, setUserScore] = useState(creditScoreData.score);
   const riveScoreRef = useRef<RiveRef>(null);
+  
+  // Audio references and state
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isAudioLoaded, setIsAudioLoaded] = useState(false);
+  const [isBubblePressed, setIsBubblePressed] = useState(false);
+  const audioDelayTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Load audio file
+  useEffect(() => {
+    let isMounted = true;
+    let soundInstance: Audio.Sound | null = null;
+    
+    async function loadAudio() {
+      try {
+        // Make sure audio is configured properly
+        await Audio.setAudioModeAsync({
+          playsInSilentModeIOS: true,
+          staysActiveInBackground: false,
+          shouldDuckAndroid: true,
+        });
+        
+        // Check if the audio file exists before loading
+        if (Platform.OS === 'android') {
+          // On Android, we can use FileSystem to verify the asset exists
+          const assetInfo = await require('../../assets/audio/ashish_Score.mp3');
+          if (!assetInfo) {
+            console.error('Audio file not found');
+            return;
+          }
+        }
+        
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/ashish_Score.mp3'),
+          { shouldPlay: false },
+          (status) => {
+            // Handle playback status updates if needed
+            if ('didJustFinish' in status && status.didJustFinish && isBubblePressed) {
+              // If audio finished while still pressed, restart it
+              sound.replayAsync();
+            }
+          }
+        );
+        
+        // Set initial volume and rate
+        await sound.setVolumeAsync(1.0);
+        await sound.setRateAsync(1.0, true);
+        
+        soundInstance = sound;
+        
+        // Only update state if component is still mounted
+        if (isMounted) {
+          setSound(sound);
+          setIsAudioLoaded(true);
+        }
+      } catch (error) {
+        console.error('Failed to load audio:', error);
+        if (isMounted) {
+          setIsAudioLoaded(false);
+        }
+      }
+    }
+    
+    loadAudio();
+    
+    // Cleanup function for unmounting
+    return () => {
+      isMounted = false;
+      if (soundInstance) {
+        try {
+          soundInstance.stopAsync().then(() => soundInstance?.unloadAsync());
+        } catch (error) {
+          console.error('Error unloading sound:', error);
+        }
+      }
+    };
+  }, []);
+  
+  // Play or stop audio based on press state
+  useEffect(() => {
+    async function handleAudio() {
+      if (!sound || !isAudioLoaded) return;
+      
+      try {
+        if (isBubblePressed) {
+          // Don't immediately play - the timer is handled in handleScorePress
+          // The audio will start playing after 1 second if the user keeps holding
+        } else {
+          // Stop playing immediately when released
+          const status = await sound.getStatusAsync();
+          if ('isLoaded' in status && status.isLoaded && status.isPlaying) {
+            await sound.stopAsync();
+          }
+        }
+      } catch (error) {
+        console.error('Audio playback error:', error);
+        // Try to recover from error
+        setIsAudioLoaded(false);
+      }
+    }
+    
+    handleAudio();
+  }, [isBubblePressed, sound, isAudioLoaded]);
+  
+  // Handle press events for the score container
+  const handleScorePress = () => {
+    setIsBubblePressed(true);
+    
+    // Update Rive animation bubblePressed input immediately
+    if (riveScoreRef.current) {
+      try {
+        riveScoreRef.current.setInputState('State Machine 1', 'bubblePressed', true);
+      } catch (error) {
+        console.error('Failed to update Rive bubblePressed state:', error);
+      }
+    }
+    
+    // Clear any existing timer
+    if (audioDelayTimerRef.current) {
+      clearTimeout(audioDelayTimerRef.current);
+      audioDelayTimerRef.current = null;
+    }
+    
+    // Set a 1-second delay before playing audio
+    audioDelayTimerRef.current = setTimeout(async () => {
+      if (!sound || !isAudioLoaded) {
+        // Try reloading sound if not available
+        try {
+          const { sound: newSound } = await Audio.Sound.createAsync(
+            require('../../assets/audio/ashish_Score.mp3'),
+            { shouldPlay: true }
+          );
+          setSound(newSound);
+          setIsAudioLoaded(true);
+        } catch (e) {
+          console.error('Error loading sound on press:', e);
+        }
+      } else {
+        // Play sound after 1 second delay if still pressed
+        try {
+          await sound.stopAsync();
+          await sound.setPositionAsync(0);
+          await sound.playAsync();
+        } catch (error) {
+          console.error('Error playing sound after delay:', error);
+        }
+      }
+      
+      audioDelayTimerRef.current = null;
+    }, 1000); // 1000ms = 1 second delay
+  };
+  
+  const handleScoreRelease = () => {
+    setIsBubblePressed(false);
+    
+    // Update Rive animation bubblePressed input
+    if (riveScoreRef.current) {
+      try {
+        riveScoreRef.current.setInputState('State Machine 1', 'bubblePressed', false);
+      } catch (error) {
+        console.error('Failed to update Rive bubblePressed state:', error);
+      }
+    }
+    
+    // Clear the timer if user releases before the delay completes
+    if (audioDelayTimerRef.current) {
+      clearTimeout(audioDelayTimerRef.current);
+      audioDelayTimerRef.current = null;
+    }
+    
+    // Stop audio immediately on release (redundant with the useEffect, but added for safety)
+    if (sound && isAudioLoaded) {
+      sound.stopAsync().catch(error => {
+        console.error('Error stopping sound on release:', error);
+      });
+    }
+  };
   
   // Ensure userScore always reflects creditScoreData.score (add this effect)
   useEffect(() => {
@@ -644,82 +821,88 @@ export default function HomeScreen() {
         <Reanimated.View style={[styles.headerContent, headerAnimatedStyle]}>
           {/* <B2 style={styles.headerText}>Your financial overview</B2> */}
           
-          <Reanimated.View style={[styles.scoreContainer, scoreContainerAnimatedStyle]}>
-            <View style={styles.riveAnimationContainer}>
-              <RiveAnimation
-                ref={riveScoreRef}
-                source={require('../../assets/rive/scorebubble.riv')}
-                autoplay={true}
-                style={styles.scoreAnimation}
-                artboardName="creditBubble"
-                stateMachineName="State Machine 1"
-                onPlay={(animName, isStateMachine) => {
-                  // console.log('Score animation playing:', animName, isStateMachine);
-                  
-                  // When animation starts playing, set the score on both the Rive animation and update our state
-                  const syncScoreWithRive = () => {
-                    try {
-                      // First make sure our React state matches the creditScoreData
-                      if (userScore !== creditScoreData.score) {
-                        setUserScore(creditScoreData.score);
-                      }
-                      
-                      // Then update Rive with this value
-                      riveScoreRef.current?.setInputState('State Machine 1', 'score', creditScoreData.score);
-                      // console.log('Set initial Rive score value to:', creditScoreData.score);
-                    } catch (error) {
-                      // console.error('Failed to set initial score:', error);
-                    }
-                  };
-                  
-                  // Try immediately and with a delay to ensure it works
-                  syncScoreWithRive();
-                  setTimeout(syncScoreWithRive, 500);
-                }}
-                onStop={(animName, isStateMachine) => {
-                  // console.log('Score animation stopped:', animName, isStateMachine);
-                }} 
-                onError={(error) => {
-                  // console.error('Score animation error:', error);
-                }}
-              />
-              
-              {/* Overlay the counter in the center of Rive animation */}
-              <View style={styles.overlayCounterContainer}>
-                <CreditScoreCounter 
-                  score={creditScoreData.score} 
-                  isPageLoaded={pageLoaded} 
-                  onScoreAnimationComplete={() => {
-                    // Ensure Rive animation is in sync after digits finish animating
-                    if (riveScoreRef.current) {
+          <Pressable 
+            style={[styles.scoreContainerPressable, isBubblePressed && styles.scoreContainerPressed]}
+            onPressIn={handleScorePress}
+            onPressOut={handleScoreRelease}
+          >
+            <Reanimated.View style={[styles.scoreContainer, scoreContainerAnimatedStyle]}>
+              <View style={styles.riveAnimationContainer}>
+                <RiveAnimation
+                  ref={riveScoreRef}
+                  source={require('../../assets/rive/scorebubble_int.riv')}
+                  autoplay={true}
+                  style={styles.scoreAnimation}
+                  artboardName="creditBubble"
+                  stateMachineName="State Machine 1"
+                  onPlay={(animName, isStateMachine) => {
+                    // console.log('Score animation playing:', animName, isStateMachine);
+                    
+                    // When animation starts playing, set the score on both the Rive animation and update our state
+                    const syncScoreWithRive = () => {
                       try {
-                        riveScoreRef.current.setInputState('State Machine 1', 'score', creditScoreData.score);
+                        // First make sure our React state matches the creditScoreData
+                        if (userScore !== creditScoreData.score) {
+                          setUserScore(creditScoreData.score);
+                        }
+                        
+                        // Then update Rive with this value
+                        riveScoreRef.current?.setInputState('State Machine 1', 'score', creditScoreData.score);
+                        // console.log('Set initial Rive score value to:', creditScoreData.score);
                       } catch (error) {
-                        console.error('Failed to sync Rive after counter animation:', error);
+                        // console.error('Failed to set initial score:', error);
                       }
-                    }
+                    };
+                    
+                    // Try immediately and with a delay to ensure it works
+                    syncScoreWithRive();
+                    setTimeout(syncScoreWithRive, 500);
+                  }}
+                  onStop={(animName, isStateMachine) => {
+                    // console.log('Score animation stopped:', animName, isStateMachine);
+                  }} 
+                  onError={(error) => {
+                    // console.error('Score animation error:', error);
                   }}
                 />
-              </View>
-            </View>
-            <View className='mt-1 items-center'>
-              <SH1 className='text-white mt-2'>
-                Your Credit Score is {
-                  creditScoreData.score <= 350 ? 'Poor' :
-                  creditScoreData.score <= 600 ? 'Average' :
-                  creditScoreData.score <= 750 ? 'Good' : 'Excellent'
-                }
-              </SH1>
-              <B4 className='text-white opacity-50 mt-1'>Last updated on: {creditScoreData.lastUpdated}</B4>
-              <View className='flex-row items-center'>
-                <View className={`px-2 py-1 mt-2 rounded-full ${creditScoreData.change >= 0 ? 'bg-success-100' : 'bg-error-100'}`}>
-                  <B4 className={creditScoreData.change >= 0 ? 'text-success-900' : 'text-error-500'}>
-                    {creditScoreData.change >= 0 ? '+' : ''}{creditScoreData.change} pts since last update
-                  </B4>
+                
+                {/* Overlay the counter in the center of Rive animation */}
+                <View style={styles.overlayCounterContainer}>
+                  <CreditScoreCounter 
+                    score={creditScoreData.score} 
+                    isPageLoaded={pageLoaded} 
+                    onScoreAnimationComplete={() => {
+                      // Ensure Rive animation is in sync after digits finish animating
+                      if (riveScoreRef.current) {
+                        try {
+                          riveScoreRef.current.setInputState('State Machine 1', 'score', creditScoreData.score);
+                        } catch (error) {
+                          console.error('Failed to sync Rive after counter animation:', error);
+                        }
+                      }
+                    }}
+                  />
                 </View>
               </View>
-            </View>
-          </Reanimated.View>
+              <View className='items-center'>
+                <SH1 className='text-white'>
+                  Your Credit Score is {
+                    creditScoreData.score <= 350 ? 'Poor' :
+                    creditScoreData.score <= 600 ? 'Average' :
+                    creditScoreData.score <= 750 ? 'Good' : 'Excellent'
+                  }
+                </SH1>
+                <B4 className='text-white opacity-50 mt-1'>Last updated on: {creditScoreData.lastUpdated}</B4>
+                <View className='flex-row items-center'>
+                  <View className={`px-2 py-1 mt-2 rounded-full ${creditScoreData.change >= 0 ? 'bg-success-100' : 'bg-error-100'}`}>
+                    <B4 className={creditScoreData.change >= 0 ? 'text-success-900' : 'text-error-500'}>
+                      {creditScoreData.change >= 0 ? '+' : ''}{creditScoreData.change} pts since last update
+                    </B4>
+                  </View>
+                </View>
+              </View>
+            </Reanimated.View>
+          </Pressable>
         </Reanimated.View>
         
         {/* Drawer Content */}
@@ -843,7 +1026,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 30 : 60, // Add more padding at top
+    paddingTop: Platform.OS === 'android' ? 40 : 60, // Add more padding at top
     paddingBottom: 12,
     backgroundColor: colors.primary[1000],
   },
@@ -877,10 +1060,17 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     textAlign: 'center',
   },
-  scoreContainer: {
+  scoreContainerPressable: {
     width: '100%',
     height: responsive.height(350),
-    paddingTop: responsive.height(50),
+  },
+  scoreContainerPressed: {
+    opacity: 0.9,
+  },
+  scoreContainer: {
+    width: '100%',
+    height: responsive.height(340),
+    paddingTop: responsive.height(10),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -923,7 +1113,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   digitContainer: {
-    width: responsive.width(25),
+    width: responsive.width(22),
     height: responsive.height(60),
     overflow: 'hidden',
     marginHorizontal: 0,
@@ -1002,7 +1192,7 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     color: colors.neutral[50],
-    width: 60,
+   
     textAlign: 'center',
   },
  

@@ -5,7 +5,7 @@ import { responsive } from '../../../utils/responsive';
 
 // Define simplified types
 type FontSizeVariant = 
-  | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '32' | '40'
+  | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '32' | '38' | '40'
   | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
 
 type FontFamilyVariant = 'regular' | 'medium' | 'semibold' | 'bold';
@@ -53,7 +53,7 @@ const fontSizeMap = {
   '2xl': 24,
   '3xl': 32,
   '4xl': 40,
-  '5xl': 48,
+  '5xl': 44,
   '6xl': 56,
   
   // Numeric sizes
@@ -67,6 +67,7 @@ const fontSizeMap = {
   '20': 20,
   '24': 24,
   '32': 32,
+  '38': 38,
   '40': 40,
 };
 

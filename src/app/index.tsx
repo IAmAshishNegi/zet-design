@@ -144,8 +144,8 @@ const styles = StyleSheet.create({
   tabBar: {
     height: "auto",
     width: '100%',
-    paddingTop: 14,
-    paddingBottom: 14,
+    paddingTop: 10,
+    paddingBottom: 8,
     elevation: 0,
     borderTopWidth: 0,
     position: 'absolute',
