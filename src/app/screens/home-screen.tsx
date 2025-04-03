@@ -247,6 +247,20 @@ export default function HomeScreen() {
   const [userScore, setUserScore] = useState(creditScoreData.score);
   const riveScoreRef = useRef<RiveRef>(null);
   
+  // Function to determine background color based on credit score
+  const getBackgroundColorByScore = (score: number) => {
+    if (score <= 400) {
+      return colors.error[900]; // Dark red for poor scores (0-400)
+    } else if (score <= 600) {
+      return colors.warning[900]; // Dark yellow/orange for fair scores (401-600)
+    } else {
+      return colors.success[900]; // Dark green for good scores (601+)
+    }
+  };
+  
+  // Get the background color based on current score
+  const backgroundColorByScore = getBackgroundColorByScore(creditScoreData.score);
+  
   // Audio references and state
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
@@ -555,11 +569,15 @@ export default function HomeScreen() {
 
   return (
     <GestureHandlerRootView style={styles.rootContainer}>
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: backgroundColorByScore }]}>
         <StatusBar style="light" />
         
         {/* Sticky App Bar with hide on scroll */}
-        <Reanimated.View style={[styles.appBar, appBarAnimatedStyle]}>
+        <Reanimated.View style={[
+          styles.appBar, 
+          appBarAnimatedStyle, 
+          { backgroundColor: backgroundColorByScore }
+        ]}>
           <Pressable 
             style={styles.avatarContainer}
             onPress={toggleAvatarImage}
@@ -589,7 +607,11 @@ export default function HomeScreen() {
           bounces={true}
         >
           {/* Score Container */}
-          <Reanimated.View style={[styles.headerContent, headerContentAnimatedStyle]}>
+          <Reanimated.View style={[
+            styles.headerContent, 
+            headerContentAnimatedStyle,
+            { backgroundColor: backgroundColorByScore }
+          ]}>
             <Pressable 
               style={[styles.scoreContainerPressable, isBubblePressed && styles.scoreContainerPressed]}
               onPressIn={handleScorePress}
@@ -761,7 +783,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: colors.primary[1000],
   },
   appBar: {
     flexDirection: 'row',
@@ -770,9 +791,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 40,
     paddingBottom: 12,
-    backgroundColor: colors.primary[1000],
     height: APP_BAR_HEIGHT,
-    // Shadow for better visibility when floating
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -796,33 +815,24 @@ const styles = StyleSheet.create({
   },
   mainScrollView: {
     flex: 1,
-    paddingTop: APP_BAR_HEIGHT - 20, // Offset to account for app bar, leaving some overlap for smoother transition
+    paddingTop: APP_BAR_HEIGHT - 20,
   },
   headerContent: {
-    // height: responsive.height(350),
-    backgroundColor: colors.primary[1000],
     paddingHorizontal: 16,
-    paddingTop: 16, // Reduce padding to avoid double spacing with the appBar margin
+    paddingTop: 16,
     paddingBottom: 24,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 1,
   },
-  // headerText: {
-  //   color: colors.neutral[100],
-  //   marginBottom: 24,
-  //   textAlign: 'center',
-  // },
   scoreContainerPressable: {
     width: '100%',
-   
   },
   scoreContainerPressed: {
     opacity: 0.9,
   },
   scoreContainer: {
     width: '100%',
-    // height: responsive.height(340),
     paddingTop: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -953,7 +963,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
     paddingTop: 20,
-    paddingBottom: 120, // Extra padding for bottom tab bar
+    paddingBottom: 120,
   },
   
   card: {
