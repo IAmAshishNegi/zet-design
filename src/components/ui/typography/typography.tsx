@@ -5,7 +5,7 @@ import { responsive } from '../../../utils/responsive';
 
 // Define simplified types
 type FontSizeVariant = 
-  | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '32' | '40'
+  | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '28' | '30' | '32' | '40'
   | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
 
 type FontFamilyVariant = 'regular' | 'medium' | 'semibold' | 'bold';
@@ -66,6 +66,8 @@ const fontSizeMap = {
   '18': 18,
   '20': 20,
   '24': 24,
+  '28': 28,
+  '30': 30,
   '32': 32,
   '40': 40,
 };
@@ -191,12 +193,12 @@ const H2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'co
   const { style, ...otherProps } = props;
   return (
     <Typography 
-      variant="32" 
-      weight="bold" 
+      variant="28" 
+      weight="semibold" 
       tracking="tight" 
       componentVariant="h2"
       style={{
-        fontFamily: 'THICCCBOI-Bold',
+        fontFamily: 'THICCCBOI-SemiBold',
         ...(typeof style === 'object' ? style : {})
       }}
       {...otherProps} 

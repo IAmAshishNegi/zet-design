@@ -4,6 +4,7 @@ import OnboardingFlow from '../components/onboarding';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
+
 // Ensure the Expo splash screen is hidden as soon as this component mounts
 export default function OnboardingPage() {
   useEffect(() => {
