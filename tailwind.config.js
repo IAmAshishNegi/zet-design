@@ -27,6 +27,12 @@ module.exports = {
         '32': 32,
         '40': 40,
       },
+      width: {
+        '18': '72px',
+      },
+      height: {
+        '18': '72px',
+      },
       lineHeight,
       letterSpacing,
       // Add specific letter spacing values

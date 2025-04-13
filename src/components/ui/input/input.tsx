@@ -34,6 +34,14 @@ const getInputPaddings = (isResponsive = true) => ({
   xl: isResponsive ? responsive.width(24) : 24
 });
 
+// Border radius configuration based on size
+const getInputBorderRadius = (isResponsive = true) => ({
+  sm: isResponsive ? responsive.width(4) : 4,
+  md: isResponsive ? responsive.width(8) : 8,
+  lg: isResponsive ? responsive.width(12) : 12,
+  xl: isResponsive ? responsive.width(16) : 16
+});
+
 // Interface for the input component props
 interface InputProps extends Omit<TextInputProps, 'style'> {
   size?: InputSize;
@@ -74,6 +82,7 @@ const Input = forwardRef<TextInput, InputProps>(({
   // Get responsive input sizes
   const INPUT_SIZES = getInputSizes(isResponsive);
   const INPUT_PADDINGS = getInputPaddings(isResponsive);
+  const INPUT_BORDER_RADIUS = getInputBorderRadius(isResponsive);
   
   const [isFocused, setIsFocused] = useState(false);
   const [inputHeight, setInputHeight] = useState(INPUT_SIZES[size]);
@@ -81,9 +90,10 @@ const Input = forwardRef<TextInput, InputProps>(({
   // Determine container class name based on variant and state
   const getContainerClass = () => {
     let classes = [
-      'rounded-md overflow-hidden',
+      'overflow-hidden',
       fullWidth ? 'w-full' : '',
-      containerClassName
+      containerClassName,
+      'bg-neutral-50'
     ];
 
     // Add variant-specific classes
@@ -138,6 +148,13 @@ const Input = forwardRef<TextInput, InputProps>(({
     paddingHorizontal: INPUT_PADDINGS[size],
   };
 
+  // Container styles for border radius
+  const containerStyles = {
+    borderRadius: variant !== 'underlined' ? INPUT_BORDER_RADIUS[size] : 0,
+    borderTopLeftRadius: variant === 'underlined' ? INPUT_BORDER_RADIUS[size] : undefined,
+    borderTopRightRadius: variant === 'underlined' ? INPUT_BORDER_RADIUS[size] : undefined,
+  };
+
   // Get responsive font size
   const getFontSize = () => {
     const baseFontSize = size === 'sm' ? 12 : size === 'md' ? 14 : 16;
@@ -162,7 +179,7 @@ const Input = forwardRef<TextInput, InputProps>(({
         </LabelComponent>
       )}
 
-      <View className={getContainerClass()}>
+      <View className={getContainerClass()} style={containerStyles}>
         <View className="flex-row items-center">
           {startIcon && (
             <View className="ml-3" style={isResponsive ? { marginLeft: responsive.spacing(12) } : undefined}>
@@ -178,7 +195,7 @@ const Input = forwardRef<TextInput, InputProps>(({
             style={[
               sizeStyles,
               {
-                fontFamily: 'THICCCBOI-Regular',
+                fontFamily: value ? 'THICCCBOI-SemiBold' : 'THICCCBOI-Regular',
                 fontSize: getFontSize(),
                 color: disabled ? '#a1a1aa' : '#27272a',
               },

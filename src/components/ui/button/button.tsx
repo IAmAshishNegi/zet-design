@@ -33,6 +33,14 @@ const getButtonPaddings = (isResponsive = true) => ({
   xl: isResponsive ? responsive.width(24) : 24
 });
 
+// Border radius configuration based on size
+const getButtonBorderRadius = (isResponsive = true) => ({
+  sm: isResponsive ? responsive.width(4) : 4,
+  md: isResponsive ? responsive.width(8) : 8,
+  lg: isResponsive ? responsive.width(12) : 12,
+  xl: isResponsive ? responsive.width(16) : 16
+});
+
 interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   children?: React.ReactNode;
   variant?: ButtonVariant;
@@ -135,7 +143,6 @@ const Button: React.FC<ButtonProps> = ({
   const buttonClasses = [
     // Base button styles
     'flex flex-row items-center justify-center',
-    'rounded-md',
     // Width class
     getWidthClass(),
     // Additional classes provided by user
@@ -152,6 +159,7 @@ const Button: React.FC<ButtonProps> = ({
   // Get responsive button sizes
   const BUTTON_SIZES = getButtonSizes(isResponsive);
   const BUTTON_PADDINGS = getButtonPaddings(isResponsive);
+  const BUTTON_BORDER_RADIUS = getButtonBorderRadius(isResponsive);
 
   // Apply all styles directly
   const buttonStyles = {
@@ -160,6 +168,7 @@ const Button: React.FC<ButtonProps> = ({
     backgroundColor,
     borderWidth: variant === 'outlined' ? 1 : 0,
     borderColor,
+    borderRadius: BUTTON_BORDER_RADIUS[size],
     ...(typeof style === 'object' ? style : {}),
   };
 

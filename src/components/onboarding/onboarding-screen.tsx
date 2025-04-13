@@ -60,7 +60,7 @@ const OnboardingScreen = ({ onGetStarted }: OnboardingScreenProps) => {
 
 const styles = StyleSheet.create({
   riveAnimation: {
-    width: '93%',
+    width: '88%',
    
   },
  

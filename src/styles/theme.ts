@@ -120,6 +120,7 @@ export const spacing = {
   "8": "32px",
   "8.5": "34px",
   "9": "36px",
+ 
 };
 
 export const borderRadius = {
@@ -231,7 +232,7 @@ export const lineHeight = {
   b1: "24px",
   b2: "22px",
   b3: "22px",
-  b4: "20px",
+  b4: "22px",
   b5: "20px",
   b6: "24px",
   b7: "20px",

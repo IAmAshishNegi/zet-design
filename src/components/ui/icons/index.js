@@ -16,6 +16,8 @@ export { default as ChevronCircleRightIcon } from './ChevronCircleRightIcon';
 export { default as CheckCircleIcon } from './CheckCircleIcon';
 export { default as PlayCircleIcon } from './PlayCircleIcon';
 export { default as ArrowIcon } from './ArrowIcon';
+export { default as CheckboxIcon } from './CheckboxIcon';
+export { default as CheckboxEmptyIcon } from './CheckboxEmptyIcon';
 // Add more icon exports as they are created
 // export { default as ProfileIcon } from './ProfileIcon';
 // export { default as SettingsIcon } from './SettingsIcon';
