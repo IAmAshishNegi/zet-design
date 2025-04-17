@@ -139,7 +139,7 @@ const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
     return (
       <View 
         key={index} 
-        className={`w-18 h-18 flex items-center justify-center border rounded-lg ${
+        className={`w-16 h-16 flex items-center justify-center border rounded-lg ${
           error 
             ? 'border-error-500' 
             : otpValues[index] 
@@ -182,7 +182,7 @@ const OtpVerificationScreen: React.FC<OtpVerificationScreenProps> = ({
               </B3>
             </View>
             
-            <View className="mt-6 flex-row justify-start gap-3">
+            <View className="mt-6 flex-row justify-center gap-3">
               {Array(NUM_OTP_INPUTS).fill(0).map((_, index) => renderOtpInput(index))}
             </View>
             

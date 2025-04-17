@@ -11,35 +11,34 @@ import {
   B3, B4, B5, B6, 
   SH3, SH4, SH5 
 } from '../typography/typography';
-import { responsive } from '../../../utils/responsive';
 
 // Types for the input component
 type InputSize = 'sm' | 'md' | 'lg' | 'xl';
 type InputVariant = 'outlined' | 'filled' | 'underlined';
 type InputState = 'default' | 'disabled' | 'error' | 'success' | 'focused';
 
-// Size configuration for the input with responsive scaling
+// Size configuration for the input with fixed values
 const getInputSizes = (isResponsive = true) => ({
-  sm: isResponsive ? responsive.height(36) : 36,
-  md: isResponsive ? responsive.height(40) : 40,
-  lg: isResponsive ? responsive.height(48) : 48,
-  xl: isResponsive ? responsive.height(56) : 56
+  sm: 36,
+  md: 40,
+  lg: 48,
+  xl: 56
 });
 
-// Padding configuration for the input with responsive scaling
+// Padding configuration for the input with fixed values
 const getInputPaddings = (isResponsive = true) => ({
-  sm: isResponsive ? responsive.width(12) : 12,
-  md: isResponsive ? responsive.width(16) : 16,
-  lg: isResponsive ? responsive.width(20) : 20,
-  xl: isResponsive ? responsive.width(24) : 24
+  sm: 12,
+  md: 16,
+  lg: 20,
+  xl: 24
 });
 
 // Border radius configuration based on size
 const getInputBorderRadius = (isResponsive = true) => ({
-  sm: isResponsive ? responsive.width(4) : 4,
-  md: isResponsive ? responsive.width(8) : 8,
-  lg: isResponsive ? responsive.width(12) : 12,
-  xl: isResponsive ? responsive.width(16) : 16
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 16
 });
 
 // Interface for the input component props
@@ -79,7 +78,7 @@ const Input = forwardRef<TextInput, InputProps>(({
   onBlur,
   ...rest
 }, ref) => {
-  // Get responsive input sizes
+  // Get input sizes
   const INPUT_SIZES = getInputSizes(isResponsive);
   const INPUT_PADDINGS = getInputPaddings(isResponsive);
   const INPUT_BORDER_RADIUS = getInputBorderRadius(isResponsive);
@@ -155,10 +154,10 @@ const Input = forwardRef<TextInput, InputProps>(({
     borderTopRightRadius: variant === 'underlined' ? INPUT_BORDER_RADIUS[size] : undefined,
   };
 
-  // Get responsive font size
+  // Get font size
   const getFontSize = () => {
     const baseFontSize = size === 'sm' ? 12 : size === 'md' ? 14 : 16;
-    return isResponsive ? responsive.fontSize(baseFontSize) : baseFontSize;
+    return baseFontSize;
   };
 
   const handleFocus = (e: any) => {
@@ -182,7 +181,7 @@ const Input = forwardRef<TextInput, InputProps>(({
       <View className={getContainerClass()} style={containerStyles}>
         <View className="flex-row items-center">
           {startIcon && (
-            <View className="ml-3" style={isResponsive ? { marginLeft: responsive.spacing(12) } : undefined}>
+            <View className="ml-3">
               {startIcon}
             </View>
           )}
@@ -214,7 +213,7 @@ const Input = forwardRef<TextInput, InputProps>(({
           />
 
           {endIcon && (
-            <View className="mr-3" style={isResponsive ? { marginRight: responsive.spacing(12) } : undefined}>
+            <View className="mr-3">
               {endIcon}
             </View>
           )}

@@ -4,17 +4,15 @@ import { Dimensions, PixelRatio, Platform } from 'react-native';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Base screen dimensions (design reference)
-// Typically based on your design mockups (e.g., iPhone 11 Pro)
 const baseWidth = 375; // iPhone 11 Pro width
 const baseHeight = 812; // iPhone 11 Pro height
 
 // App-wide font scale factor (default: 1)
-// This can be changed to scale all fonts up or down
-let fontScaleFactor = 1.05;
+let fontScaleFactor = 1;
 
 /**
  * Sets the app-wide font scale factor
- * @param scale - Scale factor to apply to all fonts (1 = 100%, 1.1 = 110%, etc.)
+ * @param scale - Scale factor to apply to all fonts
  */
 export const setFontScaleFactor = (scale: number) => {
   fontScaleFactor = scale;
@@ -25,30 +23,6 @@ export const setFontScaleFactor = (scale: number) => {
  * @returns The current font scale factor
  */
 export const getFontScaleFactor = () => fontScaleFactor;
-
-/**
- * Scales a size based on the width of the screen
- * @param size - The size to scale
- * @returns The scaled size
- */
-export const scaleWidth = (size: number): number => {
-  // Calculate scale based on screen width relative to base width
-  const scale = SCREEN_WIDTH / baseWidth;
-  const newSize = size * scale;
-  return Math.round(newSize);
-};
-
-/**
- * Scales a size based on the height of the screen
- * @param size - The size to scale
- * @returns The scaled size
- */
-export const scaleHeight = (size: number): number => {
-  // Calculate scale based on screen height relative to base height
-  const scale = SCREEN_HEIGHT / baseHeight;
-  const newSize = size * scale;
-  return Math.round(newSize);
-};
 
 /**
  * Scales a font size based on screen size with clamping and app-wide scaling
@@ -72,27 +46,24 @@ export const scaleFontSize = (size: number, minScale = 0.85, maxScale = 1.2): nu
 };
 
 /**
- * Scales spacing values based on the width of the screen
- * @param size - The spacing size to scale
- * @returns The scaled spacing size
+ * Scales line height based on font size and a line height multiplier
+ * @param fontSize - The font size (before scaling)
+ * @param multiplier - Line height multiplier (1.2-1.5 typically)
+ * @returns Scaled line height
  */
-export const scaleSpacing = (size: number): number => {
-  // Calculate scale based on screen width relative to base width
-  const scale = SCREEN_WIDTH / baseWidth;
-  const newSize = size * scale;
-  return Math.round(newSize);
+export const scaleLineHeight = (fontSize: number, multiplier = 1.3): number => {
+  const scaledFontSize = scaleFontSize(fontSize);
+  return Math.round(scaledFontSize * multiplier);
 };
 
 /**
- * Responsive sizing utility methods
+ * Font utility functions
  */
-export const responsive = {
-  width: scaleWidth,
-  height: scaleHeight,
-  fontSize: scaleFontSize,
-  spacing: scaleSpacing,
+export const fontUtils = {
+  scaleFontSize,
+  scaleLineHeight,
   fontScale: {
     get: getFontScaleFactor,
     set: setFontScaleFactor
   }
-};
+}; 

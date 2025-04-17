@@ -1,11 +1,11 @@
 import React from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
 import { fontFamily, lineHeight as themeLineHeight, letterSpacingValues } from '../../../styles/theme';
-import { responsive } from '../../../utils/responsive';
+import { fontUtils } from '../../../utils/font-utils';
 
 // Define simplified types
 type FontSizeVariant = 
-  | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '28' | '30' | '32' | '40'
+  | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '25' | '28' | '30' | '32' | '40'
   | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
 
 type FontFamilyVariant = 'regular' | 'medium' | 'semibold' | 'bold';
@@ -19,7 +19,8 @@ type ComponentVariant =
   | 'b1' | 'b2' | 'b3' | 'b4' | 'b5' | 'b6' | 'b7' | 'b8' | 'b9'
   | 'buttonLg' | 'buttonMd' | 'buttonSm'
   | 'linkText' | 'linkTextSm' | 'linkTextXs'
-  | 'overlineMd' | 'overlineSm';
+  | 'overlineMd' | 'overlineSm'
+  | 'obHeading';
 
 interface TypographyProps extends TextProps {
   variant?: FontSizeVariant;
@@ -66,6 +67,8 @@ const fontSizeMap = {
   '18': 18,
   '20': 20,
   '24': 24,
+  '25': 25,
+  '26': 26,
   '28': 28,
   '30': 30,
   '32': 32,
@@ -114,14 +117,15 @@ function Typography({
   
   // Apply responsive scaling if enabled
   const fontSize = isResponsive 
-    ? responsive.fontSize(baseFontSize, minScale, maxScale)
+    ? fontUtils.scaleFontSize(baseFontSize, minScale, maxScale)
     : baseFontSize;
     
   // Determine line height if componentVariant is provided
   let lineHeight;
   if (componentVariant && themeLineHeight[componentVariant]) {
     // Convert string like "32px" to number 32
-    lineHeight = parseInt(themeLineHeight[componentVariant].replace('px', ''), 10);
+    const baseLineHeight = parseInt(themeLineHeight[componentVariant].replace('px', ''), 10);
+    lineHeight = isResponsive ? fontUtils.scaleLineHeight(baseFontSize, baseLineHeight / baseFontSize) : baseLineHeight;
   }
   
   // Determine letter spacing if componentVariant is provided
@@ -171,6 +175,23 @@ function Typography({
 }
 
 // ----- Heading Components -----
+
+const OBHeading: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="25" 
+      weight="semibold" 
+      tracking="tight" 
+      componentVariant="obHeading"
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 const H1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
   const { style, ...otherProps } = props;
@@ -619,28 +640,21 @@ const ScoreDigit: React.FC<{
   />
 );
 
-// Utility function to set the app-wide font scale
-// This can be called from settings or elsewhere to adjust all text sizes
+// Font scaling functions
 export const setAppFontScale = (scale: number) => {
-  responsive.fontScale.set(scale);
+  fontUtils.fontScale.set(scale);
 };
 
-// Utility function to get the current app-wide font scale
-export const getAppFontScale = () => responsive.fontScale.get();
+export const getAppFontScale = () => fontUtils.fontScale.get();
 
-// Example of how to create a custom typography component with specific letter spacing
 const SpacedText: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', style = {}, ...props }) => (
   <Typography 
-    variant="16" 
-    weight="bold" 
-    tracking="superWide" // Using one of our new letter spacing values
-    className={`font-bold ${className}`} // Add font-bold class
-    style={{
-      fontFamily: fontFamilyMap['bold'], // Ensure fontFamily is set
-      letterSpacing: 2, // Direct numeric value in pixels
-      ...(style as any) // Type assertion to avoid the spread error
-    }}
-    {...props} 
+    variant="base"
+    weight="medium"
+    tracking="wide"
+    className={`tracking-widest ${className}`}
+    style={style}
+    {...props}
   />
 );
 
@@ -648,7 +662,7 @@ export {
   Typography,
   
   // Headings
-  H1, H2, H3, H4, H5, H6, H7,
+  OBHeading, H1, H2, H3, H4, H5, H6, H7,
   
   // SubHeadings
   SH1, SH2, SH3, SH4, SH5,

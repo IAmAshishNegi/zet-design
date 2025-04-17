@@ -214,9 +214,11 @@ export const lineHeight = {
   '2xl': "36px",
   '3xl': "40px",
   '4xl': "48px",
+
+  obHeading: "35px",
   
   h1: "52px",
-  h2: "48px",
+  h2: "36px",
   h3: "30px",
   h4: "32px",
   h5: "24px",
@@ -259,6 +261,8 @@ export const letterSpacingValues = {
   h5: -0.36,
   h6: -0.32,
   h7: -0.36,
+  
+  obHeading: -0.7,
   
   sh1: -0.32,
   sh2: -0.28,

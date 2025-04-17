@@ -9,7 +9,8 @@ import { H1, H2, H3, H4, H5, H6,
  
  
   OverlineMd, OverlineSm,
-  setAppFontScale, getAppFontScale
+  setAppFontScale, getAppFontScale,
+  OBHeading
 } from '../ui/typography/typography';
 import { Button } from '../ui/button';
 import { ZetLogo } from '../ui/icons';
@@ -24,27 +25,27 @@ const OnboardingScreen = ({ onGetStarted }: OnboardingScreenProps) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       
-      <View className="flex-1 flex-col gap-2 px-4 py-12">
+      <View className="flex-1 flex-col gap-2 px-4 pt-2 pb-14">
         <View className="flex justify-center items-center">
-          <ZetLogo width={100} color="primary.500" variant="filled" />
+          <ZetLogo width={86} color="primary.500" variant="filled" />
         </View>
-        <View className="flex-1 justify-center items-center">
+        <View className="flex-1 justify-center items-center -mb-1">
           <RiveAnimation
             ref={riveRef}
-            source={require('../../assets/rive/onboarding_new.riv')}
+            source={require('../../assets/rive/onboarding_main.riv')}
             autoplay={true}
             style={styles.riveAnimation}
           />
         </View>
         
-        <View className="flex justify-center items-center pb-20 -mt-12">
+        {/* <View className="flex justify-center items-center pb-10">
           
         
-          <H2 className="text-center px-3">
+          <OBHeading className="text-center px-4">
             The Fastest way to Improve Credit Score
-          </H2>
+          </OBHeading>
           
-        </View>
+        </View> */}
         
         <Button 
               size="xl" 
@@ -60,7 +61,7 @@ const OnboardingScreen = ({ onGetStarted }: OnboardingScreenProps) => {
 
 const styles = StyleSheet.create({
   riveAnimation: {
-    width: '88%',
+    width: '92%',
    
   },
  

@@ -10,35 +10,34 @@ import {
 } from 'react-native';
 import { ButtonLg, ButtonMd, ButtonSm } from '../typography/typography';
 import { colors } from '../../../styles/theme';
-import { responsive } from '../../../utils/responsive';
 
 // Types for the button props
 type ButtonVariant = 'filled' | 'outlined' | 'text';
 type ButtonColor = string; // Allow any color string from theme
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
-// Size configuration for the button with responsive scaling
+// Size configuration for the button with fixed values
 const getButtonSizes = (isResponsive = true) => ({
-  sm: isResponsive ? responsive.height(36) : 36,
-  md: isResponsive ? responsive.height(40) : 40,
-  lg: isResponsive ? responsive.height(48) : 48,
-  xl: isResponsive ? responsive.height(56) : 56
+  sm: 36,
+  md: 40,
+  lg: 48,
+  xl: 56
 });
 
-// Padding configuration for the button with responsive scaling
+// Padding configuration for the button with fixed values
 const getButtonPaddings = (isResponsive = true) => ({
-  sm: isResponsive ? responsive.width(12) : 12,
-  md: isResponsive ? responsive.width(16) : 16,
-  lg: isResponsive ? responsive.width(20) : 20,
-  xl: isResponsive ? responsive.width(24) : 24
+  sm: 12,
+  md: 16,
+  lg: 20,
+  xl: 24
 });
 
 // Border radius configuration based on size
 const getButtonBorderRadius = (isResponsive = true) => ({
-  sm: isResponsive ? responsive.width(4) : 4,
-  md: isResponsive ? responsive.width(8) : 8,
-  lg: isResponsive ? responsive.width(12) : 12,
-  xl: isResponsive ? responsive.width(16) : 16
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 16
 });
 
 interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
@@ -156,7 +155,7 @@ const Button: React.FC<ButtonProps> = ({
       ? ButtonLg 
       : ButtonMd;
 
-  // Get responsive button sizes
+  // Get button sizes
   const BUTTON_SIZES = getButtonSizes(isResponsive);
   const BUTTON_PADDINGS = getButtonPaddings(isResponsive);
   const BUTTON_BORDER_RADIUS = getButtonBorderRadius(isResponsive);
@@ -206,7 +205,7 @@ const Button: React.FC<ButtonProps> = ({
       ) : (
         <>
           {startIcon && (
-            <View className="mr-2" style={isResponsive ? { marginRight: responsive.spacing(8) } : undefined}>
+            <View className="mr-2">
               {startIcon}
             </View>
           )}
@@ -224,7 +223,7 @@ const Button: React.FC<ButtonProps> = ({
           {renderChildren()}
           
           {endIcon && (
-            <View className="ml-2" style={isResponsive ? { marginLeft: responsive.spacing(8) } : undefined}>
+            <View className="ml-2">
               {endIcon}
             </View>
           )}
