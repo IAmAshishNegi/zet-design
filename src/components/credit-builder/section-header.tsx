@@ -1,38 +1,27 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { H6, B4 } from '../ui';
+import { H6, B4, B3 } from '../ui';
 import { colors } from '../../styles/theme';
 
 type SectionHeaderProps = {
   title: string;
+  subtitle?: string;
   actionLabel?: string;
+
   onActionPress?: () => void;
 };
 
-export function SectionHeader({ title, actionLabel, onActionPress }: SectionHeaderProps) {
+export function SectionHeader({ title, subtitle, actionLabel, onActionPress }: SectionHeaderProps) {
   return (
-    <View style={styles.container}>
-      <H6 style={styles.title}>{title}</H6>
+    <View className='mb-4 mt-2'>
+      <H6 className='text-neutral-900'>{title}</H6>
+      {subtitle && <B3 className='text-neutral-500'>{subtitle}</B3>}
       {actionLabel && onActionPress && (
         <Pressable onPress={onActionPress} hitSlop={8}>
-          <B4 style={styles.action}>{actionLabel}</B4>
+          <B4 className='text-primary-600'>{actionLabel}</B4>
         </Pressable>
       )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  title: {
-    color: colors.neutral[900],
-  },
-  action: {
-    color: colors.primary[600],
-  },
-}); 

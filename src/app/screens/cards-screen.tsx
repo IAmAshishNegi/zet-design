@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import React, { useContext, useRef, useEffect } from 'react';
+import { View, StyleSheet, FlatList, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { colors } from '../../styles/theme';
 import { CreditCardIcon } from '../../components/ui/icons';
 import { H3, B1, B2, SH1 } from '../../components/ui/typography/typography';
+import { TabBarVisibilityContext } from '../index';
 
 interface CardItem {
   id: string;
@@ -18,6 +19,45 @@ const cards: CardItem[] = [
 ];
 
 export default function CardsScreen() {
+  const { hideTabBar, showTabBar } = useContext(TabBarVisibilityContext);
+  const lastScrollY = useRef(0);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle scroll events to show/hide tab bar
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const currentScrollY = event.nativeEvent.contentOffset.y;
+    
+    // Determine scroll direction
+    if (currentScrollY > lastScrollY.current + 10) {
+      // Scrolling down - hide tab bar
+      hideTabBar();
+    } else if (currentScrollY < lastScrollY.current - 10) {
+      // Scrolling up - show tab bar
+      showTabBar();
+    }
+    
+    lastScrollY.current = currentScrollY;
+    
+    // Clear any existing timeout
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+    
+    // Set a timeout to show the tab bar when scrolling stops
+    scrollTimeout.current = setTimeout(() => {
+      showTabBar();
+    }, 1000);
+  };
+
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+    };
+  }, []);
+
   const renderCard = ({ item }: { item: CardItem }) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
@@ -46,6 +86,8 @@ export default function CardsScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
       />
     </View>
   );

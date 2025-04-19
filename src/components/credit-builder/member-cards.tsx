@@ -10,7 +10,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 export function CreditBuilderMemberCards() {
   // For demo purposes, use placeholder images
   const placeholderImages = {
-    cblImage: require('../../assets/images/cbl.webp'),
+    cblImage: require('../../assets/images/cbm.webp'),
     AIVideoImage: require('../../assets/images/AIVideo.webp'),
     checkerImage: require('../../assets/images/score_analysis.webp'),
   };
@@ -21,12 +21,12 @@ export function CreditBuilderMemberCards() {
   };
 
   const buttonProps: ButtonProps = {
-    label: "Start Application",
+    label: "Learn in Detail",
     size: "sm",
     variant: "filled",
-    color: "neutral-900",
+    color: "primary",
     style: { 
-      backgroundColor: colors.neutral[900],
+      backgroundColor: colors.primary[500],
       paddingHorizontal: 16
     },
     onPress: () => console.log("Card button pressed")
@@ -34,53 +34,25 @@ export function CreditBuilderMemberCards() {
 
   return (
     <View>
-      <View className='flex-row justify-between w-full gap-4'>
-        <View className='flex-1'>
-          <Card
-            title="ZET Fraud Checker"
-            description="Improve your credit score"
-            showDescription={false}
-            showSubheading={false}
-            titleVariant="SH2"
-            imageSource={placeholderImages.checkerImage}
-            variant="primary"
-            height={110}
-            imageSize={{ width: 60, height: 60 }}
-            badge={{ text: "NEW", variant: "new" }}
-            onPress={() => handleCardPress('Build Credit')}
-            className="bg-neutral-0"
-          />
-        </View>
-        <View className='flex-1'>
-          <Card
-            title="Credit Analysis Video"
-            description="Set aside funds and build your savings automatically"
-            showDescription={false}
-            showSubheading={false}
-            titleVariant="SH2"
-            height={110}
-            imageSource={placeholderImages.AIVideoImage}
-            variant="secondary"
-            imageSize={{ width: 56, height: 56 }}
-            onPress={() => handleCardPress('Save More')}
-            className="bg-neutral-0"
-          />
-        </View>
-      </View>
-      <View className='mt-7'>
+    
+      <View>
         <Card
           title="Credit Builder Membership"
           description="A one of a kind membership that helps you build your credit score"
           showDescription={true}
-          titleVariant="H6"
+          titleVariant="H5"
           imageSource={placeholderImages.cblImage}
-          imageSize={{ width: 66, height: 66 }}
+          imageSize={{ width: 92, height: 100 }}
           variant="secondary"
-          badge={{ text: "PRE APPROVED", variant: "success" }}
+          badge={{ text: "NEW ON ZET", variant: "new" }}
           onPress={() => handleCardPress('Member Benefits')}
           className="bg-neutral-0"
           showButton={true}
           buttonProps={buttonProps}
+          gradientColors={['#ffffff', '#F7F2FA', '#c89cfd'] as const}
+          gradientStart={{ x: 0.2, y: 0 }}
+          gradientEnd={{ x: 0.8, y: 1.5 }}
+          gradientLocations={[0, 0.6, 1] as const}
         />
       </View>
     </View>

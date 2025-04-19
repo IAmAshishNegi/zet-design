@@ -515,7 +515,7 @@ const LinkTextXs: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
 const ButtonLg: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
   <Typography 
     variant="16" 
-    weight="semibold" 
+    weight="medium" 
     tracking="tight" 
     componentVariant="buttonLg"
     {...props} 
@@ -525,7 +525,7 @@ const ButtonLg: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'
 const ButtonMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
   <Typography 
     variant="14" 
-    weight="semibold" 
+    weight="medium" 
     tracking="tight" 
     componentVariant="buttonMd"
     {...props} 
@@ -535,7 +535,7 @@ const ButtonMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'
 const ButtonSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
   <Typography 
     variant="12" 
-    weight="semibold" 
+    weight="medium" 
     tracking="tight" 
     componentVariant="buttonSm"
     {...props} 

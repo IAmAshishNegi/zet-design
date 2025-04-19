@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Image, StyleSheet, Pressable, ViewStyle, ImageStyle, TextStyle } from 'react-native';
-import { H4, H5, H6, H7, SH1, SH2, SH3, B1, B3, B4, OverlineSm } from './typography/typography';
+import { H4, H5, H6, H7, SH1, SH2, SH3, B1, B3, B4, OverlineSm, B8 } from './typography/typography';
 import { colors } from '../../styles/theme';
-import Reanimated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Reanimated from 'react-native-reanimated';
 import { Button, ButtonProps } from './button/button';
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Create Animated Pressable for card touch effects
 const AnimatedPressable = Reanimated.createAnimatedComponent(Pressable);
@@ -17,7 +18,7 @@ type BadgeProps = {
 };
 
 // Heading variants for the card title
-type TitleVariant = 'H6' | 'SH1' | 'B1' | 'SH2' | 'H7' | 'SH3';
+type TitleVariant = 'H6' | 'SH1' | 'B1' | 'SH2' | 'H7' | 'SH3' | 'H5';
 
 // Type for theme color keys
 type ColorKey = keyof typeof colors;
@@ -107,6 +108,10 @@ export type CardProps = {
   descriptionStyle?: TextStyle;
   subheadingStyle?: TextStyle;
   onPress?: () => void;
+  gradientColors?: readonly [string, string, ...string[]];
+  gradientStart?: [number, number] | {x: number, y: number};
+  gradientEnd?: [number, number] | {x: number, y: number};
+  gradientLocations?: readonly [number, number, ...number[]] | null;
 };
 
 export function Card({ 
@@ -131,20 +136,16 @@ export function Card({
   titleStyle: customTitleStyle,
   descriptionStyle: customDescriptionStyle,
   subheadingStyle: customSubheadingStyle,
-  onPress 
+  onPress,
+  gradientColors = variant === 'primary' 
+    ? ['#FFFFFF', '#F8F9FA'] as const
+    : variant === 'secondary'
+      ? ['#FAFAFA', '#F0F0F0'] as const
+      : ['#EBFBF1', '#E0F5E9'] as const, // highlight variant
+  gradientStart = { x: 0, y: 0 },
+  gradientEnd = { x: 1, y: 1 },
+  gradientLocations = null
 }: CardProps) {
-  // Animation values
-  const scale = useSharedValue(1);
-  
-  // Handle touch interactions
-  const handlePressIn = () => {
-    scale.value = withTiming(0.98, { duration: 150 });
-  };
-  
-  const handlePressOut = () => {
-    scale.value = withTiming(1, { duration: 200 });
-  };
-  
   // Get variant base style
   let variantStyle = styles.card;
   if (variant === 'secondary') {
@@ -156,13 +157,6 @@ export function Card({
   // Extract background color from className if present
   const bgColor = extractBackgroundColor(className);
   
-  // Animated styles
-  const animatedCardStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }]
-    };
-  });
-
   // Get appropriate heading component based on titleVariant
   const getTitleComponent = () => {
     switch(titleVariant) {
@@ -174,10 +168,13 @@ export function Card({
         return B1;
       case 'SH2':
         return SH2;
+  
       case 'H7':
         return H7;
       case 'SH3':
         return SH3;
+      case 'H5':
+        return H5;
       default:
         return H6;
     }
@@ -217,7 +214,7 @@ export function Card({
   const cardHeightStyle = height ? { height } : undefined;
 
   return (
-    <AnimatedPressable 
+    <Pressable 
       style={[
         styles.cardBase, 
         variantStyle,
@@ -225,13 +222,18 @@ export function Card({
         backgroundColor && { backgroundColor },
         bgColor && { backgroundColor: bgColor },
         style,
-        animatedCardStyle
       ]}
       className={className}
       onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
     >
+      <LinearGradient
+        colors={gradientColors}
+        style={styles.gradientBackground}
+        start={gradientStart}
+        end={gradientEnd}
+        locations={gradientLocations}
+      />
+      
       <View style={styles.contentContainer}>
         {/* Badge and Title Section */}
         <View style={styles.headerSection}>
@@ -253,7 +255,7 @@ export function Card({
         )}
         
         {showDescription && description && (
-          <B4 style={descriptionStyles}>{description}</B4>
+          <B8 style={descriptionStyles}>{description}</B8>
         )}
         
         {showButton && buttonProps && (
@@ -283,7 +285,7 @@ export function Card({
           />
         </View>
       )}
-    </AnimatedPressable>
+    </Pressable>
   );
 }
 
@@ -386,10 +388,10 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   newBadge: {
-    backgroundColor: colors.primary[100],
+    backgroundColor: colors.warning[200],
   },
   newBadgeText: {
-    color: colors.primary[900],
+    color: colors.warning[900],
   },
   alertBadge: {
     backgroundColor: colors.error[100],
@@ -408,5 +410,13 @@ const styles = StyleSheet.create({
   },
   infoBadgeText: {
     color: colors.neutral[900],
+  },
+  gradientBackground: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    borderRadius: 18,
   },
 }); 

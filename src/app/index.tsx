@@ -1,5 +1,5 @@
-import React, { useState, useEffect, ReactNode } from 'react';
-import { SafeAreaView, StyleSheet, View, Pressable, GestureResponderEvent } from 'react-native';
+import React, { useState, useEffect, ReactNode, useRef } from 'react';
+import { SafeAreaView, StyleSheet, View, Pressable, GestureResponderEvent, Animated } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
@@ -16,6 +16,13 @@ import RewardsScreen from './screens/rewards-screen';
 
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
 const Tab = createBottomTabNavigator();
+
+// Create context to manage tab bar visibility
+export const TabBarVisibilityContext = React.createContext({
+  hideTabBar: () => {},
+  showTabBar: () => {},
+  tabBarVisible: true
+});
 
 interface TabBarButtonProps {
   children: ReactNode;
@@ -51,6 +58,26 @@ function TabBarButton({ children, onPress, accessibilityState = { selected: fals
 export default function App() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const [tabBarVisible, setTabBarVisible] = useState(true);
+  const tabBarAnimation = useRef(new Animated.Value(1)).current;
+
+  const hideTabBar = () => {
+    Animated.timing(tabBarAnimation, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+    setTabBarVisible(false);
+  };
+
+  const showTabBar = () => {
+    Animated.timing(tabBarAnimation, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true
+    }).start();
+    setTabBarVisible(true);
+  };
 
   // Check if user has seen onboarding
   useEffect(() => {
@@ -77,62 +104,72 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          tabBarActiveTintColor: colors.primary[700],
-          tabBarInactiveTintColor: colors.neutral[500],
-          tabBarStyle: styles.tabBar,
-          tabBarShowLabel: true,
-          tabBarButton: props => <TabBarButton {...props} />,
-          tabBarLabel: ({ focused, color }) => {
-            // Only show label for active tab, and use B3 with larger font size
-            if (focused) {
-              return <B5 style={{ color, marginTop: 4 }}>{route.name}</B5>;
-            } else {
-              return <B5 style={{ color, marginTop: 4 }}>{route.name}</B5>;
-            }
-          },
-          tabBarIcon: ({ focused, color, size }) => {
-            const variant = focused ? 'filled' : 'stroke';
-            
-            // Use direct hex colors that match theme values
-            const activeColor = colors.primary[700]; // Same as primary[500] from theme
-            const inactiveColor = colors.neutral[500]; // Same as neutral[300] from theme
-            
-            const iconColor = focused ? activeColor : inactiveColor;
-            const iconSize = focused ? 26 : 24;
-
-            if (route.name === 'Home') {
-              return <HomeIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
-            } else if (route.name === 'Score') {
-              return <ScoreIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
-            } else if (route.name === 'Cards') {
-              return <CreditCardIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
-            } else if (route.name === 'Rewards') {
-              return <RewardIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
-            }
-          },
-          tabBarBackground: () => (
-            <View style={styles.tabBarBackground} />
-          ),
-        })}
-      >
-        <Tab.Screen 
-          name="Home" 
-          component={HomeScreen} 
-          options={{
+    <TabBarVisibilityContext.Provider value={{ hideTabBar, showTabBar, tabBarVisible }}>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="light" />
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
             headerShown: false,
-            header: () => null
-          }}
-        />
-        <Tab.Screen name="Score" component={ScoreScreen} />
-        <Tab.Screen name="Cards" component={CardsScreen} />
-        <Tab.Screen name="Rewards" component={RewardsScreen} />
-      </Tab.Navigator>
-    </SafeAreaView>
+            tabBarActiveTintColor: colors.primary[700],
+            tabBarInactiveTintColor: colors.neutral[500],
+            tabBarStyle: [
+              styles.tabBar,
+              { 
+                transform: [{ translateY: tabBarAnimation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [100, 0]
+                })}] 
+              }
+            ],
+            tabBarShowLabel: true,
+            tabBarButton: props => <TabBarButton {...props} />,
+            tabBarLabel: ({ focused, color }) => {
+              // Only show label for active tab, and use B3 with larger font size
+              if (focused) {
+                return <B5 style={{ color, marginTop: 0 }}>{route.name}</B5>;
+              } else {
+                return <B5 style={{ color, marginTop: 0 }}>{route.name}</B5>;
+              }
+            },
+            tabBarIcon: ({ focused, color, size }) => {
+              const variant = focused ? 'filled' : 'stroke';
+              
+              // Use direct hex colors that match theme values
+              const activeColor = colors.primary[700]; // Same as primary[500] from theme
+              const inactiveColor = colors.neutral[500]; // Same as neutral[300] from theme
+              
+              const iconColor = focused ? activeColor : inactiveColor;
+              const iconSize = focused ? 26 : 24;
+
+              if (route.name === 'Home') {
+                return <HomeIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
+              } else if (route.name === 'Score') {
+                return <ScoreIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
+              } else if (route.name === 'Cards') {
+                return <CreditCardIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
+              } else if (route.name === 'Rewards') {
+                return <RewardIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
+              }
+            },
+            tabBarBackground: () => (
+              <View style={styles.tabBarBackground} />
+            ),
+          })}
+        >
+          <Tab.Screen 
+            name="Home" 
+            component={HomeScreen} 
+            options={{
+              headerShown: false,
+              header: () => null
+            }}
+          />
+          <Tab.Screen name="Score" component={ScoreScreen} />
+          <Tab.Screen name="Cards" component={CardsScreen} />
+          <Tab.Screen name="Rewards" component={RewardsScreen} />
+        </Tab.Navigator>
+      </SafeAreaView>
+    </TabBarVisibilityContext.Provider>
   );
 }
 
@@ -144,15 +181,12 @@ const styles = StyleSheet.create({
   tabBar: {
     height: "auto",
     width: '100%',
-    paddingTop: 14,
-    paddingBottom: 14,
+    paddingTop: 10,
+    paddingBottom: 6,
     elevation: 0,
     borderTopWidth: 0,
     position: 'absolute',
     bottom: 0,
- 
-   
-    borderRadius: 20,
     backgroundColor: 'transparent',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -164,12 +198,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: -1,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.098)',
     backgroundColor: colors.neutral['0'],
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.2,
@@ -194,7 +228,7 @@ const styles = StyleSheet.create({
   },
   activeIndicator: {
     position: 'absolute',
-    top: -12,
+    top: -10,
     width: 56,
     height: 3,
     backgroundColor: '#832DC2',
@@ -202,7 +236,7 @@ const styles = StyleSheet.create({
   },
   tabButtonContent: {
     padding: 4,
-    paddingBottom: 8,
+    paddingBottom: 2,
     alignItems: 'center',
   }
 }); 

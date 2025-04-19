@@ -17,6 +17,7 @@
     "expo-file-system": "^18.0.12",
     "expo-font": "^13.0.4",
     "expo-image": "^2.0.7",
+    "expo-linear-gradient": "^14.0.2",
     "expo-router": "^4.0.19",
     "expo-splash-screen": "^0.29.22",
     "expo-status-bar": "~2.0.1",

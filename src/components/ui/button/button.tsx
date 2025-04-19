@@ -34,8 +34,8 @@ const getButtonPaddings = (isResponsive = true) => ({
 
 // Border radius configuration based on size
 const getButtonBorderRadius = (isResponsive = true) => ({
-  sm: 4,
-  md: 8,
+  sm: 8,
+  md: 12,
   lg: 12,
   xl: 16
 });

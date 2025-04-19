@@ -98,6 +98,10 @@ export const colors = {
     "800": "#1e40af",
     "900": "#1e3a8a",
   },
+  background: {
+    "200": "#190125",
+    "400": "#100017",
+  },
 };
 
 export const spacing = {
@@ -233,8 +237,8 @@ export const lineHeight = {
   
   b1: "24px",
   b2: "22px",
-  b3: "22px",
-  b4: "22px",
+  b3: "19px",
+  b4: "18px",
   b5: "20px",
   b6: "24px",
   b7: "20px",
