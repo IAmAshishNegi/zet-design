@@ -10,14 +10,17 @@ import {
   Divider,
   H1,
   B1,
-  Button
+  Button,
+  H3,
+  ButtonSm,
+  SH5
 } from '../../components/ui';
 import { CreditScoreIcon } from '../../components/ui/icons';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RiveRef, Fit, Alignment } from 'rive-react-native';
 import { CreditBuilderMemberCards, SectionHeader } from '../../components/credit-builder';
-import { PromoBanner, BannerItem } from '../../components/carousel';
+import { PromoBanner, BannerItem, SpotlightSection, SpotlightItem } from '../../components/carousel';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { TabBarVisibilityContext } from '../index';
@@ -56,6 +59,40 @@ const bannerData: BannerItem[] = [
     id: '2',
     imageUrl: require('../../assets/images/abhibus.webp'),
     onPress: () => console.log('Abhibus banner pressed')
+  }
+];
+
+// Spotlight carousel data
+const spotlightData: SpotlightItem[] = [
+  {
+    id: '1',
+    backgroundImage: require('../../assets/images/fraud_check.webp'),
+    title: 'Do you Check your Account Details Regularly?',
+    subtitle: '1 in 8 users find account errors using ZET Fraud Checker',
+    showSubtitle: true,
+    statistic: 'Included with Builder Membership',
+    showStatistic: false,
+    description: 'Get expert assistance, pickup and drop of documents and doorstep visa delivery.',
+    showDescription: false,
+    ctaLabel: 'Check Now',
+    showCta: true,
+    gradientColors: ['rgba(11, 35, 74, 0.7)', 'rgba(3, 2, 29, 0.9)'],
+    onPress: () => console.log('Visa spotlight pressed')
+  },
+  {
+    id: '2',
+    backgroundImage: require('../../assets/images/cibil_loan.webp'),
+    title: 'Good CIBIL Score, Great Loan Offers',
+    subtitle: 'Do you know that a good CIBIL score can help you get great loan offers?',
+    showSubtitle: true,
+    statistic: '100M+ users',
+    showStatistic: false,
+    description: 'Transfer money instantly to anyone, anywhere with zero fees.',
+    showDescription: false,
+    ctaLabel: 'Know More',
+    showCta: true,
+    gradientColors: ['rgba(7, 41, 31, 0.472)', 'rgba(2, 29, 20, 0.9)'],
+    onPress: () => console.log('UPI spotlight pressed')
   }
 ];
 
@@ -172,6 +209,9 @@ export default function HomeScreen() {
               <H4 className="text-white opacity-80">{creditScoreData.name}</H4>
             </View>
           </View>
+          
+          {/* Spotlight Section */}
+         
         
           {/* Credit Score Section */}
           <View style={styles.heroSection}>
@@ -279,17 +319,27 @@ export default function HomeScreen() {
             <View className='px-4'>
               <SectionHeader 
                 title="Other Products to Improve Score" 
-              
-               
               />
             </View>
             <View className='mt-1 mb-1 px-4'>
               <CreditBuilderMemberCards />
             </View>
+            <View className='mt-5'>
+            <SpotlightSection
+            title="Credit Score Improvement Tips"
+            spotlightData={spotlightData}
+            autoPlay={false}
+            duration={5000}
+            itemHeight={320}
+            containerStyle={{
+              marginTop: 20
+            }}
+          />
+            </View>
             
-            <Divider variant="section" className="my-4" />
+          
 
-            <PromoBanner
+            {/* <PromoBanner
               bannerData={bannerData}
               autoPlay={true}
               duration={5000}
@@ -299,51 +349,65 @@ export default function HomeScreen() {
               onActionPress={() => {
                 console.log('View all offers pressed');
               }}
-            />
+            /> */}
 
-            <Divider variant="section" className="my-4" />
+            {/* <Divider variant="section" className="my-4" /> */}
             
-            <SectionHeader 
-              title="Your Financial Tips" 
-              actionLabel="More"
-              onActionPress={() => {
-                console.log('More tips pressed');
+          <View className='flex flex-row my-6 overflow-hidden py-8'>
+            <LinearGradient
+              colors={['#edd7ff', '#ffffff', '#e2b9ff']}
+              start={{ x: 0.1, y: 0.025 }}
+              end={{ x: 1, y: 1.5 }}
+              locations={[0, 0.5, 1]}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
               }}
             />
+           <View className='w-2/3 p-4 justify-center'>
+           <SH5 className='text-[#e84589] mb-2'>GET SBM ZET CREDIT CARD</SH5>
+             <H3 className='text-primary-900'>Build Credit Score with Interest</H3>
             
-            {/* Sample content */}
-            {[...Array(5)].map((_, index) => (
-              <View key={index}>
-                <B3 style={styles.cardTitle}>Financial Tip {index + 1}</B3>
-                <B2 style={styles.cardDescription}>This is a sample financial tip with placeholder content.</B2>
-                
-                <Divider variant="line" color={colors.neutral[200]} className="my-3" />
-                
-                <View style={styles.cardFooter}>
-                  <B4 style={styles.cardDate}>Updated 2 days ago</B4>
-                  
-                  <View style={styles.footerDivider}>
-                    <Divider variant="vertical" height={16} thickness={1} color={colors.neutral[300]} />
-                  </View>
-                  
-                  <B4 style={styles.cardCategory}>Finance</B4>
-                </View>
-              </View>
-            ))}
+             <Button 
+               variant='filled'
+               size='sm'
+               color='primary-900'
+               className='mt-4 w-[60%]'
+               onPress={() => console.log('Interest feature pressed')}
+             >
+               Learn More
+             </Button>
+           </View>
+           <View className='w-1/3'>
+             <Image 
+               source={require('../../assets/images/interest_fd.webp')} 
+               className='w-full h-[140px]' 
+               resizeMode="cover"
+             />
+           </View>
+          </View>
+          
+         
             
-            <View style={styles.buttonsContainer}>
+            <View className='flex flex-row px-4 gap-4 w-full'>
               <Link href="/design-system" asChild>
-                <Pressable style={styles.button}>
-                  <ButtonLg style={styles.buttonText}>Design System</ButtonLg>
+                <Pressable className='w-1/2'>
+                  <ButtonSm className='bg-primary-100 text-white p-3 w-full'>Design System</ButtonSm>
                 </Pressable>
               </Link>
               
               <Pressable 
-                style={[styles.button, { backgroundColor: colors.error[500], marginTop: 16, marginBottom: 100 }]}
+                className='w-1/2'
                 onPress={resetOnboarding}
               >
-                <ButtonLg style={styles.buttonText}>Reset Onboarding</ButtonLg>
+                <ButtonSm className='bg-error-100 text-white p-3 w-full'>Reset Onboarding</ButtonSm>
               </Pressable>
+            </View>
+            <View>
+              <Image source={require('../../assets/images/footer.webp')} className='w-full h-[220px]' />
             </View>
           </View>
         </ScrollView>
@@ -443,4 +507,5 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+
 }); 
