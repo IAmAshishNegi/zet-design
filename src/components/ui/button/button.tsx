@@ -6,10 +6,12 @@ import {
   ActivityIndicator,
   View,
   Pressable,
-  Text
+  Text,
+  TextStyle
 } from 'react-native';
 import { ButtonLg, ButtonMd, ButtonSm } from '../typography/typography';
 import { colors } from '../../../styles/theme';
+import { fontFamilyMap } from '../typography/typography';
 
 // Types for the button props
 type ButtonVariant = 'filled' | 'outlined' | 'text';
@@ -53,6 +55,7 @@ interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   label?: string;
   className?: string;
   style?: TouchableOpacityProps['style'];
+  textStyle?: TextStyle;
   onPress?: () => void;
   responsive?: boolean;
 }
@@ -70,6 +73,7 @@ const Button: React.FC<ButtonProps> = ({
   children,
   className = '',
   style,
+  textStyle,
   onPress,
   responsive: isResponsive = true,
   ...rest
@@ -129,6 +133,17 @@ const Button: React.FC<ButtonProps> = ({
   // Check for text color class in className
   const hasTextColorClass = className.includes('text-');
   
+  // Check for font weight class in className
+  const hasFontWeightClass = className.includes('font-');
+  
+  // Extract text color class from className
+  const textColorClass = hasTextColorClass ? 
+    className.match(/text-[a-z]+-\d+/)?.[0] : undefined;
+    
+  // Extract font weight class from className
+  const fontWeightClass = hasFontWeightClass ?
+    className.match(/font-[a-z]+/)?.[0] : undefined;
+
   // Check for width class in className
   const hasWidthClass = className.includes('w-');
 
@@ -171,15 +186,41 @@ const Button: React.FC<ButtonProps> = ({
     ...(typeof style === 'object' ? style : {}),
   };
 
+  // Combine both the theme text color and any custom text style
+  const combinedTextStyle = {
+    color: hasTextColorClass ? undefined : textColor,
+    ...(textStyle || {})
+  };
+
+  // Handle font weight in a way that preserves the font family
+  if (textStyle?.fontWeight) {
+    // Map numeric or string weight to font family
+    let fontFamilyKey: 'regular' | 'medium' | 'semibold' | 'bold' = 'medium'; // Default for buttons
+    
+    if (textStyle.fontWeight === '600' || textStyle.fontWeight === 'semibold') {
+      fontFamilyKey = 'semibold';
+    } else if (textStyle.fontWeight === '700' || textStyle.fontWeight === 'bold') {
+      fontFamilyKey = 'bold';
+    } else if (textStyle.fontWeight === '400' || textStyle.fontWeight === 'normal') {
+      fontFamilyKey = 'regular';
+    }
+    
+    // Override the fontFamily to use the correct weight
+    combinedTextStyle.fontFamily = fontFamilyMap[fontFamilyKey];
+    
+    // Remove the fontWeight to prevent React Native from trying to apply both
+    delete combinedTextStyle.fontWeight;
+  }
+
   // Function to render children properly
   const renderChildren = () => {
     // If children is a string, wrap it in the appropriate text component
     if (typeof children === 'string') {
       return (
         <TextComponent 
-          style={{ color: hasTextColorClass ? undefined : textColor }} 
+          style={combinedTextStyle} 
           responsive={isResponsive}
-          className={hasTextColorClass ? className.match(/text-[a-z]+-\d+/)?.[0] : undefined}
+          className={`${textColorClass || ''} ${fontWeightClass || ''}`}
         >
           {children}
         </TextComponent>
@@ -212,9 +253,9 @@ const Button: React.FC<ButtonProps> = ({
           
           {label && (
             <TextComponent 
-              style={{ color: hasTextColorClass ? undefined : textColor }} 
+              style={combinedTextStyle} 
               responsive={isResponsive}
-              className={hasTextColorClass ? className.match(/text-[a-z]+-\d+/)?.[0] : undefined}
+              className={`${textColorClass || ''} ${fontWeightClass || ''}`}
             >
               {label}
             </TextComponent>
@@ -233,4 +274,4 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export { Button, type ButtonProps, type ButtonVariant, type ButtonColor, type ButtonSize }; 
+export { Button, type ButtonProps, type ButtonVariant, type ButtonColor, type ButtonSize };

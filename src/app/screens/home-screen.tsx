@@ -21,6 +21,7 @@ import { PromoBanner, BannerItem } from '../../components/carousel';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { TabBarVisibilityContext } from '../index';
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Constants
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
@@ -182,66 +183,94 @@ export default function HomeScreen() {
               artboardName='main_home_hero_new'
             />
           </View>
-          <View className='bg-background-200 px-3'>
-            <View className='px-3 pt-6'>
-              <B3 className='text-white opacity-50'>CARD BENEFITS</B3>
-            </View>
-            <View className='py-5 flex-row items-center mt-1 border-b border-white/5'>
-              <View className="mr-2">
-               <Image source={require('../../assets/images/score_new.webp')} className='w-16 h-16' />
+
+          {/* Background gradient section */}
+          <View style={styles.gradientContainer}>
+            <LinearGradient
+              colors={['#190125', '#190125', '#b351fd79'] as const}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1.5 }}
+              locations={[0, 0.5, 1] as const}
+              style={styles.backgroundGradient}
+            />
+            <View className='px-3'>
+              <View className='px-3 pt-6'>
+                <B3 className='text-white opacity-50'>CARD BENEFITS</B3>
               </View>
-              <View className='flex-1'>
-                <B1 className='text-white opacity-75'>Improve Credit Score</B1>
-                <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
+              <View className='py-5 flex-row items-center mt-1 border-b border-white/5'>
+                <View className="mr-2">
+                 <Image source={require('../../assets/images/score_new.webp')} className='w-16 h-16' />
+                </View>
+                <View className='flex-1'>
+                  <B1 className='text-white opacity-75'>Improve Credit Score</B1>
+                  <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
+                </View>
               </View>
-            </View>
-            <View className='py-5 flex-row items-center border-b border-white/5'>
-              <View className="mr-2">
-               <Image source={require('../../assets/images/docs_gn.webp')} className='w-16 h-16' />
+              <View className='py-5 flex-row items-center border-b border-white/5'>
+                <View className="mr-2">
+                 <Image source={require('../../assets/images/docs_gn.webp')} className='w-16 h-16' />
+                </View>
+                <View className='flex-1'>
+                  <B1 className='text-white opacity-75'>Easy Application Process</B1>
+                  <B3 className='text-white opacity-30 w-full'>Apply for the card in just 2 minutes, no documentation required</B3>
+                </View>
               </View>
-              <View className='flex-1'>
-                <B1 className='text-white opacity-75'>Easy Application Process</B1>
-                <B3 className='text-white opacity-30 w-full'>Apply for the card in just 2 minutes, no documentation required</B3>
+              <View className='py-5 flex-row items-center border-b border-white/5'>
+                <View className="mr-2">
+                 <Image source={require('../../assets/images/upi_gn.webp')} className='w-16 h-16' />
+                </View>
+                <View className='flex-1'>
+                  <B1 className='text-white opacity-75'>Rupay UPI Credit Card</B1>
+                  <B3 className='text-white opacity-30 w-full'>Pay through UPI ID, no need to add bank account</B3>
+                </View>
               </View>
-            </View>
-            <View className='py-5 flex-row items-center border-b border-white/5'>
-              <View className="mr-2">
-               <Image source={require('../../assets/images/upi_gn.webp')} className='w-16 h-16' />
+              <View className='py-5 flex-row items-center'>
+                <View className="mr-2">
+                 <Image source={require('../../assets/images/rewards_gn.webp')} className='w-16 h-16' />
+                </View>
+                <View className='flex-1'>
+                  <B1 className='text-white opacity-75'>Get Exlusive Rewards & Offers</B1>
+                  <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
+                </View>
               </View>
-              <View className='flex-1'>
-                <B1 className='text-white opacity-75'>Rupay UPI Credit Card</B1>
-                <B3 className='text-white opacity-30 w-full'>Pay through UPI ID, no need to add bank account</B3>
+              <View className='py-5 flex-row items-center border-b border-white/5'>
+                <View className='flex flex-co justify-center items-center w-full mb-4 mt-2 gap-5'>
+                  <Button 
+                    variant='filled' 
+                    size='lg' 
+                    color='neutral-0'
+                    className='px-9'
+                    textStyle={{ color: colors.primary[500], fontWeight: '600' }}
+                    style={{
+                      borderLeftWidth: 0.5,
+                      borderRightWidth: 0.5,
+                      borderBottomWidth: 3,
+                      borderTopWidth: 0,
+                      borderColor: '#be9ed4',
+                      width: '60%'
+                    }}
+                    onPress={navigateToCards}
+                  >
+                    Start Application
+                  </Button>
+                  <Button 
+                    variant='filled' 
+                    size='lg' 
+                    className='px-9'
+                    style={{
+                      borderLeftWidth: 0.5,
+                      borderRightWidth: 0.5,
+                      borderBottomWidth: 3,
+                      borderTopWidth: 0,
+                      borderColor: '#a26cc9',
+                      width: '60%'
+                    }}
+                    onPress={navigateToCards}
+                  >
+                    Know More
+                  </Button>
+                </View>
               </View>
-            </View>
-            <View className='py-5 flex-row items-center'>
-              <View className="mr-2">
-               <Image source={require('../../assets/images/rewards_gn.webp')} className='w-16 h-16' />
-              </View>
-              <View className='flex-1'>
-                <B1 className='text-white opacity-75'>Get Exlusive Rewards & Offers</B1>
-                <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
-              </View>
-            </View>
-            <View className='py-5 flex-row items-center border-b border-white/5'>
-           {/* Rive know more button comes here */}
-           <View className='flex justify-center items-center w-full mb-4 gap-4'>
-           <Button 
-             variant='filled' 
-             size='lg' 
-             className='w-full px-9'
-             onPress={navigateToCards}
-           >
-             Know More
-           </Button>
-           <Button 
-             variant='filled' 
-             size='lg' 
-             className='w-full px-9'
-             onPress={navigateToCards}
-           >
-             Start Application
-           </Button>
-           </View>
             </View>
           </View>
           {/* Content Section (White Background) */}
@@ -399,5 +428,19 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.neutral[50],
+  },
+  gradientContainer: {
+    position: 'relative',
+    width: '100%',
+    overflow: 'hidden',
+  },
+  backgroundGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    height: '100%',
+    width: '100%',
   },
 }); 
