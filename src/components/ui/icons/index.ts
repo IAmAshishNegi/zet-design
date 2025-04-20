@@ -9,4 +9,5 @@ export { default as RewardIcon } from './RewardIcon';
 export { default as ScoreIcon } from './ScoreIcon';
 export { default as CreditCardIcon } from './CreditCardIcon';
 export { default as ZetLogo } from './ZetLogo';
-export { default as CreditScoreIcon } from './CreditScoreIcon'; 
+export { default as CreditScoreIcon } from './CreditScoreIcon';
+export { default as InfoIcon } from './InfoIcon'; 

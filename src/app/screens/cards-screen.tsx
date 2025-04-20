@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Image } from "react-native";
 import { colors } from "../../styles/theme";
-import { CreditCardIcon } from "../../components/ui/icons";
+import { CreditCardIcon, InfoIcon } from "../../components/ui/icons";
 import {
   H3,
   B1,
@@ -27,6 +27,7 @@ import {
 import { TabBarVisibilityContext } from "../index";
 import { CardTabHeroSection } from "../../components/cards/card-tab-hero-section";
 import { Button } from "../../components/ui/button/button";
+
 interface CardItem {
   id: string;
   name: string;
@@ -186,15 +187,18 @@ export default function CardsScreen() {
         <View className="mt-6 w-full items-center justify-center">
         <Button variant="filled" size="lg" className="w-[60%]">Start Application</Button>
         </View>
-        <View className="flex-row gap-2 items-center justify-center">
+        <View className="px-5">
+        <View className="flex-row gap-2 items-center justify-center pt-3 pb-4 border-t mt-4 border-neutral-100">
           <View className="flex-row gap-2 items-center justify-center">
-          <Image source={require("../../assets/images/rbi.png")} className="w-11 h-11" />
+          <Image source={require("../../assets/images/rbi.png")} className="w-10 h-10" />
           </View>
           <View className="flex-row gap-2 items-center justify-center">
           <B2 className="text-black opacity-60">
             SBM Bank FDs are secured by RBI
           </B2>
+          <InfoIcon size={20} color="neutral.700" secondaryColor="neutral.200" variant="duotone" />
           </View>
+        </View>
         </View>
         </View>
 

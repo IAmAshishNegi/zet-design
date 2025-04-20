@@ -18,6 +18,7 @@ export { default as PlayCircleIcon } from './PlayCircleIcon';
 export { default as ArrowIcon } from './ArrowIcon';
 export { default as CheckboxIcon } from './CheckboxIcon';
 export { default as CheckboxEmptyIcon } from './CheckboxEmptyIcon';
+export { default as InfoIcon } from './InfoIcon';
 // Add more icon exports as they are created
 // export { default as ProfileIcon } from './ProfileIcon';
 // export { default as SettingsIcon } from './SettingsIcon';
