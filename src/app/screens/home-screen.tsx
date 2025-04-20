@@ -372,11 +372,13 @@ export default function HomeScreen() {
              <H3 className='text-primary-900'>Build Credit Score with Interest</H3>
             
              <Button 
-               variant='filled'
-               size='sm'
+               variant='text'
+               size='md'
                color='primary-900'
-               className='mt-4 w-[60%]'
+               className='mt-4 p-0 w-[50%]'
                onPress={() => console.log('Interest feature pressed')}
+               textStyle={{fontWeight: '600'}}
+               style={{padding: 0}}
              >
                Learn More
              </Button>

@@ -230,7 +230,7 @@ export const lineHeight = {
   h7: "26px",
   
   sh1: "24px",
-  sh2: "18px",
+  sh2: "20px",
   sh3: "19px",
   sh4: "16px",
   sh5: "16px",
