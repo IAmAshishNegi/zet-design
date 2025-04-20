@@ -5,7 +5,7 @@ import { fontUtils } from '../../../utils/font-utils';
 
 // Define simplified types
 type FontSizeVariant = 
-  | '10' | '11' | '12' | '13' | '14' | '16' | '18' | '20' | '24' | '25' | '28' | '30' | '32' | '40'
+  | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '18' | '20' | '24' | '25' | '28' | '30' | '32' | '40'
   | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
 
 type FontFamilyVariant = 'regular' | 'medium' | 'semibold' | 'bold';
@@ -63,6 +63,7 @@ const fontSizeMap = {
   '12': 12,
   '13': 13,
   '14': 14,
+  '15': 15,
   '16': 16,
   '18': 18,
   '20': 20,
@@ -374,6 +375,23 @@ const SH5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'c
   );
 };
 
+const SH6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="15" 
+      weight="semibold" 
+      tracking="superTight" 
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        lineHeight: 22, // Define an explicit line height
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
+
 // ----- Body Components -----
 
 const B1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
@@ -665,7 +683,7 @@ export {
   OBHeading, H1, H2, H3, H4, H5, H6, H7,
   
   // SubHeadings
-  SH1, SH2, SH3, SH4, SH5,
+  SH1, SH2, SH3, SH4, SH5, SH6,
   
   // Body Text
   B1, B2, B3, B4, B5, B6, B7, B8, B9,
