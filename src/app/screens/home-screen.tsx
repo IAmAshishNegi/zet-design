@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import { Image } from 'react-native';
 import { View, StyleSheet, Pressable, ScrollView, Platform, Dimensions, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { colors } from '../../styles/theme';
@@ -25,6 +25,8 @@ import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { TabBarVisibilityContext } from '../index';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useBottomSheet } from '../../context/bottom-sheet-context';
+import { useApplicationState, APPLICATION_STATUS } from '../../context/application-state-context';
 
 // Constants
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
@@ -104,6 +106,8 @@ export default function HomeScreen() {
   const riveScoreRef = useRef<RiveRef>(null);
   const [avatarVariant, setAvatarVariant] = useState<'default' | 'outline' | 'small'>('default');
   const { hideTabBar, showTabBar } = useContext(TabBarVisibilityContext);
+  const { showBottomSheet, hideBottomSheet } = useBottomSheet();
+  const { applicationStatus, setApplicationStatus, isApplicationStarted } = useApplicationState();
   const scrollRef = useRef<ScrollView>(null);
   const lastScrollY = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -120,6 +124,8 @@ export default function HomeScreen() {
   const resetOnboarding = async () => {
     try {
       await AsyncStorage.removeItem(HAS_SEEN_ONBOARDING);
+      // Also reset application state
+      await setApplicationStatus(APPLICATION_STATUS.NOT_STARTED);
       router.push('/onboarding');
     } catch (error) {
       // Error handling silently fails
@@ -141,6 +147,36 @@ export default function HomeScreen() {
   const navigateToCards = () => {
     navigation.jumpTo('Cards');
   };
+  
+  // Define the application start bottom sheet content
+  const renderApplicationStartContent = useCallback(() => (
+    <View style={{ flex: 1, paddingHorizontal: 5 }}>
+      <SH1 className="text-black text-center mb-2">Start SBM ZET Credit Card Application</SH1>
+      <B2 className="text-black opacity-70 text-center mb-6">
+        You are starting your application for SBM ZET Credit Card. This process will take about 2 minutes to complete.
+      </B2>
+      <Button 
+        variant="filled" 
+        size="lg" 
+        className="w-full"
+        onPress={async () => {
+          console.log("Continue Application pressed from bottom sheet");
+          // Update application status to IN_PROGRESS
+          await setApplicationStatus(APPLICATION_STATUS.IN_PROGRESS);
+          // Close the bottom sheet
+          hideBottomSheet();
+        }}
+      >
+        Continue Application
+      </Button>
+    </View>
+  ), [setApplicationStatus, hideBottomSheet]);
+
+  // Open application start bottom sheet
+  const openApplicationStartSheet = useCallback(() => {
+    console.log('Opening application start bottom sheet from HomeScreen');
+    showBottomSheet(renderApplicationStartContent(), ['45%']); // Pass content and snap points
+  }, [showBottomSheet, renderApplicationStartContent]);
 
   // Handle scroll events to show/hide tab bar
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -234,83 +270,157 @@ export default function HomeScreen() {
               style={styles.backgroundGradient}
             />
             <View className='px-3'>
-              <View className='px-3 pt-6'>
-                <B3 className='text-white opacity-50'>CARD BENEFITS</B3>
-              </View>
-              <View className='py-5 flex-row items-center mt-1 border-b border-white/5'>
-                <View className="mr-2">
-                 <Image source={require('../../assets/images/score_new.webp')} className='w-16 h-16' />
+              {isApplicationStarted ? (
+                <View className='px-3 py-10'>
+                  <View className='flex-col gap-0 w-full items-center justify-center align-middle'>
+                    <SH1 className="text-white opacity-90 mb-3">
+                      Application Status
+                    </SH1>
+                    {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
+                      <B2 className="text-white opacity-70 text-center mb-6">
+                        Your application for SBM ZET Credit Card has been completed. Your card will be delivered shortly.
+                      </B2>
+                    ) : (
+                      <B2 className="text-white opacity-70 text-center mb-6">
+                        Your application for SBM ZET Credit Card has been initiated. Complete the process to get your card.
+                      </B2>
+                    )}
+                    {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
+                      <Button 
+                        variant='filled' 
+                        size='lg' 
+                        color='neutral-0'
+                        className='px-9 mt-4'
+                        textStyle={{ color: colors.primary[500], fontWeight: '600' }}
+                        style={{
+                          borderLeftWidth: 0.5,
+                          borderRightWidth: 0.5,
+                          borderBottomWidth: 3,
+                          borderTopWidth: 0,
+                          borderColor: '#be9ed4',
+                          width: '80%'
+                        }}
+                        onPress={() => {
+                          console.log("Track application status");
+                          // Add navigation to track application status
+                        }}
+                        onLongPress={async () => {
+                          // For testing: Toggle back to IN_PROGRESS
+                          await setApplicationStatus(APPLICATION_STATUS.IN_PROGRESS);
+                        }}
+                      >
+                        Track Application Status
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant='filled' 
+                        size='lg' 
+                        color='neutral-0'
+                        className='px-9 mt-4'
+                        textStyle={{ color: colors.primary[500], fontWeight: '600' }}
+                        style={{
+                          borderLeftWidth: 0.5,
+                          borderRightWidth: 0.5,
+                          borderBottomWidth: 3,
+                          borderTopWidth: 0,
+                          borderColor: '#be9ed4',
+                          width: '80%'
+                        }}
+                        onPress={() => {
+                          console.log("Continue Application process");
+                          // Add actual application form navigation here
+                        }}
+                        onLongPress={async () => {
+                          // For testing: Toggle to COMPLETED
+                          await setApplicationStatus(APPLICATION_STATUS.COMPLETED);
+                        }}
+                      >
+                        Complete Your Application
+                      </Button>
+                    )}
+                  </View>
                 </View>
-                <View className='flex-1'>
-                  <B1 className='text-white opacity-75'>Improve Credit Score</B1>
-                  <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
-                </View>
-              </View>
-              <View className='py-5 flex-row items-center border-b border-white/5'>
-                <View className="mr-2">
-                 <Image source={require('../../assets/images/docs_gn.webp')} className='w-16 h-16' />
-                </View>
-                <View className='flex-1'>
-                  <B1 className='text-white opacity-75'>Easy Application Process</B1>
-                  <B3 className='text-white opacity-30 w-full'>Apply for the card in just 2 minutes, no documentation required</B3>
-                </View>
-              </View>
-              <View className='py-5 flex-row items-center border-b border-white/5'>
-                <View className="mr-2">
-                 <Image source={require('../../assets/images/upi_gn.webp')} className='w-16 h-16' />
-                </View>
-                <View className='flex-1'>
-                  <B1 className='text-white opacity-75'>Rupay UPI Credit Card</B1>
-                  <B3 className='text-white opacity-30 w-full'>Pay through UPI ID, no need to add bank account</B3>
-                </View>
-              </View>
-              <View className='py-5 flex-row items-center'>
-                <View className="mr-2">
-                 <Image source={require('../../assets/images/rewards_gn.webp')} className='w-16 h-16' />
-                </View>
-                <View className='flex-1'>
-                  <B1 className='text-white opacity-75'>Get Exlusive Rewards & Offers</B1>
-                  <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
-                </View>
-              </View>
-              <View className='py-5 flex-row items-center border-b border-white/5'>
-                <View className='flex flex-co justify-center items-center w-full mb-4 mt-2 gap-5'>
-                  <Button 
-                    variant='filled' 
-                    size='lg' 
-                    color='neutral-0'
-                    className='px-9'
-                    textStyle={{ color: colors.primary[500], fontWeight: '600' }}
-                    style={{
-                      borderLeftWidth: 0.5,
-                      borderRightWidth: 0.5,
-                      borderBottomWidth: 3,
-                      borderTopWidth: 0,
-                      borderColor: '#be9ed4',
-                      width: '60%'
-                    }}
-                    onPress={navigateToCards}
-                  >
-                    Start Application
-                  </Button>
-                  <Button 
-                    variant='filled' 
-                    size='lg' 
-                    className='px-9'
-                    style={{
-                      borderLeftWidth: 0.5,
-                      borderRightWidth: 0.5,
-                      borderBottomWidth: 3,
-                      borderTopWidth: 0,
-                      borderColor: '#a26cc9',
-                      width: '60%'
-                    }}
-                    onPress={navigateToCards}
-                  >
-                    Know More
-                  </Button>
-                </View>
-              </View>
+              ) : (
+                <>
+                  <View className='px-3 pt-6'>
+                    <B3 className='text-white opacity-50'>CARD BENEFITS</B3>
+                  </View>
+                  <View className='py-5 flex-row items-center mt-1 border-b border-white/5'>
+                    <View className="mr-2">
+                     <Image source={require('../../assets/images/score_new.webp')} className='w-16 h-16' />
+                    </View>
+                    <View className='flex-1'>
+                      <B1 className='text-white opacity-75'>Improve Credit Score</B1>
+                      <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
+                    </View>
+                  </View>
+                  <View className='py-5 flex-row items-center border-b border-white/5'>
+                    <View className="mr-2">
+                     <Image source={require('../../assets/images/docs_gn.webp')} className='w-16 h-16' />
+                    </View>
+                    <View className='flex-1'>
+                      <B1 className='text-white opacity-75'>Easy Application Process</B1>
+                      <B3 className='text-white opacity-30 w-full'>Apply for the card in just 2 minutes, no documentation required</B3>
+                    </View>
+                  </View>
+                  <View className='py-5 flex-row items-center border-b border-white/5'>
+                    <View className="mr-2">
+                     <Image source={require('../../assets/images/upi_gn.webp')} className='w-16 h-16' />
+                    </View>
+                    <View className='flex-1'>
+                      <B1 className='text-white opacity-75'>Rupay UPI Credit Card</B1>
+                      <B3 className='text-white opacity-30 w-full'>Pay through UPI ID, no need to add bank account</B3>
+                    </View>
+                  </View>
+                  <View className='py-5 flex-row items-center'>
+                    <View className="mr-2">
+                     <Image source={require('../../assets/images/rewards_gn.webp')} className='w-16 h-16' />
+                    </View>
+                    <View className='flex-1'>
+                      <B1 className='text-white opacity-75'>Get Exlusive Rewards & Offers</B1>
+                      <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
+                    </View>
+                  </View>
+                  <View className='py-5 flex-row items-center border-b border-white/5'>
+                    <View className='flex flex-co justify-center items-center w-full mb-4 mt-2 gap-5'>
+                      <Button 
+                        variant='filled' 
+                        size='lg' 
+                        color='neutral-0'
+                        className='px-9'
+                        textStyle={{ color: colors.primary[500], fontWeight: '600' }}
+                        style={{
+                          borderLeftWidth: 0.5,
+                          borderRightWidth: 0.5,
+                          borderBottomWidth: 3,
+                          borderTopWidth: 0,
+                          borderColor: '#be9ed4',
+                          width: '60%'
+                        }}
+                        onPress={openApplicationStartSheet}
+                      >
+                        Start Application
+                      </Button>
+                      <Button 
+                        variant='filled' 
+                        size='lg' 
+                        className='px-9'
+                        style={{
+                          borderLeftWidth: 0.5,
+                          borderRightWidth: 0.5,
+                          borderBottomWidth: 3,
+                          borderTopWidth: 0,
+                          borderColor: '#a26cc9',
+                          width: '60%'
+                        }}
+                        onPress={navigateToCards}
+                      >
+                        Know More
+                      </Button>
+                    </View>
+                  </View>
+                </>
+              )}
             </View>
           </View>
           {/* Content Section (White Background) */}

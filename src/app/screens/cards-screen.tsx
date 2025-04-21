@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect, useCallback, useMemo } from "react";
+import React, { useContext, useRef, useEffect, useCallback, useMemo, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -26,6 +26,7 @@ import {
   H5,
   SH5,
   SH6,
+  H4,
 } from "../../components/ui/typography/typography";
 import { TabBarVisibilityContext } from "../index";
 import { CardTabHeroSection } from "../../components/cards/card-tab-hero-section";
@@ -34,10 +35,14 @@ import { useBottomSheet } from '../../context/bottom-sheet-context';
 import SpotlightCarousel from "../../components/carousel/spotlight-carousel";
 import LogoMarqueeCarousel from "../../components/carousel/logo-marquee-carousel";
 import ChevronCircleRightIcon from "../../components/ui/icons/ChevronCircleRightIcon";
+import { useApplicationState, APPLICATION_STATUS } from '../../context/application-state-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Use React.memo for frequently reused components
 const MemoizedButton = React.memo(Button);
 const MemoizedImage = React.memo(Image);
+
+// Constants
 
 interface CardItem {
   id: string;
@@ -96,7 +101,8 @@ const PromoCard = React.memo(({ card }: { card: PromoCardItem }) => (
 
 export default function CardsScreen() {
   const { hideTabBar, showTabBar } = useContext(TabBarVisibilityContext);
-  const { showBottomSheet } = useBottomSheet();
+  const { showBottomSheet, hideBottomSheet } = useBottomSheet();
+  const { applicationStatus, setApplicationStatus, isApplicationStarted } = useApplicationState();
   const lastScrollY = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const isScrolling = useRef(false);
@@ -105,14 +111,14 @@ export default function CardsScreen() {
   const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     if (!isScrolling.current && event && event.nativeEvent) {
       isScrolling.current = true;
+      
+      // Store values from the event before the async call
+      const currentScrollY = event.nativeEvent.contentOffset.y;
+      
       requestAnimationFrame(() => {
-        if (!event || !event.nativeEvent || !event.nativeEvent.contentOffset) {
-          isScrolling.current = false;
-          return;
-        }
+        // Don't try to access event inside requestAnimationFrame
+        // as the synthetic event is nullified by then
         
-        const currentScrollY = event.nativeEvent.contentOffset.y;
-
         if (currentScrollY > lastScrollY.current + 20) {
           hideTabBar();
         } else if (currentScrollY < lastScrollY.current - 20) {
@@ -171,11 +177,41 @@ export default function CardsScreen() {
     </View>
   ), []);
 
+  // Define the application start bottom sheet content
+  const renderApplicationStartContent = useCallback(() => (
+    <View style={styles.bottomSheetContentContainer}>
+      <SH1 className="text-black text-center mb-2">Start SBM ZET Credit Card Application</SH1>
+      <B2 className="text-black opacity-70 text-center mb-6">
+        You are starting your application for SBM ZET Credit Card. This process will take about 2 minutes to complete.
+      </B2>
+      <MemoizedButton 
+        variant="filled" 
+        size="lg" 
+        className="w-full"
+        onPress={async () => {
+          console.log("Continue Application pressed from bottom sheet");
+          // Update application status to IN_PROGRESS
+          await setApplicationStatus(APPLICATION_STATUS.IN_PROGRESS);
+          // Hide the bottom sheet
+          hideBottomSheet();
+        }}
+      >
+        Continue Application
+      </MemoizedButton>
+    </View>
+  ), [hideBottomSheet, setApplicationStatus]);
+
   // Open bottom sheet using the context
   const openRbiInfoSheet = useCallback(() => {
     console.log('Triggering bottom sheet from CardsScreen');
     showBottomSheet(renderBottomSheetContent(), ['40%']); // Pass content and snap points
   }, [showBottomSheet, renderBottomSheetContent]);
+
+  // Open application start bottom sheet
+  const openApplicationStartSheet = useCallback(() => {
+    console.log('Opening application start bottom sheet');
+    showBottomSheet(renderApplicationStartContent(), ['45%']); // Pass content and snap points
+  }, [showBottomSheet, renderApplicationStartContent]);
 
   // Memoize static data
   const promoCards: PromoCardItem[] = useMemo(() => [
@@ -437,52 +473,113 @@ export default function CardsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <CardTabHeroSection />
-        <View className="bg-neutral-100 px-3">
-          <View className="bg-neutral-0 -mt-20 pt-10 rounded-2xl border border-neutral-200">
-            <View>
-              <View className="flex-col gap-0 w-full items-center justify-center align-middle">
-                <SH1 className="text-black opacity-60">
-                  Build 750+ Credit Score with
-                </SH1>
-                <H3>SBM ZET Credit Card</H3>
+        <View className="bg-neutral-100">
+          {isApplicationStarted ? (
+            <View className="bg-neutral-0 -mt-2 pt-10">
+              <View>
+                <View className="flex-col gap-0 w-full items-center justify-center align-middle px-4">
+                  <SH1 className="text-black opacity-90 mb-3">
+                    Application Status
+                  </SH1>
+                  {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
+                    <B2 className="text-black opacity-70 text-center mb-4">
+                      Your application for SBM ZET Credit Card has been completed. Your card will be delivered shortly.
+                    </B2>
+                  ) : (
+                    <B2 className="text-black opacity-70 text-center mb-4">
+                      Your application for SBM ZET Credit Card has been initiated. Complete the process to get your card.
+                    </B2>
+                  )}
+                </View>
+              </View>
+              <View className="px-4 mt-6 w-full items-center justify-center">
+                {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
+                  <MemoizedButton 
+                    variant="filled" 
+                    size="lg" 
+                    className="w-[80%]"
+                    onPress={() => {
+                      console.log("Track application status");
+                      // Add navigation to track application status
+                    }}
+                    onLongPress={async () => {
+                      // For testing: Toggle back to IN_PROGRESS
+                      await setApplicationStatus(APPLICATION_STATUS.IN_PROGRESS);
+                    }}
+                  >
+                    Track Application Status
+                  </MemoizedButton>
+                ) : (
+                  <MemoizedButton 
+                    variant="filled" 
+                    size="lg" 
+                    className="w-[80%]"
+                    onPress={() => {
+                      console.log("Continue Application process");
+                      // Add actual application form navigation here
+                    }}
+                    onLongPress={async () => {
+                      // For testing: Toggle to COMPLETED
+                      await setApplicationStatus(APPLICATION_STATUS.COMPLETED);
+                    }}
+                  >
+                    Complete Your Application
+                  </MemoizedButton>
+                )}
               </View>
             </View>
-            <View className="flex-col flex-wrap w-full pl-3 pr-1 gap-3 mt-5">
-              {promoCards.map(card => (
-                <PromoCard key={card.id} card={card} />
-              ))}
-            </View>
-            <View className="mt-6 w-full items-center justify-center">
-              <MemoizedButton variant="filled" size="lg" className="w-[60%]">
-                Start Application
-              </MemoizedButton>
-            </View>
-            <View className="px-5">
-              <View className="flex-row gap-2 items-center justify-center pt-3 pb-4 border-t mt-4 border-neutral-100">
-                <View className="flex-row gap-2 items-center justify-center">
-                  <MemoizedImage
-                    source={require("../../assets/images/rbi.png")}
-                    className="w-10 h-10"
-                    style={{ width: 40, height: 40 }}
-                    resizeMode="contain"
-                  />
+          ) : (
+            <View className="bg-neutral-0 -mt-2 pt-10">
+              <View>
+                <View className="flex-col gap-0 w-full items-center justify-center align-middle">
+                  <SH1 className="text-black opacity-60">
+                    Build 750+ Credit Score with
+                  </SH1>
+                  <H4>SBM ZET Credit Card</H4>
                 </View>
-                <View className="flex-row gap-2 items-center justify-center">
-                  <B2 className="text-black opacity-60">
-                    SBM Bank FDs are secured by RBI
-                  </B2>
-                  <Pressable onPress={openRbiInfoSheet}>
-                    <InfoIcon
-                      size={20}
-                      color="neutral.700"
-                      secondaryColor="neutral.200"
-                      variant="duotone"
+              </View>
+              <View className="flex-col flex-wrap w-full pl-3 pr-1 gap-3 mt-5">
+                {promoCards.map(card => (
+                  <PromoCard key={card.id} card={card} />
+                ))}
+              </View>
+              <View className="mt-6 w-full items-center justify-center">
+                <MemoizedButton 
+                  variant="filled" 
+                  size="lg" 
+                  className="w-[60%]"
+                  onPress={openApplicationStartSheet}
+                >
+                  Start Application
+                </MemoizedButton>
+              </View>
+              <View className="px-5">
+                <View className="flex-row gap-2 items-center justify-center pt-3 pb-4 border-t mt-4 border-neutral-100">
+                  <View className="flex-row gap-2 items-center justify-center">
+                    <MemoizedImage
+                      source={require("../../assets/images/rbi.png")}
+                      className="w-10 h-10"
+                      style={{ width: 40, height: 40 }}
+                      resizeMode="contain"
                     />
-                  </Pressable>
+                  </View>
+                  <View className="flex-row gap-2 items-center justify-center">
+                    <B2 className="text-black opacity-60">
+                      SBM Bank FDs are secured by RBI
+                    </B2>
+                    <Pressable onPress={openRbiInfoSheet}>
+                      <InfoIcon
+                        size={20}
+                        color="neutral.700"
+                        secondaryColor="neutral.200"
+                        variant="duotone"
+                      />
+                    </Pressable>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          )}
         </View>
         <View className="mt-10">
               <View className="mb-4 px-4">
