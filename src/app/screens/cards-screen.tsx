@@ -37,6 +37,7 @@ import LogoMarqueeCarousel from "../../components/carousel/logo-marquee-carousel
 import ChevronCircleRightIcon from "../../components/ui/icons/ChevronCircleRightIcon";
 import { useApplicationState, APPLICATION_STATUS } from '../../context/application-state-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ApplicationStatusCard } from '../../components/ui/application';
 
 // Use React.memo for frequently reused components
 const MemoizedButton = React.memo(Button);
@@ -476,57 +477,18 @@ export default function CardsScreen() {
         <View className="bg-neutral-100">
           {isApplicationStarted ? (
             <View className="bg-neutral-0 -mt-2 pt-10">
-              <View>
-                <View className="flex-col gap-0 w-full items-center justify-center align-middle px-4">
-                  <SH1 className="text-black opacity-90 mb-3">
-                    Application Status
-                  </SH1>
-                  {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
-                    <B2 className="text-black opacity-70 text-center mb-4">
-                      Your application for SBM ZET Credit Card has been completed. Your card will be delivered shortly.
-                    </B2>
-                  ) : (
-                    <B2 className="text-black opacity-70 text-center mb-4">
-                      Your application for SBM ZET Credit Card has been initiated. Complete the process to get your card.
-                    </B2>
-                  )}
-                </View>
-              </View>
-              <View className="px-4 mt-6 w-full items-center justify-center">
-                {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
-                  <MemoizedButton 
-                    variant="filled" 
-                    size="lg" 
-                    className="w-[80%]"
-                    onPress={() => {
-                      console.log("Track application status");
-                      // Add navigation to track application status
-                    }}
-                    onLongPress={async () => {
-                      // For testing: Toggle back to IN_PROGRESS
-                      await setApplicationStatus(APPLICATION_STATUS.IN_PROGRESS);
-                    }}
-                  >
-                    Track Application Status
-                  </MemoizedButton>
-                ) : (
-                  <MemoizedButton 
-                    variant="filled" 
-                    size="lg" 
-                    className="w-[80%]"
-                    onPress={() => {
-                      console.log("Continue Application process");
-                      // Add actual application form navigation here
-                    }}
-                    onLongPress={async () => {
-                      // For testing: Toggle to COMPLETED
-                      await setApplicationStatus(APPLICATION_STATUS.COMPLETED);
-                    }}
-                  >
-                    Complete Your Application
-                  </MemoizedButton>
-                )}
-              </View>
+              <ApplicationStatusCard 
+                status={applicationStatus}
+                theme="light"
+                onStartApplication={() => {
+                  console.log("Continue Application process");
+                  // Add actual application form navigation here
+                }}
+                onTrackApplication={() => {
+                  console.log("Track application status");
+                  // Add navigation to track application status
+                }}
+              />
             </View>
           ) : (
             <View className="bg-neutral-0 -mt-2 pt-10">

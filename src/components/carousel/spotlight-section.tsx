@@ -36,7 +36,7 @@ function SpotlightSection({
     <View style={[styles.container, containerStyle]}>
       {title && (
         <View style={styles.header}>
-          <H6>{title}</H6>
+          <H6 className='text-neutral-600'>{title}</H6>
           {actionLabel && (
             <TouchableOpacity onPress={onActionPress}>
               <B4 className="text-primary-700">{actionLabel}</B4>

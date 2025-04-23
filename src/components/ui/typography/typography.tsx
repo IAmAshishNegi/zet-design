@@ -81,9 +81,9 @@ export { fontSizeMap };
 
 // Create custom Score font map for Stratos font
 export const stratosMap = {
-  'scoreBlack': 'Stratos-Black',
-  'scoreBold': 'Stratos-Bold',
-  'scoreSemibold': 'Stratos-SemiBold',
+  'scoreBlack': 'MonaSans-Black',
+  'scoreBold': 'MonaSans-Bold',
+  'scoreSemibold': 'MonaSans-ExtraBold',
 };
 
 function Typography({ 

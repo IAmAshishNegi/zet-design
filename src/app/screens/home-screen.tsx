@@ -27,6 +27,8 @@ import { TabBarVisibilityContext } from '../index';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useBottomSheet } from '../../context/bottom-sheet-context';
 import { useApplicationState, APPLICATION_STATUS } from '../../context/application-state-context';
+import { ApplicationStatusCard } from '../../components/ui/application';
+import { CreditScoreScale } from '../../components/credit-score';
 
 // Constants
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
@@ -251,13 +253,15 @@ export default function HomeScreen() {
         
           {/* Credit Score Section */}
           <View style={styles.heroSection}>
-            <RiveAnimation
-              ref={riveScoreRef}
-              source={require('../../assets/rive/homepage_hero_new.riv')}
-              autoplay={true}
-              style={styles.riveAnimation}
-              artboardName='main_home_hero_new'
-            />
+            {!isApplicationStarted && (
+              <RiveAnimation
+                ref={riveScoreRef}
+                source={require('../../assets/rive/homepage_hero_new.riv')}
+                autoplay={true}
+                style={styles.riveAnimation}
+                artboardName='main_home_hero_new'
+              />
+            )}
           </View>
 
           {/* Background gradient section */}
@@ -272,73 +276,18 @@ export default function HomeScreen() {
             <View className='px-3'>
               {isApplicationStarted ? (
                 <View className='px-3 py-10'>
-                  <View className='flex-col gap-0 w-full items-center justify-center align-middle'>
-                    <SH1 className="text-white opacity-90 mb-3">
-                      Application Status
-                    </SH1>
-                    {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
-                      <B2 className="text-white opacity-70 text-center mb-6">
-                        Your application for SBM ZET Credit Card has been completed. Your card will be delivered shortly.
-                      </B2>
-                    ) : (
-                      <B2 className="text-white opacity-70 text-center mb-6">
-                        Your application for SBM ZET Credit Card has been initiated. Complete the process to get your card.
-                      </B2>
-                    )}
-                    {applicationStatus === APPLICATION_STATUS.COMPLETED ? (
-                      <Button 
-                        variant='filled' 
-                        size='lg' 
-                        color='neutral-0'
-                        className='px-9 mt-4'
-                        textStyle={{ color: colors.primary[500], fontWeight: '600' }}
-                        style={{
-                          borderLeftWidth: 0.5,
-                          borderRightWidth: 0.5,
-                          borderBottomWidth: 3,
-                          borderTopWidth: 0,
-                          borderColor: '#be9ed4',
-                          width: '80%'
-                        }}
-                        onPress={() => {
-                          console.log("Track application status");
-                          // Add navigation to track application status
-                        }}
-                        onLongPress={async () => {
-                          // For testing: Toggle back to IN_PROGRESS
-                          await setApplicationStatus(APPLICATION_STATUS.IN_PROGRESS);
-                        }}
-                      >
-                        Track Application Status
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant='filled' 
-                        size='lg' 
-                        color='neutral-0'
-                        className='px-9 mt-4'
-                        textStyle={{ color: colors.primary[500], fontWeight: '600' }}
-                        style={{
-                          borderLeftWidth: 0.5,
-                          borderRightWidth: 0.5,
-                          borderBottomWidth: 3,
-                          borderTopWidth: 0,
-                          borderColor: '#be9ed4',
-                          width: '80%'
-                        }}
-                        onPress={() => {
-                          console.log("Continue Application process");
-                          // Add actual application form navigation here
-                        }}
-                        onLongPress={async () => {
-                          // For testing: Toggle to COMPLETED
-                          await setApplicationStatus(APPLICATION_STATUS.COMPLETED);
-                        }}
-                      >
-                        Complete Your Application
-                      </Button>
-                    )}
-                  </View>
+                  <ApplicationStatusCard 
+                    status={applicationStatus}
+                    theme="dark"
+                    onStartApplication={() => {
+                      console.log("Continue Application process");
+                      // Add actual application form navigation here
+                    }}
+                    onTrackApplication={() => {
+                      console.log("Track application status");
+                      // Add navigation to track application status
+                    }}
+                  />
                 </View>
               ) : (
                 <>
@@ -425,7 +374,19 @@ export default function HomeScreen() {
           </View>
           {/* Content Section (White Background) */}
           <View className='bg-neutral-0 py-8'>
-         
+          
+            {/* Credit Score Scale - Only show after application is started */}
+            {/* {isApplicationStarted && (
+              <View className='px-4 mb-7'>
+                <CreditScoreScale 
+                  score={creditScoreData.score}
+                  status={creditScoreData.status}
+                  lastUpdated={creditScoreData.lastUpdated}
+                  change={creditScoreData.change}
+                />
+              </View>
+            )} */}
+            
             <View className='px-4'>
               <SectionHeader 
                 title="Other Products to Improve Score" 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { H6, B4, B3 } from '../ui';
+import { H6, B4, B3, SH1 } from '../ui';
 import { colors } from '../../styles/theme';
 
 type SectionHeaderProps = {
@@ -13,8 +13,8 @@ type SectionHeaderProps = {
 
 export function SectionHeader({ title, subtitle, actionLabel, onActionPress }: SectionHeaderProps) {
   return (
-    <View className='mb-4 mt-2'>
-      <H6 className='text-neutral-900'>{title}</H6>
+    <View className='mb-3 mt-2'>
+      <H6 className='text-neutral-600'>{title}</H6>
       {subtitle && <B3 className='text-neutral-500'>{subtitle}</B3>}
       {actionLabel && onActionPress && (
         <Pressable onPress={onActionPress} hitSlop={8}>

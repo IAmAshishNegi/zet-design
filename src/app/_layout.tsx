@@ -22,6 +22,11 @@ function RootLayout() {
     'Stratos-SemiBold': require('../assets/fonts/stratos-semibold.ttf'),
 
     'Glow-Regular': require('../assets/fonts/Glowworm.ttf'),
+     
+    'MonaSans-Black': require('../assets/fonts/Mona-Sans-Black.ttf'),
+    'MonaSans-Bold': require('../assets/fonts/Mona-Sans-Bold.ttf'),
+    'MonaSans-ExtraBold': require('../assets/fonts/Mona-Sans-ExtraBold.ttf'),
+
   });
 
   useEffect(() => {
