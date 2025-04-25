@@ -31,7 +31,7 @@ function PromoBanner({
   indicatorPosition = 'bottom',
   onActionPress,
   containerStyle,
-  bannerHeight = 180
+  bannerHeight = 160
 }: PromoBannerProps) {
   
   if (!bannerData || bannerData.length === 0) {

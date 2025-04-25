@@ -9,7 +9,10 @@ module.exports = {
   theme: {
     extend: {
       colors,
-      spacing,
+      spacing: {
+        ...spacing,
+        '18': '60px',
+      },
       borderRadius,
       // Remove fontFamily extension - we're handling this directly in component styles
       // Define fontSize with direct numeric values for React Native

@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   newBadge: {
-    backgroundColor: colors.warning[200],
+    backgroundColor: '#ffc2d7',
   },
   newBadgeText: {
     color: colors.warning[900],

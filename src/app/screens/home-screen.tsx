@@ -29,6 +29,7 @@ import { useBottomSheet } from '../../context/bottom-sheet-context';
 import { useApplicationState, APPLICATION_STATUS } from '../../context/application-state-context';
 import { ApplicationStatusCard } from '../../components/ui/application';
 import { CreditScoreScale } from '../../components/credit-score';
+import { AppBar, PreActivationHome, InProcessHome, PostActivationHome, HomeContent } from '../../components/home';
 
 // Constants
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
@@ -45,9 +46,9 @@ type CreditScoreData = {
 
 // Sample credit score data
 const creditScoreData: CreditScoreData = {
-  score: 350,
+  score: 342,
   name: 'Ashish',
-  lastUpdated: '2023-06-15',
+  lastUpdated: '15/Mar',
   change: 25,
   status: 'good'
 };
@@ -113,6 +114,7 @@ export default function HomeScreen() {
   const scrollRef = useRef<ScrollView>(null);
   const lastScrollY = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [isPostActivation, setIsPostActivation] = useState(false);
   
   // Set time-based greeting
   useEffect(() => {
@@ -174,6 +176,24 @@ export default function HomeScreen() {
     </View>
   ), [setApplicationStatus, hideBottomSheet]);
 
+  // Handle application continue press from status card
+  const handleApplicationContinue = useCallback(async () => {
+    console.log("Continue Application from status card pressed");
+    console.log("Current application status:", applicationStatus);
+    
+    if (applicationStatus === APPLICATION_STATUS.COMPLETED) {
+      // If already completed, track application
+      console.log("Track application status");
+      // Add navigation to track application status
+    } else {
+      // If in progress, set to completed state and show post-activation home
+      console.log("Setting application to COMPLETED and activating post-activation view");
+      await setApplicationStatus(APPLICATION_STATUS.COMPLETED);
+      setIsPostActivation(true);
+      console.log("State updates applied, isPostActivation:", true);
+    }
+  }, [applicationStatus, setApplicationStatus]);
+
   // Open application start bottom sheet
   const openApplicationStartSheet = useCallback(() => {
     console.log('Opening application start bottom sheet from HomeScreen');
@@ -206,6 +226,16 @@ export default function HomeScreen() {
     }, 1000);
   };
 
+  // Watch for application status changes to update post-activation state
+  useEffect(() => {
+    if (applicationStatus === APPLICATION_STATUS.COMPLETED) {
+      console.log("ApplicationStatus is COMPLETED, setting isPostActivation to true");
+      setIsPostActivation(true);
+    } else {
+      setIsPostActivation(false);
+    }
+  }, [applicationStatus]);
+
   // Clear timeout on unmount
   useEffect(() => {
     return () => {
@@ -227,262 +257,52 @@ export default function HomeScreen() {
           onScroll={handleScroll}
           scrollEventThrottle={16}
         >
-          {/* App Bar */}
-          <View style={styles.appBar}>
-            <Pressable 
-              style={styles.avatarContainer}
-              onPress={toggleAvatarImage}
-            >
-              <Avatar 
-                source={avatarImageUrl} 
-                name={creditScoreData.name}
-                borderRadius={12}
-                size={48}
-                className={creditScoreData.change >= 0 ? "shadow-success" : "shadow-error"}
-                variant={avatarVariant}
-              />
-            </Pressable>
-            <View style={styles.greetingContainer}>
-              <SH3 className="text-white opacity-50">{greeting}</SH3>
-              <H4 className="text-white opacity-80">{creditScoreData.name}</H4>
-            </View>
-          </View>
-          
-          {/* Spotlight Section */}
-         
-        
-          {/* Credit Score Section */}
-          <View style={styles.heroSection}>
-            {!isApplicationStarted && (
-              <RiveAnimation
-                ref={riveScoreRef}
-                source={require('../../assets/rive/homepage_hero_new.riv')}
-                autoplay={true}
-                style={styles.riveAnimation}
-                artboardName='main_home_hero_new'
-              />
-            )}
-          </View>
-
-          {/* Background gradient section */}
-          <View style={styles.gradientContainer}>
-            <LinearGradient
-              colors={['#190125', '#190125', '#b351fd79'] as const}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1.5 }}
-              locations={[0, 0.5, 1] as const}
-              style={styles.backgroundGradient}
+          {/* Render the appropriate home section based on application status */}
+          {isPostActivation ? (
+            <PostActivationHome 
+              creditScore={creditScoreData.score}
+              creditScoreStatus={creditScoreData.status}
+              lastUpdated={creditScoreData.lastUpdated}
+              navigation={navigation}
+              greeting={greeting}
+              name={creditScoreData.name}
+              avatarImageUrl={avatarImageUrl}
+              onAvatarPress={toggleAvatarImage}
+              avatarVariant={avatarVariant}
+              positiveChange={creditScoreData.change >= 0}
             />
-            <View className='px-3'>
-              {isApplicationStarted ? (
-                <View className='px-3 py-10'>
-                  <ApplicationStatusCard 
-                    status={applicationStatus}
-                    theme="dark"
-                    onStartApplication={() => {
-                      console.log("Continue Application process");
-                      // Add actual application form navigation here
-                    }}
-                    onTrackApplication={() => {
-                      console.log("Track application status");
-                      // Add navigation to track application status
-                    }}
-                  />
-                </View>
-              ) : (
-                <>
-                  <View className='px-3 pt-6'>
-                    <B3 className='text-white opacity-50'>CARD BENEFITS</B3>
-                  </View>
-                  <View className='py-5 flex-row items-center mt-1 border-b border-white/5'>
-                    <View className="mr-2">
-                     <Image source={require('../../assets/images/score_new.webp')} className='w-16 h-16' />
-                    </View>
-                    <View className='flex-1'>
-                      <B1 className='text-white opacity-75'>Improve Credit Score</B1>
-                      <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
-                    </View>
-                  </View>
-                  <View className='py-5 flex-row items-center border-b border-white/5'>
-                    <View className="mr-2">
-                     <Image source={require('../../assets/images/docs_gn.webp')} className='w-16 h-16' />
-                    </View>
-                    <View className='flex-1'>
-                      <B1 className='text-white opacity-75'>Easy Application Process</B1>
-                      <B3 className='text-white opacity-30 w-full'>Apply for the card in just 2 minutes, no documentation required</B3>
-                    </View>
-                  </View>
-                  <View className='py-5 flex-row items-center border-b border-white/5'>
-                    <View className="mr-2">
-                     <Image source={require('../../assets/images/upi_gn.webp')} className='w-16 h-16' />
-                    </View>
-                    <View className='flex-1'>
-                      <B1 className='text-white opacity-75'>Rupay UPI Credit Card</B1>
-                      <B3 className='text-white opacity-30 w-full'>Pay through UPI ID, no need to add bank account</B3>
-                    </View>
-                  </View>
-                  <View className='py-5 flex-row items-center'>
-                    <View className="mr-2">
-                     <Image source={require('../../assets/images/rewards_gn.webp')} className='w-16 h-16' />
-                    </View>
-                    <View className='flex-1'>
-                      <B1 className='text-white opacity-75'>Get Exlusive Rewards & Offers</B1>
-                      <B3 className='text-white opacity-30 w-full'>Spend though the card, improve credit score</B3>
-                    </View>
-                  </View>
-                  <View className='py-5 flex-row items-center border-b border-white/5'>
-                    <View className='flex flex-co justify-center items-center w-full mb-4 mt-2 gap-5'>
-                      <Button 
-                        variant='filled' 
-                        size='lg' 
-                        color='neutral-0'
-                        className='px-9'
-                        textStyle={{ color: colors.primary[500], fontWeight: '600' }}
-                        style={{
-                          borderLeftWidth: 0.5,
-                          borderRightWidth: 0.5,
-                          borderBottomWidth: 3,
-                          borderTopWidth: 0,
-                          borderColor: '#be9ed4',
-                          width: '60%'
-                        }}
-                        onPress={openApplicationStartSheet}
-                      >
-                        Start Application
-                      </Button>
-                      <Button 
-                        variant='filled' 
-                        size='lg' 
-                        className='px-9'
-                        style={{
-                          borderLeftWidth: 0.5,
-                          borderRightWidth: 0.5,
-                          borderBottomWidth: 3,
-                          borderTopWidth: 0,
-                          borderColor: '#a26cc9',
-                          width: '60%'
-                        }}
-                        onPress={navigateToCards}
-                      >
-                        Know More
-                      </Button>
-                    </View>
-                  </View>
-                </>
-              )}
-            </View>
-          </View>
-          {/* Content Section (White Background) */}
-          <View className='bg-neutral-0 py-8'>
+          ) : isApplicationStarted ? (
+            <InProcessHome 
+              status={applicationStatus}
+              handleApplicationContinue={handleApplicationContinue}
+              greeting={greeting}
+              name={creditScoreData.name}
+              avatarImageUrl={avatarImageUrl}
+              onAvatarPress={toggleAvatarImage}
+              avatarVariant={avatarVariant}
+              positiveChange={creditScoreData.change >= 0}
+            />
+          ) : (
+            <PreActivationHome 
+              riveScoreRef={riveScoreRef}
+              openApplicationStartSheet={openApplicationStartSheet}
+              navigateToCards={navigateToCards}
+              greeting={greeting}
+              name={creditScoreData.name}
+              avatarImageUrl={avatarImageUrl}
+              onAvatarPress={toggleAvatarImage}
+              avatarVariant={avatarVariant}
+              positiveChange={creditScoreData.change >= 0}
+            />
+          )}
           
-            {/* Credit Score Scale - Only show after application is started */}
-            {/* {isApplicationStarted && (
-              <View className='px-4 mb-7'>
-                <CreditScoreScale 
-                  score={creditScoreData.score}
-                  status={creditScoreData.status}
-                  lastUpdated={creditScoreData.lastUpdated}
-                  change={creditScoreData.change}
-                />
-              </View>
-            )} */}
-            
-            <View className='px-4'>
-              <SectionHeader 
-                title="Other Products to Improve Score" 
-              />
-            </View>
-            <View className='mt-1 mb-1 px-4'>
-              <CreditBuilderMemberCards />
-            </View>
-            <View className='mt-5'>
-            <SpotlightSection
-            title="Credit Score Improvement Tips"
+          {/* Shared Home Content Section */}
+          <HomeContent 
+            isPostActivation={isPostActivation}
             spotlightData={spotlightData}
-            autoPlay={false}
-            duration={5000}
-            itemHeight={320}
-            containerStyle={{
-              marginTop: 20
-            }}
+            creditScoreData={creditScoreData}
+            resetOnboarding={resetOnboarding}
           />
-            </View>
-            
-          
-
-            {/* <PromoBanner
-              bannerData={bannerData}
-              autoPlay={true}
-              duration={5000}
-              showIndicators={true}
-              bannerHeight={200}
-              indicatorPosition="bottom"
-              onActionPress={() => {
-                console.log('View all offers pressed');
-              }}
-            /> */}
-
-            {/* <Divider variant="section" className="my-4" /> */}
-            
-          <View className='flex flex-row my-6 overflow-hidden py-8'>
-            <LinearGradient
-              colors={['#edd7ff', '#ffffff', '#e2b9ff']}
-              start={{ x: 0.1, y: 0.025 }}
-              end={{ x: 1, y: 1.5 }}
-              locations={[0, 0.5, 1]}
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-              }}
-            />
-           <View className='w-2/3 p-4 justify-center'>
-           <SH5 className='text-[#e84589] mb-2'>GET SBM ZET CREDIT CARD</SH5>
-             <H3 className='text-primary-900'>Build Credit Score with Interest</H3>
-            
-             <Button 
-               variant='text'
-               size='md'
-               color='primary-900'
-               className='mt-4 p-0 w-[50%]'
-               onPress={() => console.log('Interest feature pressed')}
-               textStyle={{fontWeight: '600'}}
-               style={{padding: 0}}
-             >
-               Learn More
-             </Button>
-           </View>
-           <View className='w-1/3'>
-             <Image 
-               source={require('../../assets/images/interest_fd.webp')} 
-               className='w-full h-[140px]' 
-               resizeMode="cover"
-             />
-           </View>
-          </View>
-          
-         
-            
-            <View className='flex flex-row px-4 gap-4 w-full'>
-              <Link href="/design-system" asChild>
-                <Pressable className='w-1/2'>
-                  <ButtonSm className='bg-primary-100 text-white p-3 w-full'>Design System</ButtonSm>
-                </Pressable>
-              </Link>
-              
-              <Pressable 
-                className='w-1/2'
-                onPress={resetOnboarding}
-              >
-                <ButtonSm className='bg-error-100 text-white p-3 w-full'>Reset Onboarding</ButtonSm>
-              </Pressable>
-            </View>
-            <View>
-              <Image source={require('../../assets/images/footer.webp')} className='w-full h-[220px]' />
-            </View>
-          </View>
         </ScrollView>
       </View>
     </GestureHandlerRootView>
@@ -497,88 +317,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primary[1000],
   },
-  appBar: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'android' ? 30 : 60,
-    paddingBottom: 12,
-    backgroundColor: colors.background[400],
-  },
-  greetingContainer: {
-    flex: 1,
-  },
-  avatarContainer: {
-    marginRight: 16,
-  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-  },
-  heroSection: {
-    width: '100%',
-    backgroundColor: colors.background[400],
-
-
-  },
-  riveAnimation: {
-    width: '100%',
-    height: 358,
-  },
-
-  
- 
-  cardTitle: {
-    color: colors.primary[700],
-    marginBottom: 8,
-  },
-  cardDescription: {
-    color: colors.neutral[600],
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  cardDate: {
-    color: colors.neutral[500],
-  },
-  footerDivider: {
-    marginHorizontal: 8,
-  },
-  cardCategory: {
-    color: colors.primary[700],
-  },
-  buttonsContainer: {
-    marginTop: 16,
-    paddingHorizontal: 16,
-    paddingBottom: 90,
-  },
-  button: {
-    backgroundColor: colors.primary[700],
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: colors.neutral[50],
-  },
-  gradientContainer: {
-    position: 'relative',
-    width: '100%',
-    overflow: 'hidden',
-  },
-  backgroundGradient: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    height: '100%',
-    width: '100%',
-  },
-
+  }
 }); 

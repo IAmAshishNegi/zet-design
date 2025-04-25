@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { colors } from '../../styles/theme';
-import { SH3, B4, H6 } from '../ui';
+import { SH3, B4, H6, H7, SH2 } from '../ui';
 import SpotlightCarousel, { SpotlightItem } from './spotlight-carousel';
+import { PromoBanner } from '.';
 
 interface SpotlightSectionProps {
   title?: string;
@@ -36,7 +37,7 @@ function SpotlightSection({
     <View style={[styles.container, containerStyle]}>
       {title && (
         <View style={styles.header}>
-          <H6 className='text-neutral-600'>{title}</H6>
+          <SH2 className='text-neutral-800 uppercase'>{title}</SH2>
           {actionLabel && (
             <TouchableOpacity onPress={onActionPress}>
               <B4 className="text-primary-700">{actionLabel}</B4>
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     marginBottom: 16,
   },
   spotlightContainer: {

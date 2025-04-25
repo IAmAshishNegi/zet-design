@@ -40,6 +40,7 @@ export const colors = {
   neutral: {
     "0": "#ffffff",
     "50": "#fafafa",
+    "90": "#f7f5f9",
     "100": "#f4f4f5",
     "200": "#e4e4e7",
     "300": "#d4d4d8",
@@ -154,9 +155,9 @@ export const fontFamily = {
   bold: "THICCCBOI-Bold",
   
   // Stratos font family for score counter
-  scoreBlack: "Stratos-Black",
-  scoreBold: "Stratos-Bold",
-  scoreSemibold: "Stratos-SemiBold"
+  scoreBlack: "MonaSans-SemiBold",
+  scoreBold: "MonaSans-Bold",
+  scoreSemibold: "MonaSans-SemiBold"
 };
 
 // Add debug log to check theme settings at initialization
@@ -234,11 +235,13 @@ export const lineHeight = {
   sh3: "19px",
   sh4: "16px",
   sh5: "16px",
+  sh6: "18px",
+  sh7: "16px",
   
   b1: "24px",
   b2: "22px",
   b3: "19px",
-  b4: "18px",
+  b4: "17px",
   b5: "20px",
   b6: "24px",
   b7: "20px",
@@ -273,6 +276,8 @@ export const letterSpacingValues = {
   sh3: -0.28,
   sh4: -0.24,
   sh5: -0.24,
+  sh6: -0.24,
+  sh7: -0.24,
   
   b1: -0.32,
   b2: -0.28,

@@ -16,9 +16,9 @@ const AnimatedScrollView = Reanimated.createAnimatedComponent(ScrollView);
 const { width: WINDOW_WIDTH } = Dimensions.get('window');
 
 // Calculate card dimensions with spacing
-const ITEM_SPACING = 16; // Spacing between slides
+const ITEM_SPACING = 8; // Spacing between slides
 const ITEM_WIDTH = WINDOW_WIDTH * 0.9; // Slide width is 90% of screen width
-const ITEM_OFFSET = (WINDOW_WIDTH - ITEM_WIDTH) / 2; // Center horizontally
+const ITEM_OFFSET = (WINDOW_WIDTH - ITEM_WIDTH) / 2.1; // Center horizontally
 
 export interface BannerItem {
   id: string;
@@ -82,7 +82,7 @@ function BannerCarousel({
   const scrollToIndex = (index: number) => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({
-        x: index * (ITEM_WIDTH + ITEM_SPACING) + ITEM_OFFSET - ITEM_SPACING / 2,
+        x: index * (ITEM_WIDTH + ITEM_SPACING),
         animated: true
       });
     }
@@ -99,7 +99,7 @@ function BannerCarousel({
     onScroll: (event) => {
       scrollX.value = event.contentOffset.x;
       const slideSize = ITEM_WIDTH + ITEM_SPACING;
-      const newIndex = Math.round((event.contentOffset.x - ITEM_OFFSET + ITEM_SPACING / 2) / slideSize);
+      const newIndex = Math.round(event.contentOffset.x / slideSize);
       if (newIndex !== currentIndex && newIndex >= 0 && newIndex < data.length) {
         runOnJS(updateCurrentIndex)(newIndex);
       }
@@ -129,9 +129,9 @@ function BannerCarousel({
           // Create animated style for each indicator
           const indicatorAnimatedStyle = useAnimatedStyle(() => {
             const inputRange = [
-              (index - 1) * (ITEM_WIDTH + ITEM_SPACING) + ITEM_OFFSET - ITEM_SPACING / 2,
-              index * (ITEM_WIDTH + ITEM_SPACING) + ITEM_OFFSET - ITEM_SPACING / 2,
-              (index + 1) * (ITEM_WIDTH + ITEM_SPACING) + ITEM_OFFSET - ITEM_SPACING / 2
+              (index - 1) * (ITEM_WIDTH + ITEM_SPACING),
+              index * (ITEM_WIDTH + ITEM_SPACING),
+              (index + 1) * (ITEM_WIDTH + ITEM_SPACING)
             ];
             
             // Width changes for active indicator to create a pill shape when active
@@ -194,18 +194,18 @@ function BannerCarousel({
           snapToAlignment="center"
           contentContainerStyle={styles.scrollViewContent}
           contentInset={{
-            left: ITEM_OFFSET - ITEM_SPACING / 2,
-            right: ITEM_OFFSET - ITEM_SPACING / 2
+            left: ITEM_OFFSET / 2,
+            right: ITEM_OFFSET / 2
           }}
-          contentOffset={{ x: -ITEM_OFFSET + ITEM_SPACING / 2, y: 0 }}
+          contentOffset={{ x: -ITEM_OFFSET / 2, y: 0 }}
         >
           {data.map((item, index) => {
             // Create animated style for each slide
             const slideAnimatedStyle = useAnimatedStyle(() => {
               const inputRange = [
-                (index - 1) * (ITEM_WIDTH + ITEM_SPACING) + ITEM_OFFSET - ITEM_SPACING / 2,
-                index * (ITEM_WIDTH + ITEM_SPACING) + ITEM_OFFSET - ITEM_SPACING / 2,
-                (index + 1) * (ITEM_WIDTH + ITEM_SPACING) + ITEM_OFFSET - ITEM_SPACING / 2
+                (index - 1) * (ITEM_WIDTH + ITEM_SPACING),
+                index * (ITEM_WIDTH + ITEM_SPACING),
+                (index + 1) * (ITEM_WIDTH + ITEM_SPACING)
               ];
               
               // Scale effect - slightly larger when active
@@ -257,6 +257,8 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     paddingHorizontal: ITEM_SPACING / 2,
+    paddingLeft: ITEM_OFFSET / 2,
+    paddingRight: ITEM_OFFSET / 2,
   },
   slideContainer: {
     width: ITEM_WIDTH,

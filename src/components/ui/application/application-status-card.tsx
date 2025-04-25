@@ -28,9 +28,12 @@ const ApplicationStatusCard: React.FC<ApplicationStatusCardProps> = ({
   const subTextOpacityClass = 'opacity-40';
   
   const handlePress = () => {
+    console.log("Button pressed in ApplicationStatusCard");
     if (isCompleted) {
+      console.log("Calling onTrackApplication");
       onTrackApplication?.();
     } else {
+      console.log("Calling onStartApplication");
       onStartApplication?.();
     }
   };
@@ -132,15 +135,13 @@ const ApplicationStatusCard: React.FC<ApplicationStatusCardProps> = ({
         </B3>
         
         {/* Action Button */}
-        <Pressable
-        
+        <Button 
+          variant='filled' 
+          size='lg'
           onPress={handlePress}
-          onLongPress={handleLongPress}
         >
-          <Button variant='filled' size='lg'>
-            {isCompleted ? 'Track Application' : 'Continue Application'}
-          </Button>
-        </Pressable>
+          {isCompleted ? 'Track Application' : 'Continue Application'}
+        </Button>
       </View>
     </View>
   );

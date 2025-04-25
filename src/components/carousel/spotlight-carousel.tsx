@@ -20,7 +20,7 @@ const { width: WINDOW_WIDTH } = Dimensions.get('window');
 // Calculate card dimensions with spacing
 const ITEM_SPACING = 6; // Reduced spacing between slides
 const ITEM_WIDTH = WINDOW_WIDTH * 0.88; // Reduced width to allow next card to peek
-const ITEM_OFFSET = 16; // Left margin for the first card
+const ITEM_OFFSET = 10; // Left margin for the first card
 
 export interface SpotlightItem {
   id: string;
