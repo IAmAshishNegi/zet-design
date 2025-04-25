@@ -194,6 +194,22 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
     return () => clearTimeout(timer);
   }, [creditScore]);
 
+  // Enhanced shadow style for cards - with greater spread for Android
+  const cardShadowStyle = {
+    shadowColor: '#00000063',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 6, // Android elevation
+    // Additional style for Android to create a more spread-out shadow effect
+    ...(Platform.OS === 'android' && {
+      backgroundColor: '#FFF', // Ensure background is opaque for Android shadow
+    }),
+  };
+
   return (
     <>
       {/* App Bar - Post Activation Styling */}
@@ -249,9 +265,12 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
               </Button>
             </View> */}
           </View>
-          <View className="flex-row justify-between  px-3 py-1 bg-neutral-0 pt-8 w-full">
+          <View className="flex-row justify-between px-3 py-1 bg-neutral-0 pt-8 pb-6 w-full">
             <View className="w-[48%]">
-              <View className="w-full h-[116px] relative overflow-hidden bg-neutral-0 rounded-xl py-4 px-3 border-[1.3px] border-neutral-900/10 mb-3 ">
+              <View 
+                className="w-full h-[116px] relative overflow-hidden bg-neutral-0 rounded-xl py-4 px-3 border-[1.3px] border-neutral-900/5 mb-3"
+                style={cardShadowStyle}
+              >
                 <SH7 className="text-black text-start text-sm uppercase opacity-80">
                   Your Card
                 </SH7>
@@ -267,7 +286,10 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                 </View>
               </View>
 
-              <View className="w-full h-[90px] relative overflow-hidden bg-neutral-0 rounded-xl py-3 px-3 border-[1.3px] border-neutral-900/10">
+              <View 
+                className="w-full h-[90px] relative overflow-hidden bg-neutral-0 rounded-xl py-3 px-3 border-[1.3px] border-neutral-900/5"
+                style={cardShadowStyle}
+              >
                 <SH7 className="text-black text-start text-sm opacity-80 uppercase">
                   Credit Limit
                 </SH7>
@@ -290,8 +312,11 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
               </View>
             </View>
             
-            <View className="w-[48%] h-full relative overflow-hidden bg-neutral-0 rounded-xl pt-3 px-3 border-[1.3px] border-neutral-900/10">
-            <SH7 className="text-black opacity-80 text-start uppercase">
+            <View 
+              className="w-[48%] h-full relative overflow-hidden bg-neutral-0 rounded-xl pt-3 px-3 border-[1.3px] border-neutral-900/5"
+              style={cardShadowStyle}
+            >
+              <SH7 className="text-black opacity-80 text-start uppercase">
                 Credit Score
               </SH7>
               <B4 className="text-black opacity-50 text-start mt-1">

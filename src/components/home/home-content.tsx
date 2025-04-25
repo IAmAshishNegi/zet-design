@@ -6,6 +6,7 @@ import {
   CreditBuilderMemberCards 
 } from '../../components/credit-builder';
 import { JoiningBenefits, JoiningBenefitsSection } from '../../components/rewards';
+import { UpiSection } from '../../components/payments';
 import { PromoBanner } from '../../components/carousel';
 import { 
   SpotlightSection, 
@@ -67,6 +68,9 @@ const HomeContent: React.FC<HomeContentProps> = ({
       <View className='px-3 mb-8'>
         <JoiningBenefitsSection />
       </View> */}
+      <View className='px-2 mb-8'>
+        <UpiSection />
+      </View>
       <View>
         <PromoBanner
          
