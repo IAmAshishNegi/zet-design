@@ -15,3 +15,4 @@ export { default as SecureIcon } from './SecureIcon';
 export { default as BankIcon } from './BankIcon';
 export { default as DocStackIcon } from './DocStackIcon';
 export { default as ChevronRightIcon } from './ChevronRightIcon';
+export { default as QRCodeIcon } from './QRCodeIcon';

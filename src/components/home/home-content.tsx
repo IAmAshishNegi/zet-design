@@ -42,7 +42,7 @@ const HomeContent: React.FC<HomeContentProps> = ({
   resetOnboarding
 }) => {
   return (
-    <View className='bg-neutral-0 pt-3'>
+    <View className='bg-neutral-0 pt-1'>
       {/* Only show in post-activation homepage */}
       {/* {isPostActivation && (
         <View className='px-3 mb-8'>
@@ -68,7 +68,7 @@ const HomeContent: React.FC<HomeContentProps> = ({
       <View className='px-3 mb-8'>
         <JoiningBenefitsSection />
       </View> */}
-      <View className='px-2 mb-8'>
+      <View className='px-3 mb-8'>
         <UpiSection />
       </View>
       <View>
