@@ -16,3 +16,7 @@ export { default as BankIcon } from './BankIcon';
 export { default as DocStackIcon } from './DocStackIcon';
 export { default as ChevronRightIcon } from './ChevronRightIcon';
 export { default as QRCodeIcon } from './QRCodeIcon';
+export { default as SendMoneyIcon } from './SendMoneyIcon';
+export { default as RupeeBillIcon } from './RupeeBillIcon';
+export { default as UpiLogoIcon } from './UpiLogoIcon';
+export { default as UpiIcon } from './UpiIcon';
