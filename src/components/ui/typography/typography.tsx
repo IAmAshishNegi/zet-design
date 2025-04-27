@@ -15,7 +15,7 @@ type LetterSpacingVariant = 'tight' | 'normal' | 'wide' | 'extraWide' | 'superWi
 // Component variants for line height mapping
 type ComponentVariant = 
   | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'h7'
-  | 'sh1' | 'sh2' | 'sh3' | 'sh4' | 'sh5' | 'sh6' | 'sh7'
+  | 'sh1' | 'sh2' | 'sh3' | 'sh4' | 'sh5' | 'sh6' | 'sh7' | 'sh8'
   | 'b1' | 'b2' | 'b3' | 'b4' | 'b5' | 'b6' | 'b7' | 'b8' | 'b9'
   | 'buttonLg' | 'buttonMd' | 'buttonSm'
   | 'linkText' | 'linkTextSm' | 'linkTextXs'
@@ -411,6 +411,25 @@ const SH7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'c
   );
 };
 
+const SH8: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="13" 
+      weight="semibold" 
+      tracking="superTight" 
+      componentVariant="sh8"
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        lineHeight: 18, // Define an explicit line height
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
+
+
 
 // ----- Body Components -----
 
@@ -703,7 +722,7 @@ export {
   OBHeading, H1, H2, H3, H4, H5, H6, H7,
   
   // SubHeadings
-  SH1, SH2, SH3, SH4, SH5, SH6, SH7,
+  SH1, SH2, SH3, SH4, SH5, SH6, SH7, SH8,
   
   // Body Text
   B1, B2, B3, B4, B5, B6, B7, B8, B9,

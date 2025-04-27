@@ -8,6 +8,8 @@ import {
 import { JoiningBenefits, JoiningBenefitsSection } from '../../components/rewards';
 import { UpiSection } from '../../components/payments';
 import { PromoBanner } from '../../components/carousel';
+import { RechargeBanner, RechargeSection, RechargeSectionScroll } from '../../components/recharges';
+import { DiscountBanner, DiscountSection } from '../../components/discounts';
 import { 
   SpotlightSection, 
   SpotlightItem 
@@ -68,10 +70,20 @@ const HomeContent: React.FC<HomeContentProps> = ({
       <View className='px-3 mb-8'>
         <JoiningBenefitsSection />
       </View> */}
-      <View className='px-3 mb-8'>
+      <View className='px-3 mb-9'>
         <UpiSection />
       </View>
       <View>
+        {/* <RechargeSection /> */}
+        <RechargeSectionScroll />
+      </View>
+      <View>
+        <DiscountSection />
+      </View>
+      <View className=' mb-2'>
+        <DiscountBanner />
+      </View>
+      {/* <View>
         <PromoBanner
          
           bannerData={[
@@ -89,58 +101,24 @@ const HomeContent: React.FC<HomeContentProps> = ({
           autoPlay={true}
           duration={4000}
         />
-      </View>
-      <View>
+      </View> */}
+      <View className='mt-8'>
         <SpotlightSection
-        title="BENEFITS & REWARDS ON ZET CARD"
+           title="SBM Zet Card Offers on other Apps"
           spotlightData={spotlightData}
           autoPlay={false}
           duration={5000}
-          itemHeight={320}
-          containerStyle={{
-            marginTop: 20
+          itemHeight={240}
+          itemWidth={200}
+          headerIconStyle={{ 
+            marginBottom: 12, 
+             
+           
           }}
         />
       </View>
       
-      <View className='flex flex-row my-6 overflow-hidden py-8'>
-        <LinearGradient
-          colors={['#edd7ff', '#ffffff', '#e2b9ff']}
-          start={{ x: 0.1, y: 0.025 }}
-          end={{ x: 1, y: 1.5 }}
-          locations={[0, 0.5, 1]}
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-          }}
-        />
-        <View className='w-2/3 p-4 justify-center'>
-          <SH5 className='text-[#e84589] mb-2'>GET SBM ZET CREDIT CARD</SH5>
-          <H3 className='text-primary-900'>Build Credit Score with Interest</H3>
-        
-          <Button 
-            variant='text'
-            size='md'
-            color='primary-900'
-            className='mt-4 p-0 w-[50%]'
-            onPress={() => console.log('Interest feature pressed')}
-            textStyle={{fontWeight: '600'}}
-            style={{padding: 0}}
-          >
-            Learn More
-          </Button>
-        </View>
-        <View className='w-1/3'>
-          <Image 
-            source={require('../../assets/images/interest_fd.webp')} 
-            className='w-full h-[140px]' 
-            resizeMode="cover"
-          />
-        </View>
-      </View>
+     
       
       <View className='flex flex-row px-4 gap-4 w-full'>
         <Link href="/design-system" asChild>

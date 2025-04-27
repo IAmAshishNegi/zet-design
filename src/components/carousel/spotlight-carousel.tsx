@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Pressable, ImageBackground, TextStyle, ViewStyle, Platform } from 'react-native';
+import { View, StyleSheet, Dimensions, Pressable, ImageBackground, TextStyle, ViewStyle, Platform, Image, ImageSourcePropType } from 'react-native';
 import { colors } from '../../styles/theme';
 import Reanimated, {
   useSharedValue,
@@ -18,8 +18,7 @@ const AnimatedScrollView = Reanimated.createAnimatedComponent(ScrollView);
 const { width: WINDOW_WIDTH } = Dimensions.get('window');
 
 // Calculate card dimensions with spacing
-const ITEM_SPACING = 6; // Reduced spacing between slides
-const ITEM_WIDTH = WINDOW_WIDTH * 0.88; // Reduced width to allow next card to peek
+const ITEM_SPACING = 10; // Increased spacing between slides
 const ITEM_OFFSET = 10; // Left margin for the first card
 
 export interface SpotlightItem {
@@ -36,6 +35,8 @@ export interface SpotlightItem {
   showCta?: boolean;
   gradientColors?: [string, string] | [string, string, ...string[]];
   onPress?: () => void;
+  headerIcon?: ImageSourcePropType; // New property for the icon above the title
+  showHeaderIcon?: boolean; // Flag to control icon visibility
 }
 
 type IndicatorPosition = 'top' | 'bottom';
@@ -48,6 +49,7 @@ interface SpotlightCarouselProps {
   indicatorPosition?: IndicatorPosition;
   containerStyle?: ViewStyle;
   itemHeight?: number;
+  itemWidth?: number; // New property for customizable width
   titleStyle?: TextStyle;
   subtitleStyle?: TextStyle;
   statisticStyle?: TextStyle;
@@ -56,6 +58,7 @@ interface SpotlightCarouselProps {
   activeIndicatorColor?: string;
   inactiveIndicatorColor?: string;
   onIndexChange?: (index: number) => void;
+  headerIconStyle?: ViewStyle; // Style for the header icon container
 }
 
 function SpotlightCarousel({
@@ -66,6 +69,7 @@ function SpotlightCarousel({
   indicatorPosition = 'bottom',
   containerStyle,
   itemHeight = 400,
+  itemWidth, // New property
   titleStyle,
   subtitleStyle,
   statisticStyle,
@@ -73,12 +77,16 @@ function SpotlightCarousel({
   indicatorContainerStyle,
   activeIndicatorColor = colors.primary[700],
   inactiveIndicatorColor = colors.neutral[300],
-  onIndexChange
+  onIndexChange,
+  headerIconStyle
 }: SpotlightCarouselProps) {
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useSharedValue(0);
   const autoPlayTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // Calculate item width - use custom or default
+  const CUSTOM_ITEM_WIDTH = itemWidth || WINDOW_WIDTH * 0.88;
 
   // Handle auto-play
   useEffect(() => {
@@ -102,7 +110,7 @@ function SpotlightCarousel({
   const scrollToIndex = (index: number) => {
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({
-        x: index * (ITEM_WIDTH + ITEM_SPACING) + (Platform.OS === 'android' ? ITEM_OFFSET : 0),
+        x: index * (CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2) + (Platform.OS === 'android' ? ITEM_OFFSET : 0),
         animated: true
       });
     }
@@ -118,7 +126,7 @@ function SpotlightCarousel({
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollX.value = event.contentOffset.x;
-      const slideSize = ITEM_WIDTH + ITEM_SPACING;
+      const slideSize = CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2;
       const offset = Platform.OS === 'android' ? ITEM_OFFSET : 0;
       const newIndex = Math.round((event.contentOffset.x - offset) / slideSize);
       if (newIndex !== currentIndex && newIndex >= 0 && newIndex < data.length) {
@@ -150,9 +158,9 @@ function SpotlightCarousel({
           // Create animated style for each indicator
           const indicatorAnimatedStyle = useAnimatedStyle(() => {
             const inputRange = [
-              (index - 1) * (ITEM_WIDTH + ITEM_SPACING),
-              index * (ITEM_WIDTH + ITEM_SPACING),
-              (index + 1) * (ITEM_WIDTH + ITEM_SPACING)
+              (index - 1) * (CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2),
+              index * (CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2),
+              (index + 1) * (CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2)
             ];
             
             // Width changes for active indicator to create a pill shape when active
@@ -211,13 +219,13 @@ function SpotlightCarousel({
           onScroll={scrollHandler}
           scrollEventThrottle={16}
           decelerationRate="fast"
-          snapToInterval={ITEM_WIDTH + ITEM_SPACING}
+          snapToInterval={CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2}
           snapToAlignment="start"
           contentContainerStyle={[
             styles.scrollViewContent,
             { 
               paddingLeft: Platform.OS === 'android' ? ITEM_OFFSET : 0,
-              paddingRight: WINDOW_WIDTH * 0.3
+              paddingRight: WINDOW_WIDTH * 0.4
             }
           ]}
           {...(Platform.OS === 'ios' ? {
@@ -232,9 +240,9 @@ function SpotlightCarousel({
             // Create animated style for each slide
             const slideAnimatedStyle = useAnimatedStyle(() => {
               const inputRange = [
-                (index - 1) * (ITEM_WIDTH + ITEM_SPACING),
-                index * (ITEM_WIDTH + ITEM_SPACING),
-                (index + 1) * (ITEM_WIDTH + ITEM_SPACING)
+                (index - 1) * (CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2),
+                index * (CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2),
+                (index + 1) * (CUSTOM_ITEM_WIDTH + ITEM_SPACING * 2)
               ];
               
               // Scale effect - slightly larger when active
@@ -265,7 +273,11 @@ function SpotlightCarousel({
             return (
               <Reanimated.View 
                 key={item.id}
-                style={[styles.slideContainer, slideAnimatedStyle]}
+                style={[
+                  styles.slideContainer, 
+                  { width: CUSTOM_ITEM_WIDTH },
+                  slideAnimatedStyle
+                ]}
               >
                 <ImageBackground
                   source={item.backgroundImage}
@@ -280,6 +292,16 @@ function SpotlightCarousel({
                   >
                     <View style={styles.contentContainer}>
                       <View style={styles.topContent}>
+                        {item.showHeaderIcon !== false && item.headerIcon && (
+                          <View style={[styles.headerIconContainer, headerIconStyle]}>
+                            <Image 
+                              source={item.headerIcon} 
+                              style={styles.headerIcon}
+                              resizeMode="contain"
+                            />
+                          </View>
+                        )}
+                        
                         <SH1 style={{
                           color: colors.neutral[0],
                           marginBottom: 8,
@@ -340,8 +362,8 @@ const styles = StyleSheet.create({
     // paddingHorizontal will be set conditionally
   },
   slideContainer: {
-    width: ITEM_WIDTH,
-    marginHorizontal: ITEM_SPACING / 2,
+    // width is now set dynamically
+    marginHorizontal: ITEM_SPACING,
     borderRadius: 16,
     overflow: 'hidden',
   },
@@ -372,6 +394,15 @@ const styles = StyleSheet.create({
   },
   bottomContent: {
     marginBottom: 0,
+  },
+  headerIconContainer: {
+    marginBottom: 16,
+    alignSelf: 'flex-start',
+  },
+  headerIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
   },
   subtitle: {
     color: colors.neutral[0],

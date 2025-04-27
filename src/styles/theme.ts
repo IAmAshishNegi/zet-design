@@ -225,7 +225,7 @@ export const lineHeight = {
   h1: "52px",
   h2: "36px",
   h3: "32px",
-  h4: "32px",
+  h4: "28px",
   h5: "24px",
   h6: "22px",
   h7: "26px",
@@ -237,7 +237,7 @@ export const lineHeight = {
   sh5: "16px",
   sh6: "18px",
   sh7: "16px",
-  
+  sh8: "14px",
   b1: "24px",
   b2: "22px",
   b3: "19px",
@@ -278,7 +278,7 @@ export const letterSpacingValues = {
   sh5: -0.24,
   sh6: -0.24,
   sh7: -0.24,
-  
+  sh8: -0.24,
   b1: -0.32,
   b2: -0.28,
   b3: -0.28,

@@ -71,33 +71,37 @@ const bannerData: BannerItem[] = [
 const spotlightData: SpotlightItem[] = [
   {
     id: '1',
-    backgroundImage: require('../../assets/images/fraud_check.webp'),
-    title: 'Do you Check your Account Details Regularly?',
-    subtitle: '1 in 8 users find account errors using ZET Fraud Checker',
+    backgroundImage: require('../../assets/images/food_img_1.webp'),
+    title: 'SWIGGY',
+    subtitle: '20% off upto ₹100 on all the orders',
     showSubtitle: true,
     statistic: 'Included with Builder Membership',
     showStatistic: false,
     description: 'Get expert assistance, pickup and drop of documents and doorstep visa delivery.',
     showDescription: false,
-    ctaLabel: 'Check Now',
+    ctaLabel: 'Know More',
     showCta: true,
     gradientColors: ['rgba(11, 35, 74, 0.7)', 'rgba(3, 2, 29, 0.9)'],
-    onPress: () => console.log('Visa spotlight pressed')
+    onPress: () => console.log('Visa spotlight pressed'),
+    headerIcon: require('../../assets/images/brands/swiggy_3p.webp'),
+    showHeaderIcon: true
   },
   {
     id: '2',
-    backgroundImage: require('../../assets/images/cibil_loan.webp'),
-    title: 'Good CIBIL Score, Great Loan Offers',
-    subtitle: 'Do you know that a good CIBIL score can help you get great loan offers?',
+    backgroundImage: require('../../assets/images/food_img_2.webp'),
+    title: 'ZOMATO',
+    subtitle: '20% off upto ₹100 on all the orders',
     showSubtitle: true,
-    statistic: '100M+ users',
+    statistic: 'Included with Builder Membership',
     showStatistic: false,
-    description: 'Transfer money instantly to anyone, anywhere with zero fees.',
+    description: 'Get expert assistance, pickup and drop of documents and doorstep visa delivery.',
     showDescription: false,
     ctaLabel: 'Know More',
     showCta: true,
-    gradientColors: ['rgba(7, 41, 31, 0.472)', 'rgba(2, 29, 20, 0.9)'],
-    onPress: () => console.log('UPI spotlight pressed')
+    gradientColors: ['rgba(43, 6, 13, 0.472)', 'rgba(20, 1, 4, 0.9)'],
+    onPress: () => console.log('UPI spotlight pressed'),
+    headerIcon: require('../../assets/images/brands/zomato_3p.webp'),
+    showHeaderIcon: true
   }
 ];
 

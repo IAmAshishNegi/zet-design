@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { colors } from '../../styles/theme';
-import { SH3, B4, H6, H7, SH2 } from '../ui';
+import { SH3, B4, H6, H7, SH2, SH6 } from '../ui';
 import SpotlightCarousel, { SpotlightItem } from './spotlight-carousel';
 import { PromoBanner } from '.';
 
@@ -15,6 +15,8 @@ interface SpotlightSectionProps {
   onActionPress?: () => void;
   containerStyle?: ViewStyle;
   itemHeight?: number;
+  itemWidth?: number;
+  headerIconStyle?: ViewStyle;
 }
 
 function SpotlightSection({
@@ -26,7 +28,9 @@ function SpotlightSection({
   showIndicators = false,
   onActionPress,
   containerStyle,
-  itemHeight = 280
+  itemHeight = 280,
+  itemWidth,
+  headerIconStyle
 }: SpotlightSectionProps) {
   
   if (!spotlightData || spotlightData.length === 0) {
@@ -37,7 +41,7 @@ function SpotlightSection({
     <View style={[styles.container, containerStyle]}>
       {title && (
         <View style={styles.header}>
-          <SH2 className='text-neutral-800 uppercase'>{title}</SH2>
+          <SH6 className='text-neutral-800'>{title}</SH6>
           {actionLabel && (
             <TouchableOpacity onPress={onActionPress}>
               <B4 className="text-primary-700">{actionLabel}</B4>
@@ -53,8 +57,10 @@ function SpotlightSection({
           duration={duration}
           showIndicators={showIndicators}
           indicatorPosition="bottom"
-          itemHeight={240}
+          itemHeight={itemHeight}
+          itemWidth={itemWidth}
           titleStyle={{color: colors.neutral[0]}}
+          headerIconStyle={headerIconStyle}
         />
       </View>
     </View>
@@ -64,7 +70,7 @@ function SpotlightSection({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    marginBottom: 24,
+    marginBottom: 40,
   },
   header: {
     flexDirection: 'row',
