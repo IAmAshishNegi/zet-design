@@ -19,6 +19,8 @@ import {
   SH7,
   H7,
   SH2,
+  H3,
+  B1,
 } from "../ui/typography/typography";
 import { Button } from "../ui/button/button";
 import { CreditCardIcon, ChevronRightIcon, RupeeCoinIcon } from "../ui/icons";
@@ -164,106 +166,81 @@ const PostActivationCards: React.FC<PostActivationCardsProps> = ({
             </MemoizedButton>
           </View>
         </View>
-        <View className="flex-row justify-between mb-3">
-          <View className="w-[48.5%]">
+        <View className="flex-row justify-between mb-1">
+          <View className="w-[48%]">
             <View
               className="w-full h-[116px] relative overflow-hidden bg-neutral-0 rounded-xl py-4 px-3 border-[1.3px] border-neutral-900/5 mb-3"
               style={cardShadowStyle}
             >
               <SH7 className="text-black text-start text-sm uppercase opacity-80">
-                Manage Card
+                TRANSACTIONS
               </SH7>
 
               <B4 className="text-black opacity-50 text-start pr-4">
-                Pay, manage and more
+                View your past transactions
               </B4>
-              <View className="absolute -right-6 -bottom-6">
+              <View className="absolute -right-4 -bottom-2">
                 <Image
-                  source={require("../../assets/images/cardPodium.png")}
-                  className="w-[74px] h-[74px]"
+                  source={require("../../assets/images/transactions.webp")}
+                  className="w-[70px] h-[70px]"
                 />
               </View>
             </View>
           </View>
 
-          <View className="w-[48.5%]">
+          <View className="w-[48%]">
             <View
               className="w-full h-[116px] relative overflow-hidden bg-neutral-0 rounded-xl py-4 px-3 border-[1.3px] border-neutral-900/5 mb-3"
               style={cardShadowStyle}
             >
               <SH7 className="text-black text-start text-sm uppercase opacity-80">
-                Payment History
+                CARD CONTROL
               </SH7>
 
               <B4 className="text-black opacity-50 text-start pr-4">
-                View your payment history
+                Manage your card limit
               </B4>
-              <View className="absolute -right-6 -bottom-6">
+              <View className="absolute -right-3 -bottom-3">
                 <Image
-                  source={require("../../assets/images/cardPodium.png")}
-                  className="w-[74px] h-[74px]"
-                />
-              </View>
-            </View>
-          </View>
-        </View>
-        <View className="flex-row justify-between mb-3">
-          <View className="w-[48.5%]">
-            <View
-              className="w-full h-[116px] relative overflow-hidden bg-neutral-0 rounded-xl py-4 px-3 border-[1.3px] border-neutral-900/5 mb-3"
-              style={cardShadowStyle}
-            >
-              <SH7 className="text-black text-start text-sm uppercase opacity-80">
-                Manage Card
-              </SH7>
-
-              <B4 className="text-black opacity-50 text-start pr-4">
-                Pay, manage and more
-              </B4>
-              <View className="absolute -right-6 -bottom-6">
-                <Image
-                  source={require("../../assets/images/cardPodium.png")}
-                  className="w-[74px] h-[74px]"
-                />
-              </View>
-            </View>
-          </View>
-
-          <View className="w-[48.5%]">
-            <View
-              className="w-full h-[116px] relative overflow-hidden bg-neutral-0 rounded-xl py-4 px-3 border-[1.3px] border-neutral-900/5 mb-3"
-              style={cardShadowStyle}
-            >
-              <SH7 className="text-black text-start text-sm uppercase opacity-80">
-                Payment History
-              </SH7>
-
-              <B4 className="text-black opacity-50 text-start pr-4">
-                View your payment history
-              </B4>
-              <View className="absolute -right-6 -bottom-6">
-                <Image
-                  source={require("../../assets/images/cardPodium.png")}
-                  className="w-[74px] h-[74px]"
+                  source={require("../../assets/images/limitCash.webp")}
+                  className="w-[70px] h-[70px]"
                 />
               </View>
             </View>
           </View>
         </View>
+
+        <View className="relative overflow-hidden rounded-xl mb-24 mt-5">
+        <LinearGradient
+          colors={["#250337", "#350550", "#34084d"]}
+          start={{ x: 1, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          locations={[0, 0.5, 1]}
+          className="absolute top-0 left-0 w-full h-full"
+        />
+        
+      
         <View
-          className="bg-neutral-0 rounded-xl p-4 border-[1.3px] border-neutral-900/5 overflow-hidden mb-24"
-          style={cardShadowStyle}
+          className="rounded-xl p-4 border-[1.3px] border-neutral-900/5 overflow-hidden  py-4"
+          
         >
           {/* <View className="flex-row justify-between items-center mb-2">
           <H6 className="text-black">SBM ZET Credit Card</H6>
           <CreditCardIcon size={24} color="black" variant="filled" />
         </View> */}
+        
 
-          <View className="mb-4">
-            <SH7 className="text-black opacity-70 mb-1 uppercase">
-              Your Card Limit
-            </SH7>
-            <H4 className="text-black">₹5,000</H4>
+          <View className="mb-4 flex-col items-center">
+          <Image
+            source={require("../../assets/images/increase_limit.webp")}
+            className="w-[88px] h-[88px]"
+          />
+            <H4 className="text-white mt-2">
+            Increase Your Credit Limit
+            </H4>
+            <B2 className="text-white opacity-50 mb-1 text-center px-4">
+            Increse your SBM ZET Credit Card Limit and get more to spend on your credit card
+            </B2>
           </View>
 
           {/* <View className="bg-neutral-900/10 h-2 rounded-full mb-2">
@@ -274,13 +251,13 @@ const PostActivationCards: React.FC<PostActivationCardsProps> = ({
           <B4 className="text-black opacity-70">Total Limit: ₹5,000</B4>
           <B4 className="text-black opacity-70">Used: ₹750</B4>
         </View> */}
-          <View className="flex-row justify-between items-center">
-            <View className="flex-row items-center">
+        
+            <View className="flex-row items-center align-middle justify-center">
               <Button
                 variant="filled"
                 size="sm"
                 color="primary-100"
-                textStyle={{ fontWeight: "600" }}
+                textStyle={{ fontWeight: "600", textAlign: "center" }}
                 startIcon={
                   <RupeeCoinIcon
                     size={16}
@@ -293,12 +270,10 @@ const PostActivationCards: React.FC<PostActivationCardsProps> = ({
                 Increase your Credit Limit
               </Button>
             </View>
-          </View>
-          <Image
-            source={require("../../assets/images/credit_limit.webp")}
-            className="absolute -bottom-1 -right-3 w-[70px] h-[70px]"
-          />
+          
+       
         </View>
+      </View>
       </View>
 
       {/* Actions Section */}

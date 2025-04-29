@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
-import { View, Platform, StyleSheet } from "react-native";
+import { View, Platform, StyleSheet, NativeModules, Pressable, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Reanimated, {
   useSharedValue,
@@ -38,7 +38,7 @@ import {
 import { CreditScoreIcon } from "../ui/icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import AppBar from "./app-bar";
-import { RiveRef } from "rive-react-native";
+import { RiveRef, Fit, Alignment } from "rive-react-native";
 import { colors } from "../../styles/theme";
 import { Image } from "react-native";
 
@@ -179,8 +179,11 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
   positiveChange = true,
 }) => {
   const riveRef = useRef<RiveRef>(null);
+  const redeemRiveRef = useRef<RiveRef>(null);
+  const [playRedeemAnimation, setPlayRedeemAnimation] = useState(true);
 
   useEffect(() => {
+    // Sync Rive credit score
     const syncScoreWithRive = () => {
       try {
         if (riveRef.current) {
@@ -190,11 +193,57 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         console.error("Failed to set score in Rive animation:", error);
       }
     };
+  
+    // Delay setting text to ensure Rive is loaded
+    const timeout = setTimeout(() => {
+      try {
+        // IMPORTANT: The error suggests the text field name in the Rive file is different
+        // You might need to open the Rive file in the Rive editor to confirm the exact text field name
+        
+        // Try with the mini_score artboard first (for the credit score animation)
+        if (riveRef.current) {
+          try {
+            riveRef.current.setTextRunValue("userName", name);
+          } catch (e1) {
+            console.log("Could not set text in score animation:", e1);
+          }
+        }
+        
+        // Then try with the redeem_benefit artboard (if that's where the text field is)
+        if (redeemRiveRef.current) {
+          try {
+            redeemRiveRef.current.setTextRunValue("userName", name);
+          } catch (e2) {
+            // Try a few alternative formats based on common Rive naming patterns
+            try {
+              redeemRiveRef.current.setTextRunValue("user_name", name);
+            } catch (e3) {
+              try {
+                // In Rive, text runs can sometimes be accessed with brackets
+                redeemRiveRef.current.setTextRunValue("[userName]", name);
+              } catch (e4) {
+                console.error("Could not set text value in redemption animation:", e2, e3, e4);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to set name in Rive animation:", error);
+      }
+      
+      // Always run score sync regardless of text setting success
+      syncScoreWithRive();
+    }, 1000);
+  
+    return () => clearTimeout(timeout);
+  }, [creditScore, name]);
 
-    // Try with a longer delay to ensure animation is loaded
-    const timer = setTimeout(syncScoreWithRive, 1000);
-    return () => clearTimeout(timer);
-  }, [creditScore]);
+  // Function to restart the animation to manually control timing
+  const restartRedeemAnimation = () => {
+    // Toggle the state to force a remount of the Rive animation component
+    setPlayRedeemAnimation(false);
+    setTimeout(() => setPlayRedeemAnimation(true), 50);
+  };
 
   // Enhanced shadow style for cards - with greater spread for Android
   const cardShadowStyle = {
@@ -225,7 +274,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         }}
       >
         <LinearGradient
-          colors={["#a213ea", "#330749", "#15021f"] as const}
+          colors={["#2c043f", "#330749", "#15021f"] as const}
           start={{ x: 0.3, y: -0.6 }}
           end={{ x: 1, y: 1 }}
           locations={[0, 0.5, 1.2] as const}
@@ -256,22 +305,38 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         />
         <View>
           {/* Post-activation Home Content */}
-          <View className="mt-9 relative">
+          <View className="mt-2 relative">
             {/* <Image
               source={require("../../assets/images/cardimageHome.webp")}
               className="w-full h-[100px] object-fit -mb-2"
             /> */}
-            <View className=" h-[215px] w-full ">
-            
-            <RiveAnimation
-              ref={riveRef}
-              source={require("../../assets/rive/homepage_main_new.riv")}
-              artboardName="redeem_benefit"
-              stateMachineName="State Machine 1"
-              autoplay={true}
-           
-            />
-          </View>
+            <View className="h-[175px] w-full relative">
+              {playRedeemAnimation && (
+                <RiveAnimation
+                  ref={redeemRiveRef}
+                  source={require("../../assets/rive/homepage_main_new.riv")}
+                  artboardName="redeem_benefit"
+                  stateMachineName="redeem_state"
+                  autoplay={true}
+                  fit={Fit.Cover}
+                  alignment={Alignment.Center}
+                />
+              )}
+              
+              {/* Touch area to restart animation - covers the whole animation area */}
+              <TouchableOpacity 
+                style={{ 
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 1
+                }} 
+                activeOpacity={1}
+                onPress={restartRedeemAnimation}
+              />
+            </View>
             {/* <View className="absolute -bottom-3 left-[25%] px-3 w-[50%] z-10">
               <Button variant="filled" size="sm" color="primary-500" className="w-fit">
                 Manage Card

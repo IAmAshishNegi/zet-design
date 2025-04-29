@@ -66,7 +66,7 @@ const AppBar: React.FC<AppBarProps> = ({
           variant={avatarVariant}
         />
       </Pressable>
-      <View style={styles.greetingContainer}>
+      {/* <View style={styles.greetingContainer}>
         <SH3 
           style={{
             opacity: greetingOpacity,
@@ -85,7 +85,7 @@ const AppBar: React.FC<AppBarProps> = ({
         >
           {name}
         </H4>
-      </View>
+      </View> */}
     </View>
   );
 };
