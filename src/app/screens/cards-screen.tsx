@@ -29,7 +29,7 @@ import {
   H4,
 } from "../../components/ui/typography/typography";
 import { TabBarVisibilityContext } from "../index";
-import { CardTabHeroSection } from "../../components/cards/card-tab-hero-section";
+import { CardTabHeroSection, PreActivationCards, InProcessCards, PostActivationCards, CardsContent } from "../../components/cards";
 import { Button } from "../../components/ui/button/button";
 import { useBottomSheet } from '../../context/bottom-sheet-context';
 import SpotlightCarousel from "../../components/carousel/spotlight-carousel";
@@ -107,6 +107,7 @@ export default function CardsScreen() {
   const lastScrollY = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   const isScrolling = useRef(false);
+  const [isPostActivation, setIsPostActivation] = useState(false);
 
   // Optimize scroll handling to reduce unnecessary updates
   const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -213,6 +214,22 @@ export default function CardsScreen() {
     console.log('Opening application start bottom sheet');
     showBottomSheet(renderApplicationStartContent(), ['45%']); // Pass content and snap points
   }, [showBottomSheet, renderApplicationStartContent]);
+
+  // Handle application continue or track
+  const handleApplicationContinue = useCallback(() => {
+    console.log("Continue Application pressed from status card");
+    // Add logic for continuing application
+  }, []);
+
+  const handleTrackApplication = useCallback(() => {
+    console.log("Track application status pressed");
+    // Add logic for tracking application
+  }, []);
+
+  const handleManageCard = useCallback(() => {
+    console.log("Manage card pressed");
+    // Add logic for managing card
+  }, []);
 
   // Memoize static data
   const promoCards: PromoCardItem[] = useMemo(() => [
@@ -464,6 +481,27 @@ export default function CardsScreen() {
     }
   }), [spotlightItems]);
 
+  // Watch for application status changes to update post-activation state
+  useEffect(() => {
+    if (applicationStatus === APPLICATION_STATUS.COMPLETED) {
+      console.log("ApplicationStatus is COMPLETED, setting isPostActivation to true");
+      setIsPostActivation(true);
+    } else {
+      setIsPostActivation(false);
+    }
+  }, [applicationStatus]);
+
+  // Add handlers for new post-activation card actions
+  const handleViewAllTransactions = useCallback(() => {
+    console.log("View all transactions pressed");
+    // Add navigation to transactions screen
+  }, []);
+
+  const handleViewPaymentSummary = useCallback(() => {
+    console.log("View payment summary pressed");
+    // Add navigation to payment summary screen
+  }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -473,155 +511,41 @@ export default function CardsScreen() {
         removeClippedSubviews={true}
         showsVerticalScrollIndicator={false}
       >
-        <CardTabHeroSection />
+        {/* Only show CardTabHeroSection for non-post-activation states */}
+        {!isPostActivation && <CardTabHeroSection />}
+        
         <View className="bg-neutral-100">
-          {isApplicationStarted ? (
-            <View className="bg-neutral-0 -mt-2 pt-10">
-              <ApplicationStatusCard 
+          {isPostActivation ? (
+            <PostActivationCards 
+              onManageCard={handleManageCard}
+              onViewAllTransactions={handleViewAllTransactions}
+              onViewPaymentSummary={handleViewPaymentSummary}
+            />
+          ) : isApplicationStarted ? (
+            <InProcessCards 
                 status={applicationStatus}
-                theme="light"
-                onStartApplication={() => {
-                  console.log("Continue Application process");
-                  // Add actual application form navigation here
-                }}
-                onTrackApplication={() => {
-                  console.log("Track application status");
-                  // Add navigation to track application status
-                }}
+              onContinueApplication={handleApplicationContinue}
+              onTrackApplication={handleTrackApplication} 
               />
-            </View>
           ) : (
-            <View className="bg-neutral-0 -mt-2 pt-10">
-              <View>
-                <View className="flex-col gap-0 w-full items-center justify-center align-middle">
-                  <SH1 className="text-black opacity-60">
-                    Build 750+ Credit Score with
-                  </SH1>
-                  <H4>SBM ZET Credit Card</H4>
-                </View>
-              </View>
-              <View className="flex-col flex-wrap w-full pl-3 pr-1 gap-3 mt-5">
-                {promoCards.map(card => (
-                  <PromoCard key={card.id} card={card} />
-                ))}
-              </View>
-              <View className="mt-6 w-full items-center justify-center">
-                <MemoizedButton 
-                  variant="filled" 
-                  size="lg" 
-                  className="w-[60%]"
-                  onPress={openApplicationStartSheet}
-                >
-                  Start Application
-                </MemoizedButton>
-              </View>
-              <View className="px-5">
-                <View className="flex-row gap-2 items-center justify-center pt-3 pb-4 border-t mt-4 border-neutral-100">
-                  <View className="flex-row gap-2 items-center justify-center">
-                    <MemoizedImage
-                      source={require("../../assets/images/rbi.png")}
-                      className="w-10 h-10"
-                      style={{ width: 40, height: 40 }}
-                      resizeMode="contain"
-                    />
-                  </View>
-                  <View className="flex-row gap-2 items-center justify-center">
-                    <B2 className="text-black opacity-60">
-                      SBM Bank FDs are secured by RBI
-                    </B2>
-                    <Pressable onPress={openRbiInfoSheet}>
-                      <InfoIcon
-                        size={20}
-                        color="neutral.700"
-                        secondaryColor="neutral.200"
-                        variant="duotone"
-                      />
-                    </Pressable>
-                  </View>
-                </View>
-              </View>
-            </View>
+            <PreActivationCards 
+              promoCards={promoCards}
+              openApplicationStartSheet={openApplicationStartSheet}
+              openRbiInfoSheet={openRbiInfoSheet}
+            />
           )}
         </View>
-        <View className="mt-10">
-              <View className="mb-4 px-4">
-                <H6 className="text-left text-black">
-                  Why choose SBM ZET Credit Card
-                </H6>
-              </View>
-            </View>
-          {/* Use memoized props */}
-          <SpotlightCarousel {...spotlightCarouselProps} />
-          
-          {/* Logo Marquee Carousel Section */}
-          <View className="mt-10">
-            <View className="mb-0 px-4">
-              <H6 className="text-left text-black">Get Offers on Top Brands</H6>
-            </View>
-            {/* Use memoized props */}
-            <LogoMarqueeCarousel {...logoCarouselProps} />
-          </View>
-         {/* <View className="mt-10 px-4">
-               <View className="flex-row gap-2 mb-4 bg-neutral-0 rounded-xl border border-neutral-200">
-                 <View className="flex-row gap-2 items-center justify-center">
-                 <Image source={require("../../assets/images/joining_voucher.webp")} className="w-16 h-16" />
-                  <View className="flex-row gap-2 items-center justify-center">
-                    <SH6 className="text-black opacity-90">Joining Benefits worth ₹25,000</SH6>
-                  </View>
-                 </View>
-                  <View className="flex-row gap-2 items-center justify-center">
-                    <ChevronCircleRightIcon 
-                      size={20} 
-                      color="neutral.700" 
-                      secondaryColor="neutral.200" 
-                      variant="duotone"
-                      width={20}
-                      height={20}
-                      strokeWidth={2}
-                      style={{}}
-                    />
-                  </View>
-           </View> */}
- 
-         <View className="mt-4 pt-7 px-4 bg-neutral-0">
-           <View className="flex-row gap-2 mb-4 bg-neutral-0">
-             <H6 className="text-black opacity-90">
-               Know About Our Banking Partner
-             </H6>
-           </View>
-           <View className="flex-row gap-2 mb-4 bg-neutral-0 rounded-xl">
-             <MemoizedImage
-               source={require("../../assets/images/sbm_bank.webp")}
-               className="w-full h-36 rounded-xl"
-               resizeMode="cover"
-               style={{ width: '100%', height: 144 }}
-             />
-           </View>
-           <View className="flex-row gap-2 mb-1 bg-neutral-0 rounded-xl">
-             <SH1 className="text-black opacity-90 text-center w-full">
-               SBM Bank India
-             </SH1>
-           </View>
-           <View className="flex-row gap-2 mb-4 bg-neutral-0 rounded-xl">
-             <B2 className="text-black opacity-60 text-center w-full">
-               Branches in major cities like Mumbai, Chennai, Bangalore,
-               Hyderabad and New Delhi.{" "}
-             </B2>
-           </View>
-           <View className="flex-row gap-2 mb-4 py-2 bg-success-100 rounded-xl">
-             <B4 className="text-success-900 text-center w-full">
-               50 Lakh+ Happy Customers
-             </B4>
-            </View>
-         </View>
-         <View className=" bg-neutral-0 pt-16">
-           <MemoizedImage 
-             source={require("../../assets/images/footer.webp")} 
-             className="w-full h-[220px] rounded-xl" 
-             resizeMode="contain"
-             style={{ width: '100%', height: 220 }}
+        
+        {/* Shared content section - only show for non-post-activation states */}
+        {!isPostActivation && (
+          <CardsContent 
+            spotlightItems={spotlightItems}
+            topRowLogos={topRowLogos}
+            bottomRowLogos={bottomRowLogos}
+            spotlightCarouselProps={spotlightCarouselProps}
+            logoCarouselProps={logoCarouselProps}
            />
-         </View>
+        )}
       </ScrollView>
     </View>
   );

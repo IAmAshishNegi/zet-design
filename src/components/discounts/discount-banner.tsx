@@ -30,8 +30,8 @@ export function DiscountBanner() {
       }}
     />
     <View className='w-2/3 p-4 justify-center'>
-      <SH5 className='text-[#e84589] mb-2'>DISCOUNT ON TOP BRANDS</SH5>
-      <H4 className='text-primary-900'>Get upto 20% off on all top brands</H4>
+      <SH5 className='text-[#fa5528] mb-2'>DISCOUNT ON TOP BRANDS</SH5>
+      <H4 className='text-neutral-900'>Get upto 20% off on All Top Brands</H4>
     
       <Button 
         variant='filled'

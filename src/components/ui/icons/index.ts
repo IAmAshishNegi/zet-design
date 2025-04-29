@@ -20,3 +20,4 @@ export { default as SendMoneyIcon } from './SendMoneyIcon';
 export { default as RupeeBillIcon } from './RupeeBillIcon';
 export { default as UpiLogoIcon } from './UpiLogoIcon';
 export { default as UpiIcon } from './UpiIcon';
+export { default as RupeeCoinIcon } from './RupeeCoinIcon';

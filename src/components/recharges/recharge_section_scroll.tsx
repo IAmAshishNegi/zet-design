@@ -39,12 +39,12 @@ function RechargeCard({
   title: string;
 }) {
   return (
-    <View className="mr-3 w-32 border border-neutral-900/5 py-4 rounded-xl bg-white">
+    <View className="mr-3 w-[13%] border border-neutral-900/5 py-4 rounded-xl bg-white">
       <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
         <View className="mb-2">
           <Image
             source={imageSource}
-            className="w-16 h-16"
+            className="w-[52px] h-[52px]"
             resizeMode="cover"
           />
         </View>
@@ -89,7 +89,7 @@ export function RechargeSectionScroll() {
   return (
     <View className="relative overflow-hidden">
       <LinearGradient
-        colors={["#f3ecf6", "#ffffff", "#f3ecf6"] as const}
+        colors={["#f3ecf6", "#efece5", "#f3ecf6"] as const}
         start={{ x: -0.01, y: 0.5 }}
         end={{ x: 0.7, y: 1 }}
         locations={[0, 0.6, 1] as const}
@@ -97,10 +97,10 @@ export function RechargeSectionScroll() {
       />
 
       <View className="pb-3">
-        <View className="mb-3 pt-6 pb-4 px-3">
+        <View className="mb-3 pt-6 pb-3 px-3">
       
           <View className="flex-row items-center justify-between">
-            <SH6 className="text-neutral-900">Recharge & Bill Payments </SH6>
+            <H6 className="text-neutral-900">Recharges & Bill Payments </H6>
             <View className="flex-row items-center">
               <SH4 className="text-primary-500">View all</SH4>
               <ChevronRightIcon variant="stroke" height={16} width={16}  color={colors.primary[500]} />
@@ -113,7 +113,7 @@ export function RechargeSectionScroll() {
         <ScrollView 
           horizontal 
           showsHorizontalScrollIndicator={false}
-          className="pb-7 pl-3"
+          className="pb-5 pl-3"
           contentContainerStyle={{ paddingRight: 6 }}
         >
           {rechargeCards.map((card, index) => (

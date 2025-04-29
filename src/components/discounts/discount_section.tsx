@@ -49,12 +49,12 @@ function BrandCard({
   discount: string;
 }) {
   return (
-    <View className="w-[25%] bg-white">
+    <View className="w-[31.5%] bg-white rounded-xl border-[1.3px] border-neutral-900/5 py-4">
       <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
         <View className="mb-1">
           <Image
             source={imageSource}
-            className="w-14 h-14"
+            className="w-12 h-12"
             resizeMode="cover"
           />
         </View>
@@ -89,19 +89,19 @@ export function DiscountSection() {
       brandName: "Flipkart",
       discount: "5% Off",
     },
-    {
-      imageSource: require("../../assets/images/brands/nike.webp"),
-      brandName: "Nike",
-      discount: "5% Off",
-    },
+    // {
+    //   imageSource: require("../../assets/images/brands/nike.webp"),
+    //   brandName: "Nike",
+    //   discount: "5% Off",
+    // },
   ];
 
   const bottomRowBrands = [
-    {
-      imageSource: require("../../assets/images/brands/titan.webp"),
-      brandName: "Titan",
-      discount: "5% Off",
-    },
+    // {
+    //   imageSource: require("../../assets/images/brands/titan.webp"),
+    //   brandName: "Titan",
+    //   discount: "5% Off",
+    // },
     {
       imageSource: require("../../assets/images/brands/puma.webp"),
       brandName: "Puma",
@@ -129,7 +129,7 @@ export function DiscountSection() {
         className="absolute left-0 right-0 top-0 bottom-0 h-full w-full"
       />
 
-      <View className="px-3 pb-8">
+      <View className="px-3 pb-6">
         <View className="mb-3 pt-8 pb-4">
           <View className="flex-row items-center gap-2">
             <SH7
@@ -140,7 +140,7 @@ export function DiscountSection() {
             </SH7>
           </View>
           <View className="flex-row justify-between items-center">
-            <SH6 className="text-neutral-900">Top Brands on ZET</SH6>
+            <H6 className="text-neutral-900">Top Brands on ZET</H6>
             <View className="flex-row items-center">
               <SH4 className="text-primary-500">View all brands</SH4>
               <ChevronRightIcon variant="stroke" height={16} width={16}  color={colors.primary[500]} />
@@ -148,7 +148,7 @@ export function DiscountSection() {
           </View>
         </View>
 
-        <View className="flex-row justify-between mt-2">
+        <View className="flex-row justify-between">
           {topRowBrands.map((brand, index) => (
             <BrandCard
               key={`top-${index}`}
@@ -159,7 +159,7 @@ export function DiscountSection() {
           ))}
         </View>
 
-        <View className="flex-row pb-4 mt-12 justify-between">
+        <View className="flex-row pb-4 mt-4 justify-between">
           {bottomRowBrands.map((brand, index) => (
             <BrandCard
               key={`bottom-${index}`}

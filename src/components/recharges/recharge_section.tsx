@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions, Image, ImageSourcePropType } from "react-native";
 import { Card } from "../ui/card";
 import { Button, ButtonProps } from "../ui/button/button";
 import { colors } from "../../styles/theme";
@@ -18,7 +18,6 @@ import {
   SH6,
   SH7,
 } from "../ui";
-import { Image } from "react-native";
 import {
   QRCodeIcon,
   SendMoneyIcon,
@@ -30,15 +29,65 @@ import {
 } from "../ui/icons";
 import { LinearGradient } from "expo-linear-gradient";
 
-// Get screen width for responsive sizing
+interface RechargeCardProps {
+  image: ImageSourcePropType;
+  label: string;
+}
+
+function RechargeCard({ image, label }: RechargeCardProps) {
+  return (
+    <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
+      <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
+        <View>
+          <Image
+            source={image}
+            className="w-14 h-14"
+            resizeMode="cover"
+          />
+        </View>
+        <SH4 className="text-neutral-900 w-full text-center px-6 opacity-80">
+          {label}
+        </SH4>
+      </View>
+    </View>
+  );
+}
+
+const topRowCards = [
+  {
+    image: require("../../assets/images/bills/electricity.webp"),
+    label: "Electricity Bill",
+  },
+  {
+    image: require("../../assets/images/bills/mobile_recharge.webp"),
+    label: "Prepaid Recharge",
+  },
+  {
+    image: require("../../assets/images/bills/postpaid.webp"),
+    label: "Postpaid Payment",
+  },
+];
+
+const bottomRowCards = [
+  {
+    image: require("../../assets/images/bills/loan_pay.webp"),
+    label: "Loan EMI Payment",
+  },
+  {
+    image: require("../../assets/images/bills/fastag.webp"),
+    label: "NHAI Fastag",
+  },
+  {
+    image: require("../../assets/images/bills/more.webp"),
+    label: "More options",
+  },
+];
 
 export function RechargeSection() {
-  // For demo purposes, use placeholder images
-
   return (
     <View className="relative overflow-hidden">
       <LinearGradient
-        colors={["rgb(248, 246, 242)", "#f9fbfa", "#f7f7fa"] as const}
+        colors={["#f4f0ea", "#f9fbfa", "#f7f7fa"] as const}
         start={{ x: -0.01, y: 0.5 }}
         end={{ x: 0.7, y: 1 }}
         locations={[0, 0.6, 1] as const}
@@ -51,102 +100,14 @@ export function RechargeSection() {
         </View>
 
         <View className="flex-row pb-3 justify-between">
-          <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
-            <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-              <View>
-                <Image
-                  source={require("../../assets/images/bills/electricity.webp")}
-                  className="w-14 h-14"
-                  resizeMode="cover"
-                />
-              </View>
-
-              <SH4 className="text-neutral-900 w-full text-center px-6 opacity-80">
-                Electricity Bill
-              </SH4>
-            </View>
-          </View>
-
-           <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
-            <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-              <View>
-                <Image
-                  source={require("../../assets/images/bills/mobile_recharge.webp")}
-                  className="w-14 h-14"
-                  resizeMode="cover"
-                />
-              </View>
-
-              <SH4 className="text-neutral-900 w-full text-center px-6 opacity-80">
-               Prepaid Recharge
-              </SH4>
-            </View>
-          </View>
-
-          <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
-            <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-              <View>
-                <Image
-                  source={require("../../assets/images/bills/postpaid.webp")}
-                  className="w-14 h-14"
-                  resizeMode="cover"
-                />
-              </View>
-
-              <SH4 className="text-neutral-900 w-full text-center px-6 opacity-80">
-                Postpaid Payment
-              </SH4>
-            </View>
-          </View>
+          {topRowCards.map(card => (
+            <RechargeCard key={card.label} image={card.image} label={card.label} />
+          ))}
         </View>
         <View className="flex-row gap-2 pb-7 justify-between">
-          <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
-            <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-              <View>
-                <Image
-                  source={require("../../assets/images/bills/loan_pay.webp")}
-                  className="w-14 h-14"
-                  resizeMode="cover"
-                />
-              </View>
-
-              <SH4 className="text-neutral-900 w-full text-center px-6 opacity-80">
-                Loan EMI Payment
-              </SH4>
-            </View>
-          </View>
-
-          <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
-            <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-              <View>
-                <Image
-                  source={require("../../assets/images/bills/fastag.webp")}
-                  className="w-14 h-14"
-                  resizeMode="cover"
-                />
-              </View>
-
-              <SH4 className="text-neutral-900 w-full text-center px-6 opacity-80">
-                NHAI Fastag
-              </SH4>
-            </View>
-          </View>
-
-          <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
-            <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-              <View>
-                <Image
-                  source={require("../../assets/images/bills/more.webp")}
-                  className="w-14 h-14"
-                  resizeMode="cover"
-                />
-              </View>
-
-              <SH4 className="text-neutral-900 w-full text-center px-6 opacity-80">
-                More options
-              </SH4>
-            </View>
-          </View>
+          {bottomRowCards.map(card => (
+            <RechargeCard key={card.label} image={card.image} label={card.label} />
+          ))}
         </View>
       </View>
     </View>

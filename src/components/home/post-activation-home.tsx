@@ -32,6 +32,8 @@ import {
   RiveAnimation,
   H2,
   ScoreDigit,
+  H7,
+  B6,
 } from "../ui";
 import { CreditScoreIcon } from "../ui/icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
@@ -223,7 +225,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         }}
       >
         <LinearGradient
-          colors={["#bc37ff", "#ffeaf7", "#f49b5c"] as const}
+          colors={["#a213ea", "#330749", "#15021f"] as const}
           start={{ x: 0.3, y: -0.6 }}
           end={{ x: 1, y: 1 }}
           locations={[0, 0.5, 1.2] as const}
@@ -255,10 +257,21 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         <View>
           {/* Post-activation Home Content */}
           <View className="mt-9 relative">
-            <Image
+            {/* <Image
               source={require("../../assets/images/cardimageHome.webp")}
               className="w-full h-[100px] object-fit -mb-2"
+            /> */}
+            <View className=" h-[215px] w-full ">
+            
+            <RiveAnimation
+              ref={riveRef}
+              source={require("../../assets/rive/homepage_main_new.riv")}
+              artboardName="redeem_benefit"
+              stateMachineName="State Machine 1"
+              autoplay={true}
+           
             />
+          </View>
             {/* <View className="absolute -bottom-3 left-[25%] px-3 w-[50%] z-10">
               <Button variant="filled" size="sm" color="primary-500" className="w-fit">
                 Manage Card
@@ -291,15 +304,15 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                 style={cardShadowStyle}
               >
                 <SH7 className="text-black text-start text-sm opacity-80 uppercase">
-                  Credit Limit
+                  ZET PLUS
                 </SH7>
 
                 <B4 className="text-black opacity-50 text-start">
-                  Limit ₹5000
+                  Extraaa benefits
                 </B4>
                 <View className="mt-2">
-                  <OverlineSm className="text-[#0e420c] text-center text-sm bg-[#e7ffe6] w-[72%] rounded-md px-2 py-1">
-                    INCREASE LIMIT
+                  <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#e5ba0d] w-[50%] rounded-md px-2 py-1">
+                    LOCKED
                   </OverlineSm>
                 </View>
 
@@ -341,7 +354,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
             
                 <RiveAnimation
                   ref={riveRef}
-                  source={require("../../assets/rive/homepage_main_wheel.riv")}
+                  source={require("../../assets/rive/homepage_main_new.riv")}
                   artboardName="mini_score"
                   stateMachineName="score_states"
                   autoplay={true}
@@ -376,10 +389,15 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                 />
               </View>
               <View className="flex justify-start items-start mt-3">
-                <OverlineSm className="text-[#3b0705] text-center text-sm bg-[#fce8e7] rounded-md px-4 py-1">
-                  LOW
+                <OverlineSm className="text-[#0c3b05] text-center text-sm bg-[#eefce7] rounded-md px-4 py-1">
+                  +25 Points
                 </OverlineSm>
               </View>
+              {/* <View className="flex justify-start items-start mt-3">
+                <B4 className="text-black opacity-50 text-start">
+                  +25 Points
+                </B4>
+              </View> */}
               </View>
               {/* <View className="absolute -right-4 -bottom-1 opacity-90">
                <Image source={require("../../assets/images/credit_limit.webp")} className="w-[61px] h-[61px]" />
