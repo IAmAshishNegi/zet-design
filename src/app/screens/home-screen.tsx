@@ -47,7 +47,7 @@ type CreditScoreData = {
 // Sample credit score data
 const creditScoreData: CreditScoreData = {
   score: 358,
-  name: 'Ashish',
+  name: 'Ashish Negi',
   lastUpdated: '15/Mar',
   change: 25,
   status: 'good'

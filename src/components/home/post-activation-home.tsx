@@ -8,6 +8,7 @@ import Reanimated, {
   useAnimatedStyle,
   Easing,
   withDelay,
+  useFrameCallback,
 } from "react-native-reanimated";
 import {
   H1,
@@ -181,6 +182,13 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
   const riveRef = useRef<RiveRef>(null);
   const redeemRiveRef = useRef<RiveRef>(null);
   const [playRedeemAnimation, setPlayRedeemAnimation] = useState(true);
+
+  // Use frame callback to prevent animation freezing on scroll or tab change
+  // This keeps the UI thread active for Rive animations
+  useFrameCallback(() => {
+    // Empty callback, just to keep the animation thread active
+    // This prevents the animation from freezing
+  });
 
   useEffect(() => {
     // Sync Rive credit score
