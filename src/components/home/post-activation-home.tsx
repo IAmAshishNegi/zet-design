@@ -181,7 +181,8 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
 }) => {
   const riveRef = useRef<RiveRef>(null);
   const redeemRiveRef = useRef<RiveRef>(null);
-  const [playRedeemAnimation, setPlayRedeemAnimation] = useState(true);
+  const [playRedeemAnimation, setPlayRedeemAnimation] = useState(false);
+  const [scorePanelLoaded, setScorePanelLoaded] = useState(false);
 
   // Use frame callback to prevent animation freezing on scroll or tab change
   // This keeps the UI thread active for Rive animations
@@ -190,7 +191,20 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
     // This prevents the animation from freezing
   });
 
+  // Load the first animation (redeem benefit) after initial render
   useEffect(() => {
+    // Delay showing the redeem benefit animation to avoid initial load spike
+    const timer = setTimeout(() => {
+      setPlayRedeemAnimation(true);
+    }, 300); // Short delay for initial load
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Only set up text values after both animations are loaded
+    if (!scorePanelLoaded || !playRedeemAnimation) return;
+    
     // Sync Rive credit score
     const syncScoreWithRive = () => {
       try {
@@ -205,9 +219,6 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
     // Delay setting text to ensure Rive is loaded
     const timeout = setTimeout(() => {
       try {
-        // IMPORTANT: The error suggests the text field name in the Rive file is different
-        // You might need to open the Rive file in the Rive editor to confirm the exact text field name
-        
         // Try with the mini_score artboard first (for the credit score animation)
         if (riveRef.current) {
           try {
@@ -241,10 +252,10 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
       
       // Always run score sync regardless of text setting success
       syncScoreWithRive();
-    }, 1000);
+    }, 500);
   
     return () => clearTimeout(timeout);
-  }, [creditScore, name]);
+  }, [creditScore, name, scorePanelLoaded, playRedeemAnimation]);
 
   // Function to restart the animation to manually control timing
   const restartRedeemAnimation = () => {
@@ -282,7 +293,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         }}
       >
         <LinearGradient
-          colors={["#2c043f", "#330749", "#15021f"] as const}
+          colors={["#6e19ab", "#2e054b", "#15021f"] as const}
           start={{ x: 0.3, y: -0.6 }}
           end={{ x: 1, y: 1 }}
           locations={[0, 0.5, 1.2] as const}
@@ -433,6 +444,9 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                   autoplay={true}
                  
                   onPlay={(animName, isStateMachine) => {
+                    // Mark this animation as loaded to trigger loading the second animation
+                    setScorePanelLoaded(true);
+                    
                     // When animation starts playing, set the score input
                     const syncScoreWithRive = () => {
                       try {
@@ -454,7 +468,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
 
                     // Try immediately and with a delay to ensure it works
                     syncScoreWithRive();
-                    setTimeout(syncScoreWithRive, 1000);
+                    setTimeout(syncScoreWithRive, 500);
                   }}
                   onError={(error) => {
                     // Suppress TextValueRun errors since we know it's working

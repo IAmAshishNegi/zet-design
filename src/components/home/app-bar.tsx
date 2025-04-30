@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Pressable, StyleSheet, Platform, ViewStyle, TextStyle, Text } from 'react-native';
-import { SH3, H4, Avatar } from '../ui';
+import { SH3, H4, Avatar, B3, ChevronRightIcon, HelpIcon } from '../ui';
 import { colors } from '../../styles/theme';
+import { Image } from 'react-native';
 
 interface AppBarProps {
   greeting: string;
@@ -52,10 +53,13 @@ const AppBar: React.FC<AppBarProps> = ({
         paddingBottom
       },
       containerStyle
-    ]}>
+    ]}
+    
+    >
       <Pressable 
         style={[styles.avatarContainer, avatarContainerStyle]}
         onPress={onAvatarPress}
+       
       >
         <Avatar 
           source={avatarImageUrl} 
@@ -86,6 +90,15 @@ const AppBar: React.FC<AppBarProps> = ({
           {name}
         </H4>
       </View> */}
+      <View className="flex-1 flex-row justify-end items-center">
+        <View className="flex-row bg-neutral-900/50 items-center gap-1 rounded-full pl-2 pr-3 py-2 border border-neutral-0/10">
+        <Image source={require('../../assets/images/rupeeRef.webp')} className="w-4 h-4" />
+          <B3 className="text-white">Refer & Earn</B3>
+        </View>
+        <View className="bg-neutral-900/50 items-center rounded-full px-2 py-2 ml-2 border border-neutral-0/10">
+        <HelpIcon size={20} color="white" />
+        </View>
+      </View>
     </View>
   );
 };
@@ -102,6 +115,7 @@ const styles = StyleSheet.create({
   avatarContainer: {
     marginRight: 16,
   },
+  
 });
 
 export default AppBar; 

@@ -36,7 +36,7 @@ interface RechargeCardProps {
 
 function RechargeCard({ image, label }: RechargeCardProps) {
   return (
-    <View className="w-[31.5%] border border-neutral-900/5 py-4 rounded-xl bg-white">
+    <View className="w-[31.7%] border border-neutral-900/5 py-4 rounded-xl bg-white">
       <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
         <View>
           <Image
@@ -87,7 +87,7 @@ export function RechargeSection() {
   return (
     <View className="relative overflow-hidden">
       <LinearGradient
-        colors={["#f4f0ea", "#f9fbfa", "#f7f7fa"] as const}
+        colors={["#f4f0ea", "#f9fbfa", "#f4f0ea"] as const}
         start={{ x: -0.01, y: 0.5 }}
         end={{ x: 0.7, y: 1 }}
         locations={[0, 0.6, 1] as const}
@@ -99,7 +99,7 @@ export function RechargeSection() {
           <SH6 className="text-neutral-900">Recharge & Bill Payments </SH6>
         </View>
 
-        <View className="flex-row pb-3 justify-between">
+        <View className="flex-row pb-2 justify-between">
           {topRowCards.map(card => (
             <RechargeCard key={card.label} image={card.image} label={card.label} />
           ))}

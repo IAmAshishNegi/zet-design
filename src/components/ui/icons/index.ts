@@ -21,3 +21,4 @@ export { default as RupeeBillIcon } from './RupeeBillIcon';
 export { default as UpiLogoIcon } from './UpiLogoIcon';
 export { default as UpiIcon } from './UpiIcon';
 export { default as RupeeCoinIcon } from './RupeeCoinIcon';
+export { default as HelpIcon } from './HelpIcon';
