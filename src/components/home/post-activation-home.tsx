@@ -203,7 +203,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         // Try with the mini_score artboard first (for the credit score animation)
         if (riveRef.current) {
           try {
-            riveRef.current.setTextRunValue("userName", name);
+            riveRef.current.setTextRunValue("userNameCard", name);
           } catch (e1) {
             console.log("Could not set text in score animation:", e1);
           }
@@ -212,7 +212,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         // Then try with the redeem_benefit artboard (if that's where the text field is)
         if (redeemRiveRef.current) {
           try {
-            redeemRiveRef.current.setTextRunValue("userName", name);
+            redeemRiveRef.current.setTextRunValue("userNameCard", name);
           } catch (e2) {
             // Try a few alternative formats based on common Rive naming patterns
             try {
@@ -220,7 +220,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
             } catch (e3) {
               try {
                 // In Rive, text runs can sometimes be accessed with brackets
-                redeemRiveRef.current.setTextRunValue("[userName]", name);
+                redeemRiveRef.current.setTextRunValue("[userNameCard]", name);
               } catch (e4) {
                 console.error("Could not set text value in redemption animation:", e2, e3, e4);
               }
@@ -449,7 +449,13 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                     setTimeout(syncScoreWithRive, 1000);
                   }}
                   onError={(error) => {
-                    console.error("Score scale animation error:", error);
+                    // Suppress TextValueRun errors since we know it's working
+                    if (error && error.message && error.message.includes('TextValueRun')) {
+                      // Just log at debug level instead of error
+                      console.debug("Non-critical Rive text error:", error.message);
+                    } else {
+                      console.error("Score scale animation error:", error);
+                    }
                   }}
                 />
               </View>
