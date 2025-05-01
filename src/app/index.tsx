@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     top: -10,
     width: 56,
     height: 3,
-    backgroundColor: '#832DC2',
+    backgroundColor: '#842dc20',
     borderRadius: 1.5,
   },
   tabButtonContent: {

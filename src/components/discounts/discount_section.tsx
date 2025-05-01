@@ -49,7 +49,7 @@ function BrandCard({
   discount: string;
 }) {
   return (
-    <View className="w-[31.5%] bg-white rounded-xl border-[1.3px] border-neutral-900/5 py-4">
+    <View className="w-[31.5%] bg-white rounded-xl border-[1.3px] border-neutral-900/5 py-3">
       <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
         <View className="mb-1">
           <Image
@@ -130,7 +130,7 @@ export function DiscountSection() {
       />
 
       <View className="px-3 pb-6">
-        <View className="mb-3 pt-8 pb-4">
+        <View className="mb-5 pt-8">
           <View className="flex-row items-center gap-2">
             <SH7
               className="text-[#ff1e5d] mb-1"
@@ -140,7 +140,7 @@ export function DiscountSection() {
             </SH7>
           </View>
           <View className="flex-row justify-between items-center">
-            <H6 className="text-neutral-900">Top Brands on ZET</H6>
+            <SH6 className="text-neutral-900">Top Brands on ZET</SH6>
             <View className="flex-row items-center">
               <SH4 className="text-primary-500">View all brands</SH4>
               <ChevronRightIcon variant="stroke" height={16} width={16}  color={colors.primary[500]} />

@@ -25,8 +25,8 @@ export function UpiSection() {
       />
 
       <View className="rounded-xl border-[1.3px] border-neutral-900/10 pb-3">
-        <View className="px-4 mb-3 pt-5 pb-4">
-          <H6 className="text-neutral-900">Pay Via UPI & Win Rewards </H6>
+        <View className="px-4 mb-5 pt-5">
+          <SH6 className="text-neutral-900">Pay Via UPI & Win Rewards </SH6>
         </View>
 
         <View className="flex-row pb-7">

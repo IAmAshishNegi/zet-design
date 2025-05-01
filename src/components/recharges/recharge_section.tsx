@@ -95,11 +95,11 @@ export function RechargeSection() {
       />
 
       <View className="px-3">
-        <View className="mb-3 pt-4 pb-3">
-          <SH6 className="text-neutral-900">Recharge & Bill Payments </SH6>
+        <View className="mb-5 mt-5">
+          <SH6 className="text-neutral-900">Recharges & Bill Payments </SH6>
         </View>
 
-        <View className="flex-row pb-2 justify-between">
+        <View className="flex-row mb-3 justify-between">
           {topRowCards.map(card => (
             <RechargeCard key={card.label} image={card.image} label={card.label} />
           ))}

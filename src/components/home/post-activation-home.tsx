@@ -362,7 +362,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
               </Button>
             </View> */}
           </View>
-          <View className="flex-row justify-between px-3 py-1 bg-neutral-0 pt-8 pb-6 w-full">
+          <View className="flex-row justify-between px-3 py-1 bg-neutral-0 pt-5 pb-6 w-full">
             <View className="w-[48%]">
               <View 
                 className="w-full h-[116px] relative overflow-hidden bg-neutral-0 rounded-xl py-4 px-3 border-[1.3px] border-neutral-900/5 mb-3"

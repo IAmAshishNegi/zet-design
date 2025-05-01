@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { colors } from '../../styles/theme';
-import { SH3, B4, H6, H7, SH2, SH6 } from '../ui';
+import { SH3, B4, H6, H7, SH2, SH6, SH7 } from '../ui';
 import SpotlightCarousel, { SpotlightItem } from './spotlight-carousel';
 import { PromoBanner } from '.';
 
@@ -38,10 +38,10 @@ function SpotlightSection({
   }
   
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View className='w-full mb-5' style={[containerStyle]}>
       {title && (
-        <View style={styles.header}>
-          <H6 className='text-neutral-800 mb-2'>{title}</H6>
+        <View className='flex-row justify-between items-center px-3 mb-5'>
+          <SH6 className='text-neutral-800'>{title}</SH6>
           {actionLabel && (
             <TouchableOpacity onPress={onActionPress}>
               <B4 className="text-primary-700">{actionLabel}</B4>
@@ -50,7 +50,7 @@ function SpotlightSection({
         </View>
       )}
       
-      <View style={styles.spotlightContainer}>
+      <View className='w-full overflow-visible'>
         <SpotlightCarousel
           data={spotlightData}
           autoPlay={autoPlay}
@@ -67,22 +67,6 @@ function SpotlightSection({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginBottom: 40,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
-  spotlightContainer: {
-    width: '100%',
-    overflow: 'visible',
-  }
-});
+
 
 export default SpotlightSection; 
