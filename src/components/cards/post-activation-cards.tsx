@@ -138,16 +138,20 @@ const PostActivationCards: React.FC<PostActivationCardsProps> = ({
 }) => {
   const riveRef = useRef<RiveRef>(null);
   return (
-    <View className="bg-neutral-0 -mt-2 pt-6">
+    <View className="bg-neutral-0 -mt-2">
       <View className="flex-row justify-between items-center">
         <LinearGradient
-          colors={["#ffffff", "#ffffff", "#dfd0e4"]}
-          start={{ x: 1, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          locations={[0, 0.5, 1]}
+          colors={["#cc98f9", "#ffffff", "#ffffff"] as const}
+          start={{ x: 0.5, y: 0.1 }}
+          end={{ x: 0.5, y: 1 }}
+          locations={[0, 0.5, 1.2] as const}
           className="absolute top-0 left-0 w-full h-full"
+      
+          
+        
+        
         />
-        <View className="relative w-full h-[280px] pt-16 pb-4">
+        <View className="relative w-full h-[220px] mt-20">
           <RiveAnimation
             ref={riveRef}
             source={require("../../assets/rive/card_tab.riv")}
@@ -192,7 +196,7 @@ const PostActivationCards: React.FC<PostActivationCardsProps> = ({
               <View className="absolute -right-4 -bottom-2">
                 <Image
                   source={require("../../assets/images/transactions.webp")}
-                  className="w-[70px] h-[70px]"
+                  className="w-[66px] h-[66px]"
                 />
               </View>
             </View>
@@ -213,7 +217,7 @@ const PostActivationCards: React.FC<PostActivationCardsProps> = ({
               <View className="absolute -right-3 -bottom-3">
                 <Image
                   source={require("../../assets/images/limitCash.webp")}
-                  className="w-[70px] h-[70px]"
+                  className="w-[66px] h-[66px]"
                 />
               </View>
             </View>

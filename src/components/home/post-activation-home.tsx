@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo } from "react";
-import { View, Platform, StyleSheet, NativeModules, Pressable, TouchableOpacity } from "react-native";
+import { View, Platform, StyleSheet, NativeModules, Pressable, TouchableOpacity, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Reanimated, {
   useSharedValue,
@@ -42,6 +42,7 @@ import AppBar from "./app-bar";
 import { RiveRef, Fit, Alignment } from "rive-react-native";
 import { colors } from "../../styles/theme";
 import { Image } from "react-native";
+import LottieView from "lottie-react-native";
 
 interface PostActivationHomeProps {
   creditScore: number;
@@ -280,6 +281,8 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
     }),
   };
 
+  const { width: screenWidth } = Dimensions.get('window');
+
   return (
     <>
       {/* App Bar - Post Activation Styling */}
@@ -293,10 +296,10 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         }}
       >
         <LinearGradient
-          colors={["#6e19ab", "#2e054b", "#15021f"] as const}
-          start={{ x: 0.3, y: -0.6 }}
-          end={{ x: 1, y: 1 }}
-          locations={[0, 0.5, 1.2] as const}
+          colors={["#921ab7", "#2d0243"] as const}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0.5 }}
+          locations={[0, 1] as const}
           style={{
             position: "absolute",
             left: 0,
@@ -324,43 +327,19 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
         />
         <View>
           {/* Post-activation Home Content */}
-          <View className="mt-2 relative">
-            {/* <Image
-              source={require("../../assets/images/cardimageHome.webp")}
-              className="w-full h-[100px] object-fit -mb-2"
-            /> */}
-            <View className="h-[175px] w-full relative">
-              {playRedeemAnimation && (
-                <RiveAnimation
-                  ref={redeemRiveRef}
-                  source={require("../../assets/rive/homepage_main_new.riv")}
-                  artboardName="redeem_benefit"
-                  stateMachineName="redeem_state"
-                  autoplay={true}
-                  fit={Fit.Cover}
-                  alignment={Alignment.Center}
-                />
-              )}
-              
-              {/* Touch area to restart animation - covers the whole animation area */}
-              <TouchableOpacity 
-                style={{ 
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  zIndex: 1
-                }} 
-                activeOpacity={1}
-                onPress={restartRedeemAnimation}
+          <View>
+            <View className="w-full" style={{ aspectRatio: 2.1 }}>
+              <LottieView
+                source={require("../../assets/lottie/Redeem_benefits.json")}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                }}
+                autoPlay
+                loop
+                resizeMode="cover"
               />
             </View>
-            {/* <View className="absolute -bottom-3 left-[25%] px-3 w-[50%] z-10">
-              <Button variant="filled" size="sm" color="primary-500" className="w-fit">
-                Manage Card
-              </Button>
-            </View> */}
           </View>
           <View className="flex-row justify-between px-3 py-1 bg-neutral-0 pt-5 pb-6 w-full">
             <View className="w-[48%]">

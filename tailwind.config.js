@@ -11,7 +11,19 @@ module.exports = {
       colors,
       spacing: {
         ...spacing,
-        '18': '60px',
+       
+        '24': '96px',
+        '28': '112px',
+        '26': '104px',
+        '30': '120px',
+        '32': '128px',
+        '36': '144px',
+        '40': '160px',
+        '44': '176px',
+        '48': '192px',
+        '52': '208px',
+        '56': '224px',
+        '60': '240px',
       },
       borderRadius,
       // Remove fontFamily extension - we're handling this directly in component styles

@@ -14,7 +14,7 @@ type LetterSpacingVariant = 'tight' | 'normal' | 'wide' | 'extraWide' | 'superWi
 
 // Component variants for line height mapping
 type ComponentVariant = 
-  | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'h7'
+  | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'h7' | 'h8'
   | 'sh1' | 'sh2' | 'sh3' | 'sh4' | 'sh5' | 'sh6' | 'sh7' | 'sh8'
   | 'b1' | 'b2' | 'b3' | 'b4' | 'b5' | 'b6' | 'b7' | 'b8' | 'b9'
   | 'buttonLg' | 'buttonMd' | 'buttonSm'
@@ -296,27 +296,57 @@ const H6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'co
   );
 };
 
-const H7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="18" 
-    weight="semibold" 
-    tracking="tight" 
-    componentVariant="h7"
-    {...props} 
-  />
-);
+const H7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="18" 
+      weight="semibold" 
+      tracking="tight" 
+      componentVariant="h7"
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
+const H8: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="15" 
+      weight="bold" 
+      tracking="tight" 
+      componentVariant="h8"
+      style={{
+        fontFamily: 'THICCCBOI-Bold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 // ----- SubHeading Components -----
 
-const SH1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="16" 
-    weight="semibold" 
-    tracking="tight" 
-    componentVariant="sh1"
-    {...props} 
-  />
-);
+const SH1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="16" 
+      weight="semibold" 
+      tracking="tight" 
+      componentVariant="sh1"
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 const SH2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
   // Special handling for SH2 which has font issues
@@ -338,25 +368,39 @@ const SH2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'c
   );
 };
 
-const SH3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="14" 
-    weight="semibold" 
-    tracking="tight" 
-    componentVariant="sh3"
-    {...props} 
-  />
-);
+const SH3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="14" 
+      weight="semibold" 
+      tracking="tight" 
+      componentVariant="sh3"
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const SH4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="12" 
-    weight="semibold" 
-    tracking="superTight" 
-    componentVariant="sh4"
-    {...props} 
-  />
-);
+const SH4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="12" 
+      weight="semibold" 
+      tracking="superTight" 
+      componentVariant="sh4"
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 const SH5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
   const { style, ...otherProps } = props;
@@ -433,23 +477,27 @@ const SH8: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'c
 
 // ----- Body Components -----
 
-const B1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="16" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="b1"
-    {...props} 
-  />
-);
+const B1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="16" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="b1"
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 const B2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
   const { style, ...otherProps } = props;
   
-  // Debug log to see incoming style
-  console.log('B2 received style:', style);
-  
-  // Just pass the style directly - Typography will handle arrays properly now
+ 
   return (
     <Typography 
       variant="14" 
@@ -462,166 +510,271 @@ const B2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'co
   );
 };
 
-const B3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="14" 
-    weight="regular" 
-    tracking="tight" 
-    componentVariant="b3"
-    {...props} 
-  />
-);
+const B3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="14" 
+      weight="regular" 
+      tracking="tight" 
+      componentVariant="b3"
+      style={{
+        fontFamily: 'THICCCBOI-Regular',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const B4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="12" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="b4"
-    {...props} 
-  />
-);
+const B4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="12" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="b4"
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const B5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="12" 
-    weight="regular" 
-    tracking="tight" 
-    componentVariant="b5"
-    {...props} 
-  />
-);
+const B5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="12" 
+      weight="regular" 
+      tracking="tight" 
+      componentVariant="b5"
+      style={{
+        fontFamily: 'THICCCBOI-Regular',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const B6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="16" 
-    weight="regular" 
-    tracking="tight" 
-    componentVariant="b6"
-    {...props} 
-  />
-);
+const B6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="16" 
+      weight="regular" 
+      tracking="tight" 
+      componentVariant="b6"
+      style={{
+        fontFamily: 'THICCCBOI-Regular',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const B7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="13" 
-    weight="medium" 
-    tracking="normal" 
-    componentVariant="b7"
-    {...props} 
-  />
-);
+const B7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="13" 
+      weight="medium" 
+      tracking="normal" 
+      componentVariant="b7"
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const B8: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="13" 
-    weight="regular" 
-    tracking="normal" 
-    componentVariant="b8"
-    {...props} 
-  />
-);
+const B8: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="13" 
+      weight="regular" 
+      tracking="normal" 
+      componentVariant="b8"
+      style={{
+        fontFamily: 'THICCCBOI-Regular',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const B9: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="11" 
-    weight="medium" 
-    tracking="normal" 
-    componentVariant="b9"
-    {...props} 
-  />
-);
+const B9: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="11" 
+      weight="medium" 
+      tracking="normal" 
+      componentVariant="b9"
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 // ----- Link Components -----
 
-const LinkText: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', ...props }) => (
-  <Typography 
-    variant="16" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="linkText"
-    className={`text-primary-600 underline ${className}`} 
-    {...props} 
-  />
-);
+const LinkText: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', style = {}, ...props }) => {
+  const otherProps = props;
+  return (
+    <Typography 
+      variant="16" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="linkText"
+      className={`text-primary-600 underline ${className}`} 
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const LinkTextSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', ...props }) => (
-  <Typography 
-    variant="14" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="linkTextSm"
-    className={`text-primary-600 underline ${className}`} 
-    {...props} 
-  />
-);
+const LinkTextSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', style = {}, ...props }) => {
+  const otherProps = props;
+  return (
+    <Typography 
+      variant="14" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="linkTextSm"
+      className={`text-primary-600 underline ${className}`} 
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const LinkTextXs: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', ...props }) => (
-  <Typography 
-    variant="12" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="linkTextXs"
-    className={`text-primary-600 underline ${className}`} 
-    {...props} 
-  />
-);
+const LinkTextXs: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', style = {}, ...props }) => {
+  const otherProps = props;
+  return (
+    <Typography 
+      variant="12" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="linkTextXs"
+      className={`text-primary-600 underline ${className}`} 
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 // ----- Button Components -----
 
-const ButtonLg: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="16" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="buttonLg"
-    {...props} 
-  />
-);
+const ButtonLg: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="16" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="buttonLg"
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const ButtonMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="14" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="buttonMd"
-    {...props} 
-  />
-);
+const ButtonMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="14" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="buttonMd"
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const ButtonSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => (
-  <Typography 
-    variant="12" 
-    weight="medium" 
-    tracking="tight" 
-    componentVariant="buttonSm"
-    {...props} 
-  />
-);
+const ButtonSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = (props) => {
+  const { style, ...otherProps } = props;
+  return (
+    <Typography 
+      variant="12" 
+      weight="medium" 
+      tracking="tight" 
+      componentVariant="buttonSm"
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 // ----- Overline Components -----
 
-const OverlineMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', ...props }) => (
-  <Typography 
-    variant="12" 
-    weight="medium" 
-    tracking="wide" 
-    componentVariant="overlineMd"
-    className={`uppercase ${className}`} 
-    {...props} 
-  />
-);
+const OverlineMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', style = {}, ...props }) => {
+  const otherProps = props;
+  return (
+    <Typography 
+      variant="12" 
+      weight="medium" 
+      tracking="wide" 
+      componentVariant="overlineMd"
+      className={`uppercase ${className}`} 
+      style={{
+        fontFamily: 'THICCCBOI-Medium',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
-const OverlineSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', ...props }) => (
-  <Typography 
-    variant="10" 
-    weight="semibold" 
-    tracking="normal" 
-    componentVariant="overlineSm"
-    className={`uppercase ${className}`} 
-    {...props} 
-  />
-);
+const OverlineSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'componentVariant'>> = ({ className = '', style = {}, ...props }) => {
+  const otherProps = props;
+  return (
+    <Typography 
+      variant="10" 
+      weight="semibold" 
+      tracking="normal" 
+      componentVariant="overlineSm"
+      className={`uppercase ${className}`} 
+      style={{
+        fontFamily: 'THICCCBOI-SemiBold',
+        ...(typeof style === 'object' ? style : {})
+      }}
+      {...otherProps} 
+    />
+  );
+};
 
 // ----- Score Font Components -----
 
@@ -719,7 +872,7 @@ export {
   Typography,
   
   // Headings
-  OBHeading, H1, H2, H3, H4, H5, H6, H7,
+  OBHeading, H1, H2, H3, H4, H5, H6, H7, H8,
   
   // SubHeadings
   SH1, SH2, SH3, SH4, SH5, SH6, SH7, SH8,

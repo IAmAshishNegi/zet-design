@@ -200,7 +200,7 @@ export const fontSize = {
 };
 
 export const letterSpacing = {
-  tight: "-0.025em",
+  tight: "-0.027em",
   normal: "0em",
   wide: "0.025em",
   extraWide: "0.05em",
@@ -229,7 +229,7 @@ export const lineHeight = {
   h5: "24px",
   h6: "22px",
   h7: "26px",
-  
+  h8: "20px",
   sh1: "24px",
   sh2: "20px",
   sh3: "19px",
@@ -241,8 +241,8 @@ export const lineHeight = {
   b1: "24px",
   b2: "22px",
   b3: "19px",
-  b4: "17px",
-  b5: "20px",
+  b4: "18px",
+  b5: "17px",
   b6: "24px",
   b7: "20px",
   b8: "20px",
@@ -268,7 +268,7 @@ export const letterSpacingValues = {
   h5: -0.36,
   h6: -0.32,
   h7: -0.36,
-  
+  h8: -0.32,
   obHeading: -0.7,
   
   sh1: -0.32,

@@ -37,6 +37,31 @@ if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
   file(TOUCH_NOCREATE "/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/CMakeFiles/cmake.verify_globs")
 endif()
 
+# react_codegen_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/CMakeLists.txt:9 (file)
+file(GLOB NEW_GLOB LIST_DIRECTORIES true "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/*.cpp")
+set(OLD_GLOB
+  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/lottiereactnative-generated.cpp"
+  )
+if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
+  message("-- GLOB mismatch!")
+  file(TOUCH_NOCREATE "/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/CMakeFiles/cmake.verify_globs")
+endif()
+
+# react_codegen_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/CMakeLists.txt:9 (file)
+file(GLOB NEW_GLOB LIST_DIRECTORIES true "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/react/renderer/components/lottiereactnative/*.cpp")
+set(OLD_GLOB
+  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/react/renderer/components/lottiereactnative/ComponentDescriptors.cpp"
+  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/react/renderer/components/lottiereactnative/EventEmitters.cpp"
+  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/react/renderer/components/lottiereactnative/Props.cpp"
+  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/react/renderer/components/lottiereactnative/ShadowNodes.cpp"
+  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/react/renderer/components/lottiereactnative/States.cpp"
+  "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/lottie-react-native/android/build/generated/source/codegen/jni/react/renderer/components/lottiereactnative/lottiereactnativeJSI-generated.cpp"
+  )
+if(NOT "${NEW_GLOB}" STREQUAL "${OLD_GLOB}")
+  message("-- GLOB mismatch!")
+  file(TOUCH_NOCREATE "/Users/ashish/Documents/zet_mobile/zet_design/android/app/.cxx/Debug/3tb1e5x4/arm64-v8a/CMakeFiles/cmake.verify_globs")
+endif()
+
 # react_codegen_SRCS at /Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt:9 (file)
 file(GLOB NEW_GLOB LIST_DIRECTORIES true "/Users/ashish/Documents/zet_mobile/zet_design/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/*.cpp")
 set(OLD_GLOB

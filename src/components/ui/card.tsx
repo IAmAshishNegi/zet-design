@@ -255,7 +255,7 @@ export function Card({
         )}
         
         {showDescription && description && (
-          <B8 style={descriptionStyles}>{description}</B8>
+          <B8 className='mt-1 mb-2 opacity-50' style={descriptionStyles}>{description}</B8>
         )}
         
         {showButton && buttonProps && (
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   cardDescription: {
     color: colors.neutral[500], // Changed to neutral 500 as requested
     marginBottom: 12,
-    marginTop: 4,
+    marginTop: 12,
   },
   badge: {
     paddingHorizontal: 8,
