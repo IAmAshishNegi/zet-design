@@ -24,3 +24,5 @@ export { default as RupeeCoinIcon } from './RupeeCoinIcon';
 export { default as HelpIcon } from './HelpIcon';
 export { default as LockIcon } from './LockIcon';
 export {default as YtIcon} from './YtIcon';
+export {default as CheckboxEmptyIcon} from './CheckboxEmptyIcon';
+export {default as ChevronLeftIcon} from './ChevronLeftIcon';

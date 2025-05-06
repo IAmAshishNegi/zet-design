@@ -16,10 +16,11 @@ import { fontFamilyMap } from '../typography/typography';
 // Types for the button props
 type ButtonVariant = 'filled' | 'outlined' | 'text';
 type ButtonColor = string; // Allow any color string from theme
-type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
+type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 // Size configuration for the button with fixed values
 const getButtonSizes = (isResponsive = true) => ({
+  xs: 30,
   sm: 36,
   md: 40,
   lg: 48,
@@ -28,6 +29,7 @@ const getButtonSizes = (isResponsive = true) => ({
 
 // Padding configuration for the button with fixed values
 const getButtonPaddings = (isResponsive = true) => ({
+  xs: 10,
   sm: 12,
   md: 16,
   lg: 20,
@@ -36,6 +38,7 @@ const getButtonPaddings = (isResponsive = true) => ({
 
 // Border radius configuration based on size
 const getButtonBorderRadius = (isResponsive = true) => ({
+  xs: 6,
   sm: 8,
   md: 12,
   lg: 12,
@@ -164,8 +167,10 @@ const Button: React.FC<ButtonProps> = ({
   ].filter(Boolean).join(' ');
 
   // Determine which typography component to use based on size
-  const TextComponent = size === 'sm' 
+  const TextComponent = size === 'xs' 
     ? ButtonSm 
+    : size === 'sm' 
+    ? ButtonMd 
     : size === 'lg' || size === 'xl' 
       ? ButtonLg 
       : ButtonMd;

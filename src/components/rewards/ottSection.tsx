@@ -83,7 +83,7 @@ const OttCard = ({
           {/* <View className='pl-26 pt-4'>
           
           </View> */}
-          <View className="px-4 pt-18">
+          <View className="px-4 mt-18">
             <H7 className="text-neutral-300">{title}</H7>
             {/* <B5 className="text-neutral-0/50 mt-0.5">
               {subtitle}

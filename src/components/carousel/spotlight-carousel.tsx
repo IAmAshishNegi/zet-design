@@ -309,7 +309,7 @@ function SpotlightCarousel({
                         }}>{item.title}</SH1>
                         
                         {item.showSubtitle !== false && item.subtitle && (
-                          <B3 style={[styles.subtitle, subtitleStyle]}>{item.subtitle}</B3>
+                          <B3 style={styles.subtitle}>{item.subtitle}</B3>
                         )}
                         
                         {item.showStatistic !== false && item.statistic && (

@@ -51,6 +51,7 @@ function RootLayout() {
         <Stack.Screen name="components" options={{ title: 'Components' }} />
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="typography-debug" options={{ title: 'Typography Debug' }} />
+        <Stack.Screen name="zcoins-screen" options={{ title: 'ZCoins & Redemptions' }} />
       </Stack>
     </SafeAreaProvider>
   );

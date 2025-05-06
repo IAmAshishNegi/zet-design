@@ -43,6 +43,7 @@ import { RiveRef, Fit, Alignment } from "rive-react-native";
 import { colors } from "../../styles/theme";
 import { Image } from "react-native";
 import LottieView from "lottie-react-native";
+import { useRouter } from "expo-router";
 
 interface PostActivationHomeProps {
   creditScore: number;
@@ -184,6 +185,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
   const redeemRiveRef = useRef<RiveRef>(null);
   const [playRedeemAnimation, setPlayRedeemAnimation] = useState(false);
   const [scorePanelLoaded, setScorePanelLoaded] = useState(false);
+  const router = useRouter();
 
   // Use frame callback to prevent animation freezing on scroll or tab change
   // This keeps the UI thread active for Rive animations
@@ -366,25 +368,32 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                 className="w-full h-[90px] relative overflow-hidden bg-neutral-0 rounded-xl py-3 px-3 border-[1.3px] border-neutral-900/5"
                 style={cardShadowStyle}
               >
-                <SH7 className="text-black text-start text-sm opacity-80 uppercase">
-                  ZET PLUS
-                </SH7>
+                <Pressable onPress={() => router.push('/zcoins-screen')}>
+                  <SH7 className="text-black text-start text-sm opacity-80 uppercase">
+                  1000 ZCOINS
+                  </SH7>
 
-                <B4 className="text-black opacity-50 text-start">
-                  Extraaa benefits
-                </B4>
-                <View className="mt-2">
-                  <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#e5ba0d] w-[50%] rounded-md px-2 py-1">
-                    LOCKED
-                  </OverlineSm>
-                </View>
-
-                {/* <View className="absolute -right-4 -bottom-1 opacity-90">
-                <Image
-                  source={require("../../assets/images/credit_limit.webp")}
-                  className="w-[56px] h-[56px]"
+                  <B4 className="text-black opacity-50 text-start">
+                    Zoins Balance
+                  </B4>
+                  <View className="mt-2 w-auto">
+                    <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#e5ba0d] rounded-md px-2 py-1 self-start w-auto">
+                      REDEEM NOW
+                    </OverlineSm>
+                  </View>
+                </Pressable>
+                <View className="absolute -right-2 -bottom-1 opacity-90">
+                <LottieView
+                  source={require("../../assets/lottie/ZetCoins.json")}
+                  style={{
+                    width: 44,
+                    height: 44,
+                  }}
+                  autoPlay
+                  loop
+                  resizeMode="cover"
                 />
-              </View> */}
+              </View>
               </View>
             </View>
             

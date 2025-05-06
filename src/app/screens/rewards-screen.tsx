@@ -31,13 +31,20 @@ import {
   B7,
   B8,
   OverlineSm,
+  H8,
+  H7,
 } from "../../components/ui/typography/typography";
 import { TabBarVisibilityContext } from "../index";
 import { LinearGradient } from "expo-linear-gradient";
 import LottieView from "lottie-react-native";
 import { Image } from "react-native";
 import { VoucherCarousel } from "../../components/rewards/voucher-carousel";
-import { RewardCategoriesSection, OttSection, ZCoinsSection, ZetPlusCard } from "../../components/rewards";
+import {
+  RewardCategoriesSection,
+  OttSection,
+  ZCoinsSection,
+  ZetPlusCard,
+} from "../../components/rewards";
 import { DiscountSection } from "../../components/discounts/discount_section";
 
 // Define reward item interface
@@ -100,8 +107,8 @@ export default function RewardsScreen() {
   // Render each reward card
 
   return (
-    <ScrollView 
-      className="bg-neutral-0 flex-1" 
+    <ScrollView
+      className="bg-neutral-0 flex-1"
       contentContainerStyle={styles.scrollContent}
       onScroll={handleScroll}
       scrollEventThrottle={16}
@@ -118,7 +125,7 @@ export default function RewardsScreen() {
           <View className="px-3">
             <H3>Rewards & Cashback</H3>
           </View>
-          <View
+          {/* <View
             className="border rounded-2xl border-neutral-900/10 bg-neutral-0 overflow-hidden mt-5 mx-3"
             style={cardShadowStyle}
           >
@@ -165,29 +172,64 @@ export default function RewardsScreen() {
                 </View>
               </View>
             </LinearGradient>
-          </View>
-          <View className="mt-3 flex-row justify-between mb-8 px-3">
+          </View> */}
+          <View className="mt-5 flex-col justify-between mb-8 px-3">
             <View
-              className="w-[48.5%] flex-col items-start border-[1.3px] border-neutral-900/5 rounded-xl py-4 px-4 bg-neutral-0 overflow-hidden"
+              className=" flex-col items-start border-[1.3px] border-neutral-900/5 rounded-2xl pt-3 pb-4 px-4 bg-neutral-0 overflow-hidden"
               style={cardShadowStyle}
             >
-              <SH7 className="text-neutral-800 uppercase">CASHBACK</SH7>
-              <B2 className="text-neutral-500">₹5000</B2>
-              <Image
-                source={require("../../assets/images/Cashback.webp")}
-                className="w-[42px] h-[42px] absolute -bottom-1 -right-2 opacity-90"
-              />
+              <View className="flex-row items-end gap-1">
+              <H7 className="text-neutral-900/80">1000</H7>
+             
+                <View className="flex-row items-center bg-[#16a40916] rounded-md px-1.5 py-0.5 mb-1 ml-1">
+                  <OverlineSm className="text-[#16a409]">WORTH ₹100</OverlineSm>
+                </View>
+              </View>
+              <SH7 className="text-neutral-900/40 uppercase mt-1.5">COIN BALANCE</SH7>
+
+            
+              
+                <LottieView
+                  source={require("../../assets/lottie/CoinFlipDark.json")}
+                  autoPlay
+                  loop
+                  style={{
+                    position: "absolute",
+                    height: 50,
+                    width: 50,
+
+                    bottom: -2,
+                    right: -2,
+                  }}
+                  renderMode={
+                    Platform.OS === "android" ? "SOFTWARE" : "AUTOMATIC"
+                  }
+                />
+             
             </View>
-            <View
-              className="w-[48.5%] flex-col items-start justify-between border-[1.3px] border-neutral-900/5 rounded-xl pt-4 pb-8 px-4 bg-neutral-0 overflow-hidden"
-              style={cardShadowStyle}
-            >
-              <SH7 className="text-neutral-900/90 uppercase">VOUCHERS</SH7>
-              <B5 className="text-neutral-500">0 Vouchers</B5>
-              <Image
+            <View className=" flex-row justify-between gap-2 mt-2">
+              <View
+                className="border w-[49%] rounded-xl border-neutral-900/5 bg-neutral-0 overflow-hidden pt-3 pb-4 px-3"
+                style={cardShadowStyle}
+              >
+                <SH7 className="text-neutral-900/90 uppercase">CASHBACK</SH7>
+                <B5 className="text-neutral-500">₹0</B5>
+                {/* <Image
                 source={require("../../assets/images/vouchersNew.webp")}
                 className="w-[46px] h-[46px] absolute -bottom-1 -right-2 opacity-90"
-              />
+              /> */}
+              </View>
+              <View
+                className="border w-[49%] rounded-xl border-neutral-900/5 bg-neutral-0 overflow-hidden pt-3 pb-4 px-3"
+                style={cardShadowStyle}
+              >
+                <SH7 className="text-neutral-900/90 uppercase">VOUCHERS</SH7>
+                <B5 className="text-neutral-500">0 Vouchers</B5>
+                {/* <Image
+                source={require("../../assets/images/vouchersNew.webp")}
+                className="w-[46px] h-[46px] absolute -bottom-1 -right-2 opacity-90"
+              /> */}
+              </View>
             </View>
           </View>
           <View className="mb-2">
@@ -210,7 +252,7 @@ export default function RewardsScreen() {
             <ZetPlusCard />
           </View>
           {/* Add some bottom padding to ensure content doesn't get hidden behind the tab bar */}
-          <View className="h-5"/>
+          <View className="h-5" />
         </View>
       </LinearGradient>
     </ScrollView>

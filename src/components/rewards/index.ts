@@ -1,8 +1,7 @@
-export { JoiningBenefits } from './joining-benefits';
-export { JoiningBenefitsSection } from './joining_benefits_section';
-export { VoucherCard } from './voucher-card';
-export { VoucherCarousel } from './voucher-carousel';
-export { RewardCategoriesSection } from './categories';
-export { OttSection } from './ottSection';
-export { ZCoinsSection } from './zcoins-section';
-export { ZetPlusCard } from './zet-plus-card';
+export * from './categories';
+export * from './ottSection';
+export * from './zcoins-section';
+export * from './zet-plus-card';
+export * from './voucher-card';
+export * from './voucher-carousel';
+export * from './voucher-selection-screen';

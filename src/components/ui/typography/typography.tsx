@@ -234,7 +234,7 @@ const H3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking' | 'co
     <Typography 
       variant="24" 
       weight="bold" 
-      tracking="tight" 
+      tracking="ultraTight" 
       componentVariant="h3"
       style={{
         fontFamily: 'THICCCBOI-Bold',
@@ -692,11 +692,11 @@ const ButtonLg: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'
   return (
     <Typography 
       variant="16" 
-      weight="medium" 
+      weight="semibold" 
       tracking="tight" 
       componentVariant="buttonLg"
       style={{
-        fontFamily: 'THICCCBOI-Medium',
+        fontFamily: 'THICCCBOI-SemiBold',
         ...(typeof style === 'object' ? style : {})
       }}
       {...otherProps} 
@@ -709,11 +709,11 @@ const ButtonMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'
   return (
     <Typography 
       variant="14" 
-      weight="medium" 
+      weight="semibold" 
       tracking="tight" 
       componentVariant="buttonMd"
       style={{
-        fontFamily: 'THICCCBOI-Medium',
+        fontFamily: 'THICCCBOI-SemiBold',
         ...(typeof style === 'object' ? style : {})
       }}
       {...otherProps} 
