@@ -26,3 +26,11 @@ export { default as LockIcon } from './LockIcon';
 export {default as YtIcon} from './YtIcon';
 export {default as CheckboxEmptyIcon} from './CheckboxEmptyIcon';
 export {default as ChevronLeftIcon} from './ChevronLeftIcon';
+
+// Filter chip icons
+export {default as FoodIcon} from './FoodIcon';
+export {default as ShoppingIcon} from './ShoppingIcon';
+export {default as TravelIcon} from './TravelIcon';
+export {default as GroceriesIcon} from './GroceriesIcon';
+export {default as BestValueIcon} from './BestValueIcon';
+export {default as HotSellingIcon} from './HotSellingIcon';

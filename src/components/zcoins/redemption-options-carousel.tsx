@@ -18,7 +18,7 @@ const AnimatedScrollView = Reanimated.createAnimatedComponent(ScrollView);
 const { width: WINDOW_WIDTH } = Dimensions.get('window');
 
 // Calculate card dimensions with spacing
-const ITEM_SPACING = 4;
+const ITEM_SPACING = 2;
 const ITEM_OFFSET = 10;
 
 export interface RedemptionOption {

@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   bottomSheetContent: {
     flex: 1, // Allow content to take up space
-    padding: 20,
+    padding: 0, // Remove padding so child components can manage their own padding
   },
   bottomSheetIndicator: {
     width: 40,

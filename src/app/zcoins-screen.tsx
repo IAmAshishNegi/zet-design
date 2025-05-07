@@ -112,7 +112,7 @@ const redemptionOptionData: RedemptionOption[] = [
     showConversionRate: true,
     ctaLabel: 'Convert Coins to Cash',
     showCta: true,
-    gradientColors: ['rgba(43, 6, 13, 0.472)', 'rgba(20, 1, 4, 0.9)'],
+    gradientColors: ['rgba(43, 6, 36, 0.472)', 'rgba(20, 1, 12, 0.9)'],
     onPress: () => console.log('UPI spotlight pressed'),
       heroImage: require('../assets/images/cashbackBg.webp'),
     showHeroImage: false
@@ -129,9 +129,30 @@ const CARD_WIDTH_PERCENTAGE = 280; // 40% width
 export default function ZCoinsScreen() {
   const router = useRouter();
   
+  // Handle redemption option selection
+  const handleRedemptionOptionSelect = (option: RedemptionOption) => {
+    console.log(`Selected option: ${option.id}`);
+    
+    if (option.id === '1') {
+      // Navigate to voucher redemption screen
+      router.push('/redeem-voucher-screen');
+    } else if (option.id === '2') {
+      // Navigate to cash conversion screen
+      router.push('/convert-to-cash-screen');
+    }
+  };
 
-
- 
+  // Updated redemption options with navigation
+  const redemptionOptions = [
+    {
+      ...redemptionOptionData[0],
+      onPress: () => router.push('/redeem-voucher-screen')
+    },
+    {
+      ...redemptionOptionData[1],
+      onPress: () => router.push('/convert-to-cash-screen')
+    }
+  ];
 
   // Enhanced shadow style for cards - with greater spread for Android
   const cardShadowStyle = {
@@ -236,7 +257,7 @@ export default function ZCoinsScreen() {
 
                 <View className="flex-col">
                   <SH8 className="text-neutral-900/40 uppercase mt-1.5">
-                    SAVINGS
+                    My SAVINGS
                   </SH8>
                   <SH7 className="text-neutral-900/80">₹100</SH7>
                 </View>
@@ -262,47 +283,44 @@ export default function ZCoinsScreen() {
                 </View>
               </View> */}
 
-              <View
-                className="flex-row  w-[48.5%]  items-center border-[1.3px] border-neutral-900/5 rounded-2xl pb-3 pt-2 px-4 bg-neutral-0 overflow-hidden justify-start align-middle"
-                style={cardShadowStyle}
+              <Pressable 
+                onPress={() => router.push('/my-vouchers-screen')}
+                className="w-[48.5%]" 
               >
-               
-               <View className=" bg-[#f5c30d29] rounded-full absolute w-13 h-12 -right-3 -bottom-3">
-               
-                 <Image
-                  source={require("../assets/images/reward/voucherNew.webp")}
-                  className="w-11 h-11 opacity-90 -mt-1"
-                />
+                <View
+                  className="flex-row items-center border-[1.3px] border-neutral-900/5 rounded-2xl pb-3 pt-2 px-4 bg-neutral-0 overflow-hidden justify-start align-middle"
+                  style={cardShadowStyle}
+                >            
+                  <View className=" bg-[#f5c30d29] rounded-full absolute w-13 h-12 -right-3 -bottom-3">
+                    <Image
+                      source={require("../assets/images/reward/voucherNew.webp")}
+                      className="w-11 h-11 opacity-90 -mt-1"
+                    />
+                  </View>
+                  <View className="flex-col">
+                    <SH8 className="text-neutral-900/40 uppercase mt-2">
+                      My Vouchers
+                    </SH8>
+                    <SH7 className="text-neutral-900/80">0 Vouchers</SH7>
+                  </View>
                 </View>
-                <View className="flex-col">
-                  <SH8 className="text-neutral-900/40 uppercase mt-2">
-                    Vouchers
-                  </SH8>
-                  <SH7 className="text-neutral-900/80">0 Vouchers</SH7>
-                </View>
-              </View>
+              </Pressable>
             </View>
             {/* </ScrollView> */}
           </View>
         </LinearGradient>
         {/* Redeem Section Title */}
-        <View className="px-3 mt-3">
+        <View className="px-3 mt-7">
           <SH6 className="text-neutral-900/80">Redeem your Zcoins</SH6>
         </View>
 
         {/* Redemption Options Carousel */}
         <View className="mt-3 mb-4">
           <RedemptionOptionsCarousel 
-            data={redemptionOptionData}
-            itemHeight={360}
-            itemWidth={300}
-            onOptionSelect={(option: RedemptionOption) => {
-              console.log(`Selected option: ${option.id}`);
-              // Handle selection logic here
-              if (option.onPress) {
-                option.onPress();
-              }
-            }}
+            data={redemptionOptions}
+            itemHeight={300}
+            itemWidth={320}
+            onOptionSelect={handleRedemptionOptionSelect}
           />
         </View>
 

@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { fontFamily, colors } from '../styles/theme';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -43,17 +44,22 @@ function RootLayout() {
 
   // Render the layout
   return (
-    <SafeAreaProvider>
-      <StatusBar style="light" backgroundColor={colors.primary[900]} />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
-        <Stack.Screen name="components" options={{ title: 'Components' }} />
-        <Stack.Screen name="onboarding" />
-        <Stack.Screen name="typography-debug" options={{ title: 'Typography Debug' }} />
-        <Stack.Screen name="zcoins-screen" options={{ title: 'ZCoins & Redemptions' }} />
-      </Stack>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatusBar style="light" backgroundColor={colors.primary[900]} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
+          <Stack.Screen name="components" options={{ title: 'Components' }} />
+          <Stack.Screen name="onboarding" />
+          <Stack.Screen name="typography-debug" options={{ title: 'Typography Debug' }} />
+          <Stack.Screen name="zcoins-screen" options={{ title: 'ZCoins & Redemptions' }} />
+          <Stack.Screen name="redeem-voucher-screen" options={{ title: 'Redeem Voucher' }} />
+          <Stack.Screen name="convert-to-cash-screen" options={{ title: 'Convert to Cash' }} />
+          <Stack.Screen name="my-vouchers-screen" options={{ title: 'My Vouchers' }} />
+        </Stack>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

@@ -13,3 +13,6 @@ export { RiveAnimation } from './rive-animation';
 
 // Divider
 export { Divider } from './divider';
+
+// Chip
+export { Chip } from './chip';

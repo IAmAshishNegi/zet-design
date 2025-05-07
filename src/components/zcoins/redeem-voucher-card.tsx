@@ -14,6 +14,8 @@ import {
 } from "../ui/typography/typography";
 import { Button } from "../ui";
 import LottieView from "lottie-react-native";
+import { useBottomSheet } from "../../context/bottom-sheet-context";
+import { VoucherRedeemBottomSheet } from "./voucher-redeem-bottom-sheet";
 
 interface RedeemVoucherCardProps {
   title: string;
@@ -25,6 +27,7 @@ interface RedeemVoucherCardProps {
   onRedeem?: () => void;
   voucherImage?: ImageSourcePropType;
   textColor?: string;
+  id?: string;
 }
 
 export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
@@ -37,9 +40,33 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
   onRedeem,
   voucherImage,
   textColor = "text-white",
+  id,
 }) => {
+  const { showBottomSheet } = useBottomSheet();
+
+  const handleRedeemPress = () => {
+    // Show bottom sheet with voucher details
+    showBottomSheet(
+      <VoucherRedeemBottomSheet 
+        voucherTitle={title}
+        voucherValue={voucherValue || ""}
+        zCoinsRequired={zCoinsRequired}
+        voucherImage={voucherImage}
+        backgroundColorOne={backgroundColorOne}
+        backgroundColorTwo={backgroundColorTwo}
+        id={id}
+      />,
+      ['50%']
+    );
+    
+    // Also call the original onRedeem handler if provided
+    if (onRedeem) {
+      onRedeem();
+    }
+  };
+
   return (
-    <Pressable onPress={onPress} className="mb-4 w-[48%]">
+    <Pressable onPress={onPress} className="mb-4">
       <LinearGradient
         colors={[backgroundColorOne, backgroundColorTwo]}
         start={{ x: 0.45, y: 0.45 }}
@@ -98,9 +125,9 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
               size="sm" 
               fullWidth 
               color="neutral-0"
-              onPress={onRedeem || onPress}
+              onPress={handleRedeemPress}
             >
-              Redeem Offer
+              Redeem Voucher
             </Button>
           </View>
         </View>
