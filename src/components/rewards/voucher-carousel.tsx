@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Modal } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { VoucherCard } from './voucher-card';
 import { VoucherSelectionScreen } from './voucher-selection-screen';
+import { useBottomSheet } from '../../context/bottom-sheet-context';
 
 // Sample voucher data
 const VOUCHERS = [
@@ -60,21 +61,34 @@ interface VoucherCarouselProps {
 
 export const VoucherCarousel: React.FC<VoucherCarouselProps> = ({ title }) => {
   const [selectedVoucher, setSelectedVoucher] = useState<null | typeof VOUCHERS[0]>(null);
-  const [showSelectionModal, setShowSelectionModal] = useState(false);
+  const { showBottomSheet, hideBottomSheet } = useBottomSheet();
 
   const handleBuyNow = (voucher: typeof VOUCHERS[0]) => {
     setSelectedVoucher(voucher);
-    setShowSelectionModal(true);
-  };
-
-  const handleCloseSelectionModal = () => {
-    setShowSelectionModal(false);
+    
+    // Use the bottom sheet instead of modal with handleComponent set to null
+    showBottomSheet(
+      <VoucherSelectionScreen
+        title={voucher.title}
+        voucherImage={voucher.voucherImage}
+        backgroundColorOne={voucher.backgroundColorOne}
+        backgroundColorTwo={voucher.backgroundColorTwo}
+        textColor={voucher.textColor}
+        zCoinsBack={voucher.zCoinsBack}
+        coinPercentage={voucher.coinPercentage}
+        onClose={hideBottomSheet}
+        onProceed={handleProceedToPay}
+        buttonColor={voucher.buttonColor || '#c81ca0'}
+      />,
+      ['100%'], // Use 100% height for the bottom sheet
+      { hideHandle: true } // Remove the handle indicator
+    );
   };
 
   const handleProceedToPay = (amount: string) => {
     // Here you would typically handle payment processing
     console.log(`Processing payment for ${selectedVoucher?.title} voucher of amount ${amount}`);
-    setShowSelectionModal(false);
+    hideBottomSheet();
   };
 
   return (
@@ -99,28 +113,6 @@ export const VoucherCarousel: React.FC<VoucherCarouselProps> = ({ title }) => {
           />
         ))}
       </ScrollView>
-
-      {/* Voucher Selection Modal */}
-      {selectedVoucher && (
-        <Modal
-          visible={showSelectionModal}
-          animationType="slide"
-          onRequestClose={handleCloseSelectionModal}
-        >
-          <VoucherSelectionScreen
-            title={selectedVoucher.title}
-            voucherImage={selectedVoucher.voucherImage}
-            backgroundColorOne={selectedVoucher.backgroundColorOne}
-            backgroundColorTwo={selectedVoucher.backgroundColorTwo}
-            textColor={selectedVoucher.textColor}
-            zCoinsBack={selectedVoucher.zCoinsBack}
-            coinPercentage={selectedVoucher.coinPercentage}
-            onClose={handleCloseSelectionModal}
-            onProceed={handleProceedToPay}
-            buttonColor={selectedVoucher.buttonColor || '#c81ca0'}
-          />
-        </Modal>
-      )}
     </View>
   );
 }; 

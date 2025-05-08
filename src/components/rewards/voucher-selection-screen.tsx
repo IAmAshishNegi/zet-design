@@ -7,6 +7,8 @@ import {
   ScrollView,
   StyleSheet,
   SafeAreaView,
+  Dimensions,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -65,7 +67,12 @@ const VoucherChip: React.FC<{
   bgColor: string;
 }> = ({ value, displayValue, isSelected, onSelect, bgColor }) => {
   return (
-    <Pressable onPress={onSelect} style={{ marginRight: 12 }}>
+    <Pressable 
+      onPress={onSelect} 
+      style={{ marginRight: 12 }}
+      hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }} // Increase touch area
+      android_ripple={{ color: 'rgba(0,0,0,0.1)', borderless: false }} // Add ripple effect for Android
+    >
       <View
         className={`flex-row items-center justify-center w-25 h-11 rounded-sm overflow-hidden ${
           isSelected ? "" : "bg-neutral-0/50"
@@ -214,22 +221,36 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
   }, []);
 
   return (
-    <View className="h-[100%]" style={{ flex: 1, backgroundColor: backgroundColorOne }}>
-      <ScrollView className="flex-1 bg-neutral-0/0">
-       <LinearGradient
+    <View style={{ 
+      flex: 1, 
+      backgroundColor: backgroundColorOne,
+      position: 'relative' // Ensure relative positioning for absolute children
+    }}>
+      {/* Main scrollable content */}
+      <ScrollView 
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={{ paddingBottom: 180 }} // Add enough bottom padding for the fixed button
+        alwaysBounceVertical={false}
+        bounces={false}
+        nestedScrollEnabled={true}
+        scrollEventThrottle={16}
+      >
+        <LinearGradient
           colors={[backgroundColorTwo, backgroundColorOne]}
           start={{ x: 0.45, y: 0.45 }}
           end={{ x: 0.8, y: 0.8 }}
           className="mb-6 overflow-hidden"
         >
           <View className="rounded-xl overflow-hidden">
-            {/* Header with voucher info */}
-            <View className="pt-2 px-3 flex-row items-center">
+            {/* Header with voucher info - update to better fit in bottom sheet */}
+            <View className="pt-8 px-3 flex-row items-center justify-between">
               <Pressable onPress={onClose} className="p-2">
-                <Ionicons name="arrow-back" size={24} color="#ffffff" />
+                <Ionicons name="close" size={24} color="#ffffff" />
               </Pressable>
-              {/*
-               */}
+              {/* <H5 className={`${textColor} text-center flex-1`} numberOfLines={1}>
+                {title} Voucher
+              </H5> */}
               <View style={{ width: 32 }} />
             </View>
 
@@ -309,6 +330,7 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
                       label={isZetPlusAdded ? "Remove" : "Add"} 
                       className="px-4 self-start w-auto"
                       onPress={toggleZetPlus}
+                      style={{ zIndex: 100 }} // Ensure button receives touch events
                     />
                   
                   </View>
@@ -476,11 +498,11 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
         </LinearGradient>
       </ScrollView>
       
-      {/* Fixed button at the bottom */}
-      <View 
-        className="absolute bottom-0 left-0 right-0 px-3 pb-4 pt-3" 
-        style={{ backgroundColor: backgroundColorOne }} 
-      >
+      {/* Fixed button container at the bottom */}
+      <View style={[
+        styles.fixedButtonContainer, 
+        { backgroundColor: backgroundColorOne }
+      ]}>
         <View className="flex-row items-center justify-center -mb-7 px-2 pt-2 pb-9 bg-[#048928]/20 rounded-xl">
           <View className="flex-row items-center gap-1">
             <LottieView
@@ -570,5 +592,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
     marginLeft: 14,
+  },
+  fixedButtonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 16,
+    zIndex: 9999,
+    elevation: 10, // For Android shadow
+    shadowColor: '#000', // For iOS shadow
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
 });

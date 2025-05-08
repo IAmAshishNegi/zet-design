@@ -37,87 +37,109 @@ import {
   ChevronRightIcon,
 } from "../ui/icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
 
-// Reusable component for brand cards
-function BrandCard({
-  imageSource,
-  brandName,
-  discount,
-}: {
-  imageSource: ImageSourcePropType;
-  brandName: string;
-  discount: string;
-}) {
-  return (
-    <View className="w-[31.5%] bg-white rounded-xl border-[1.3px] border-neutral-900/5 py-3">
-      <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-        <View className="mb-1">
-          <Image
-            source={imageSource}
-            className="w-12 h-12"
-            resizeMode="cover"
-          />
-        </View>
-        <View className="flex-col items-center justify-center">
-          <SH7 className="text-neutral-900 w-full text-center opacity-80 mb-1">
-            {brandName}
-          </SH7>
-          <SH3 className="text-neutral-900 w-full text-center opacity-40">
-            {discount}
-          </SH3>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-export function DiscountSection() {
   // Brand data arrays for both rows
   const topRowBrands = [
     {
-      imageSource: require("../../assets/images/brands/amazon.webp"),
+    id: "1",
       brandName: "Amazon",
       discount: "5% Off",
+    imageSource: require("../../assets/images/brands/amazon.webp"),
+    zCoinsBack: "500",
+    voucherValue: "₹100",
+    backgroundColor: "#f5f5f5",
+    backgroundColorOne: "#232F3E",
+    backgroundColorTwo: "#131A22",
+    voucherImage: require("../../assets/images/brands/amazonLogoW.webp"),
+    buttonColor: "#FF9900",
+    textColor: "text-white",
+    coinPercentage: 8,
     },
     {
-      imageSource: require("../../assets/images/brands/myntra.webp"),
+    id: "2",
       brandName: "Myntra",
       discount: "5% Off",
+    imageSource: require("../../assets/images/brands/myntra.webp"),
+    zCoinsBack: "600",
+    voucherValue: "₹120",
+    backgroundColor: "#FFF0F5",
+    backgroundColorOne: "#FF3F6C",
+    backgroundColorTwo: "#E62955",
+    voucherImage: require("../../assets/images/brands/myntra.webp"),
+    buttonColor: "#FF3F6C",
+    textColor: "text-white",
+    coinPercentage: 9,
     },
     {
-      imageSource: require("../../assets/images/brands/flipkart.webp"),
+    id: "3",
       brandName: "Flipkart",
       discount: "5% Off",
+    imageSource: require("../../assets/images/brands/flipkart.webp"),
+    zCoinsBack: "550",
+    voucherValue: "₹110",
+    backgroundColor: "#e8f5ff",
+    backgroundColorOne: "#047BD5",
+    backgroundColorTwo: "#0565ae",
+    voucherImage: require("../../assets/images/brands/flipkartLogo.webp"),
+    buttonColor: "#FFE500",
+    textColor: "text-white",
+    coinPercentage: 10,
     },
-    // {
-    //   imageSource: require("../../assets/images/brands/nike.webp"),
-    //   brandName: "Nike",
-    //   discount: "5% Off",
-    // },
   ];
 
   const bottomRowBrands = [
-    // {
-    //   imageSource: require("../../assets/images/brands/titan.webp"),
-    //   brandName: "Titan",
-    //   discount: "5% Off",
-    // },
     {
-      imageSource: require("../../assets/images/brands/puma.webp"),
+    id: "4",
       brandName: "Puma",
       discount: "5% Off",
+    imageSource: require("../../assets/images/brands/puma.webp"),
+    zCoinsBack: "750",
+    voucherValue: "₹150",
+    backgroundColor: "#ededed",
+    backgroundColorOne: "#047BD5",
+    backgroundColorTwo: "#0565ae",
+    voucherImage: require("../../assets/images/brands/puma.webp"),
+    buttonColor: "#E50000",
+    textColor: "text-white",
+    coinPercentage: 7,
     },
     {
-      imageSource: require("../../assets/images/brands/dunzo.webp"),
+    id: "5",
       brandName: "Dunzo",
       discount: "5% Off",
+    imageSource: require("../../assets/images/brands/dunzo.webp"),
+    zCoinsBack: "400",
+    voucherValue: "₹80",
+    backgroundColor: "#f2fefb",
+    backgroundColorOne: "#00D395",
+    backgroundColorTwo: "#00B37D",
+    voucherImage: require("../../assets/images/brands/dunzo.webp"),
+    buttonColor: "#00D395",
+    textColor: "text-white",
+    coinPercentage: 6,
     },
     {
-      imageSource: require("../../assets/images/brands/zomato.webp"),
+    id: "6",
       brandName: "Zomato",
       discount: "5% Off",
+    imageSource: require("../../assets/images/brands/zomato.webp"),
+    zCoinsBack: "500",
+    voucherValue: "₹100",
+    backgroundColor: "#ffeeee",
+    backgroundColorOne: "#CB202D",
+    backgroundColorTwo: "#A61F2B",
+    voucherImage: require("../../assets/images/brands/zomato.webp"),
+    buttonColor: "#CB202D",
+    textColor: "text-white",
+    coinPercentage: 8,
     },
   ];
+
+export function DiscountSection() {
+  const handleBrandPress = (id: string) => {
+    console.log(`Brand with ID: ${id} pressed`);
+  };
 
   return (
     <View className="relative overflow-hidden">
@@ -140,7 +162,7 @@ export function DiscountSection() {
             </SH7>
           </View>
           <View className="flex-row justify-between items-center">
-            <SH6 className="text-neutral-900">Top Brands on ZET</SH6>
+            <SH6 className="text-neutral-900">Top Brand Vouchers on ZET</SH6>
             <View className="flex-row items-center">
               <SH4 className="text-primary-500">View all brands</SH4>
               <ChevronRightIcon variant="stroke" height={16} width={16}  color={colors.primary[500]} />
@@ -149,38 +171,46 @@ export function DiscountSection() {
         </View>
 
         <View className="flex-row justify-between">
-          {topRowBrands.map((brand, index) => (
-            <BrandCard
-              key={`top-${index}`}
-              imageSource={brand.imageSource}
+          {topRowBrands.map((brand) => (
+            <TopBrandVoucherCard
+              key={brand.id}
+              id={brand.id}
               brandName={brand.brandName}
               discount={brand.discount}
+              zCoinsBack={brand.zCoinsBack}
+              backgroundColor={brand.backgroundColor}
+              imageSource={brand.imageSource}
+              voucherImage={brand.voucherImage}
+              onPress={() => handleBrandPress(brand.id)}
+              backgroundColorOne={brand.backgroundColorOne}
+              backgroundColorTwo={brand.backgroundColorTwo}
+              buttonColor={brand.buttonColor}
+              textColor={brand.textColor}
+              coinPercentage={brand.coinPercentage}
             />
           ))}
         </View>
 
         <View className="flex-row pb-4 mt-4 justify-between">
-          {bottomRowBrands.map((brand, index) => (
-            <BrandCard
-              key={`bottom-${index}`}
-              imageSource={brand.imageSource}
+          {bottomRowBrands.map((brand) => (
+            <TopBrandVoucherCard
+              key={brand.id}
+              id={brand.id}
               brandName={brand.brandName}
               discount={brand.discount}
+              zCoinsBack={brand.zCoinsBack}
+              backgroundColor={brand.backgroundColor}
+              imageSource={brand.imageSource}
+              voucherImage={brand.voucherImage}
+              onPress={() => handleBrandPress(brand.id)}
+              backgroundColorOne={brand.backgroundColorOne}
+              backgroundColorTwo={brand.backgroundColorTwo}
+              buttonColor={brand.buttonColor}
+              textColor={brand.textColor}
+              coinPercentage={brand.coinPercentage}
             />
           ))}
         </View>
-        {/* <View className="flex-row justify-center mt-6">
-          <Button
-            variant="outlined"
-            size="sm"
-            color="primary-500"
-            className="rounded-full w-fit"
-            endIcon={<ChevronRightIcon variant="stroke" height={16} width={16}  color={colors.primary[500]} />}
-            style={{ borderRadius: 100, paddingLeft: 14, paddingRight: 10 }}
-          >
-            See all brands
-          </Button>
-        </View> */}
       </View>
     </View>
   );

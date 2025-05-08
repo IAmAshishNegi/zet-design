@@ -67,33 +67,16 @@ import Reanimated, {
   runOnJS,
 } from "react-native-reanimated";
 import { RedeemVoucherSection, RedemptionOptionsCarousel } from "../components/zcoins";
-
-
-// Define RedemptionOption type
-interface RedemptionOption {
-  id: string;
-  backgroundImage: any;
-  title: string;
-  subtitle: string;
-  showSubtitle?: boolean;
-  conversionRate?: string;
-  showConversionRate?: boolean;
-  ctaLabel: string;
-  showCta?: boolean;
-  gradientColors?: [string, string] | [string, string, ...string[]];
-  onPress?: () => void;
-  heroImage?: any;
-  showHeroImage?: boolean;
-}
+import { RedemptionOptionsStack, RedemptionOption } from "../components/zcoins/redemption-options-stack";
 
 const redemptionOptionData: RedemptionOption[] = [
   {
     id: '1',
     backgroundImage: require('../assets/images/zCoinVoucherBg.webp'),
     title: 'ZCOINS TO VOUCHERS',
-    subtitle: 'Get vouchers from 1000+ brands, including Amazon, Flipkart, Zomato, Swiggy, and more.',
+    subtitle: '1000+ brands vouchers, including Amazon, Flipkart, Zomato, and more.',
     showSubtitle: true,
-    conversionRate: '₹0.4',
+    conversionRate: '1000 Zcoins = Upto ₹400 Voucher',
     showConversionRate: true,
     ctaLabel: 'Convert Coins to Vouchers',
     showCta: true,
@@ -108,7 +91,7 @@ const redemptionOptionData: RedemptionOption[] = [
     title: 'CONVERT ZCOINS TO CASH',
     subtitle: 'Convert your Zcoins to cash and use it to pay for your purchases.',
     showSubtitle: true,
-    conversionRate: '₹0.2',
+    conversionRate: '1000 Zcoins = ₹100',
     showConversionRate: true,
     ctaLabel: 'Convert Coins to Cash',
     showCta: true,
@@ -207,53 +190,57 @@ export default function ZCoinsScreen() {
             </View>
 
          
-            <View
-              className="flex-row items-start border-[1.3px] border-neutral-900/5 rounded-2xl py-5  pl-3 pr-6 bg-neutral-0 overflow-hidden mx-3 mb-2.5 mt-4"
-              style={cardShadowStyle}
+            <Pressable
+              onPress={() => router.push('/zcoin-statement-screen')}
             >
-               <LottieView
-                source={require("../assets/lottie/CoinFlipDark.json")}
-                autoPlay
-                loop
-                style={{
-                
-                  height: 40,
-                  width: 40,
-                  marginRight: 8,
-                  opacity: 0.9,
-                 
-                }}
-              />
-              <View className="flex-1">
-                <View className="flex-row items-center justify-between">
-                <H5 className="text-neutral-900/80">1000</H5>
-                <OverlineSm className="ml-2 mt-0.5 px-1.5 py-0.5 bg-[#2fa11e]/10 rounded-md text-[#2fa11e] mb-0.5">
-                Worth ₹100
-                </OverlineSm>
+              <View
+                className="flex-row items-start border-[1.3px] border-neutral-900/5 rounded-2xl py-5 px-4 bg-neutral-0 overflow-hidden mx-3 mb-2.5 mt-4"
+                style={cardShadowStyle}
+              >
+                <LottieView
+                  source={require("../assets/lottie/CoinFlipDark.json")}
+                  autoPlay
+                  loop
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    height: 40,
+                    width: 40,
+                    
+                    opacity: 0.9,
+                  }}
+                />
+                <View className="flex-1">
+                  <View className="flex-row items-center justify-start">
+                    <H7 className="text-neutral-900/80">1000</H7>
+                    <OverlineSm className="ml-2 mt-0.5 px-1.5 py-0.5 bg-[#2fa11e]/10 rounded-md text-[#2fa11e] mb-1">
+                      Worth ₹100
+                    </OverlineSm>
+                  </View>
+                  <SH8 className="text-neutral-900/40 uppercase mt-1">
+                    COIN BALANCE
+                  </SH8>
+                  {/* <B9 className="text-neutral-900/30 capitalize mt-2">
+                    Total 20,000 Zcoins Earned
+                  </B9> */}
                 </View>
-                <SH8 className="text-neutral-900/40 uppercase">
-                  COIN BALANCE
-                </SH8>
-                {/* <B9 className="text-neutral-900/30 capitalize mt-2">
-                  Total 20,000 Zcoins Earned
-                </B9> */}
               </View>
-             
-            </View>
+            </Pressable>
 
             <View className="flex-row justify-between px-3">
               <View
-                className="flex-row w-[48.5%] items-center border-[1.3px] border-neutral-900/5 rounded-2xl  px-4 pt-3 pb-5 bg-neutral-0 overflow-hidden justify-start align-middle"
+                className="flex-row w-[48.5%] items-center border-[1.3px] border-neutral-900/5 rounded-xl  px-4 pt-3 pb-5 bg-neutral-0 overflow-hidden justify-start align-middle"
                 style={cardShadowStyle}
               >
                
-                 <View className=" bg-[#2958f11b] rounded-full absolute w-13 h-12 -right-3 -bottom-3">
+                 {/* <View className=" bg-[#2958f11b] rounded-full absolute w-13 h-12 -right-3 -bottom-3"> */}
                
                  <Image
-                  source={require("../assets/images/reward/cashbackNew.webp")}
-                  className="w-11 h-11 opacity-90 -mt-2"
+                  source={require("../assets/images/reward/savings3dY.webp")}
+                  className="w-12 h-12 opacity-90 absolute right-0 -bottom-1"
                 />
-                </View>
+               
 
                 <View className="flex-col">
                   <SH8 className="text-neutral-900/40 uppercase mt-1.5">
@@ -288,7 +275,7 @@ export default function ZCoinsScreen() {
                 className="w-[48.5%]" 
               >
                 <View
-                  className="flex-row items-center border-[1.3px] border-neutral-900/5 rounded-2xl pb-3 pt-2 px-4 bg-neutral-0 overflow-hidden justify-start align-middle"
+                  className="flex-row items-center border-[1.3px] border-neutral-900/5 rounded-xl pb-5 pt-2 px-4 bg-neutral-0 overflow-hidden justify-start align-middle"
                   style={cardShadowStyle}
                 >            
                   <View className=" bg-[#f5c30d29] rounded-full absolute w-13 h-12 -right-3 -bottom-3">
@@ -310,16 +297,15 @@ export default function ZCoinsScreen() {
           </View>
         </LinearGradient>
         {/* Redeem Section Title */}
-        <View className="px-3 mt-7">
+        <View className="px-3 mt-3">
           <SH6 className="text-neutral-900/80">Redeem your Zcoins</SH6>
         </View>
 
         {/* Redemption Options Carousel */}
-        <View className="mt-3 mb-4">
-          <RedemptionOptionsCarousel 
+        <View className="mt-2 mb-4">
+          <RedemptionOptionsStack 
             data={redemptionOptions}
-            itemHeight={300}
-            itemWidth={320}
+            itemHeight={240}
             onOptionSelect={handleRedemptionOptionSelect}
           />
         </View>

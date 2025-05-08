@@ -5,6 +5,7 @@ import {
   Pressable,
   Image,
   ImageSourcePropType,
+  TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -15,7 +16,13 @@ import {
 import { Button } from "../ui";
 import LottieView from "lottie-react-native";
 import { useBottomSheet } from "../../context/bottom-sheet-context";
-import { VoucherRedeemBottomSheet } from "./voucher-redeem-bottom-sheet";
+import { VoucherRedeemBottomSheet } from "../zcoins/voucher-redeem-bottom-sheet";
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming,
+  Easing 
+} from "react-native-reanimated";
 
 interface RedeemVoucherCardProps {
   title: string;
@@ -30,6 +37,9 @@ interface RedeemVoucherCardProps {
   id?: string;
 }
 
+// Create animated touchable component
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+
 export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
   title,
   zCoinsRequired,
@@ -43,6 +53,39 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
   id,
 }) => {
   const { showBottomSheet } = useBottomSheet();
+  
+  // Animation values for press feedback
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
+  
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+      opacity: opacity.value,
+    };
+  });
+  
+  const handlePressIn = () => {
+    scale.value = withTiming(0.95, {
+      duration: 150,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+    opacity.value = withTiming(0.8, {
+      duration: 150,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+  };
+  
+  const handlePressOut = () => {
+    scale.value = withTiming(1, {
+      duration: 200,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+    opacity.value = withTiming(1, {
+      duration: 200,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+  };
 
   const handleRedeemPress = () => {
     // Show bottom sheet with voucher details
@@ -56,7 +99,7 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
         backgroundColorTwo={backgroundColorTwo}
         id={id}
       />,
-      ['50%']
+      ['60%']
     );
     
     // Also call the original onRedeem handler if provided
@@ -66,12 +109,18 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
   };
 
   return (
-    <Pressable onPress={onPress} className="mb-4">
+    <AnimatedTouchable 
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      className="mb-4"
+      style={[animatedStyle]}
+    >
       <LinearGradient
-        colors={[backgroundColorOne, backgroundColorTwo]}
+        colors={[backgroundColorOne, backgroundColorTwo] as const}
         start={{ x: 0.45, y: 0.45 }}
         end={{ x: 0.8, y: 0.8 }}
-        className="rounded-xl overflow-hidden"
+        className="rounded-sm overflow-hidden"
       >
         <View className="flex-col justify-between p-4">
           <View className="flex-row gap-2 items-center justify-start">
@@ -103,7 +152,7 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
             <View className="absolute -right-6 h-4 w-4 rounded-full bg-white" />
           </View>
 
-          <View className="flex-row justify-start items-center mt-2">
+          {/* <View className="flex-row justify-start items-center mt-2">
             <B5 className="text-white/80">Redeem with {zCoinsRequired}</B5>
             <View className="mx-[2.5px]">
               <LottieView
@@ -117,7 +166,7 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
               />
             </View>
             <B5 className="text-white/80">ZCoins</B5>
-          </View>
+          </View> */}
           
           <View className="mt-3">
             <Button 
@@ -132,6 +181,6 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
           </View>
         </View>
       </LinearGradient>
-    </Pressable>
+    </AnimatedTouchable>
   );
 }; 

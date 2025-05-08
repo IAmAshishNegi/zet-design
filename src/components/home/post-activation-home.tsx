@@ -377,7 +377,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                     Zoins Balance
                   </B4>
                   <View className="mt-2 w-auto">
-                    <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#e5ba0d] rounded-md px-2 py-1 self-start w-auto">
+                    <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#10b615] rounded-md px-2 py-1 self-start w-auto">
                       REDEEM NOW
                     </OverlineSm>
                   </View>

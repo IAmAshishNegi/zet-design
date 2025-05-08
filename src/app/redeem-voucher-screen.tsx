@@ -7,10 +7,10 @@ import {
 } from "react-native";
 import { colors } from "../styles/theme";
 import { Stack, useRouter } from "expo-router";
-import { H3 } from "../components/ui";
+import { B3, H3, OverlineSm, SH6 } from "../components/ui";
 import { ChevronLeftIcon } from "../components/ui/icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { RedeemVoucherSection } from "../components/zcoins";
+import { RedeemVoucherSection, TopRedeemedVouchersCarousel } from "../components/zcoins";
 import { BottomSheetProvider } from "../context/bottom-sheet-context";
 
 export default function RedeemVoucherScreen() {
@@ -43,9 +43,24 @@ export default function RedeemVoucherScreen() {
             </Pressable>
             <H3>Redeem Voucher</H3>
           </View>
+          <View>
+          <View className="px-3 mt-4 flex-row items-center justify-between">
+            <SH6>Top Redeemed Vouchers</SH6>
+            <OverlineSm className=" px-1.5 py-0.5 bg-[#a11e50]/10 rounded-md text-[#a11e50] mb-1">
+              1000+ Redeemed
+            </OverlineSm>
+          </View>
+          
+          {/* Add the TopRedeemedVouchersCarousel component */}
+          <View className="mt-4">
+            <TopRedeemedVouchersCarousel />
+          </View>
+          
+          </View>
 
           {/* Voucher section */}
-          <View className="px-3 mt-3">
+          <View className="px-3 pt-3 bg-neutral-0">
+            <SH6 className="mb-2">All Brand Vouchers</SH6>
             <RedeemVoucherSection />
           </View>
         </View>

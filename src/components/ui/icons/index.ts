@@ -26,6 +26,8 @@ export { default as LockIcon } from './LockIcon';
 export {default as YtIcon} from './YtIcon';
 export {default as CheckboxEmptyIcon} from './CheckboxEmptyIcon';
 export {default as ChevronLeftIcon} from './ChevronLeftIcon';
+export {default as CopyIcon} from './CopyIcon';
+export { default as CrossIcon } from './CrossIcon';
 
 // Filter chip icons
 export {default as FoodIcon} from './FoodIcon';

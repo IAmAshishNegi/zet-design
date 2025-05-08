@@ -5,6 +5,7 @@ import {
   Pressable,
   Image,
   ImageSourcePropType,
+  TouchableOpacity,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -25,6 +26,12 @@ import {
 } from "../ui/typography/typography";
 import { Button } from "../ui";
 import LottieView from "lottie-react-native";
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withTiming,
+  Easing 
+} from "react-native-reanimated";
 
 interface VoucherCardProps {
   title: string;
@@ -38,6 +45,9 @@ interface VoucherCardProps {
   textColor?: string;
 }
 
+// Create animated touchable component
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+
 export const VoucherCard: React.FC<VoucherCardProps> = ({
   title,
   zCoinsBack,
@@ -49,10 +59,49 @@ export const VoucherCard: React.FC<VoucherCardProps> = ({
   voucherImage,
   textColor = "text-white",
 }) => {
+  // Animation values for press feedback
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
+  
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+      opacity: opacity.value,
+    };
+  });
+  
+  const handlePressIn = () => {
+    scale.value = withTiming(0.95, {
+      duration: 150,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+    opacity.value = withTiming(0.8, {
+      duration: 150,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+  };
+  
+  const handlePressOut = () => {
+    scale.value = withTiming(1, {
+      duration: 200,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+    opacity.value = withTiming(1, {
+      duration: 200,
+      easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+    });
+  };
+
   return (
-    <Pressable onPress={onPress} className="mr-4">
+    <AnimatedTouchable 
+      onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      className="mr-4"
+      style={[animatedStyle]}
+    >
       <LinearGradient
-        colors={[backgroundColorOne, backgroundColorTwo]}
+        colors={[backgroundColorOne, backgroundColorTwo] as const}
         start={{ x: 0.45, y: 0.45 }}
         end={{ x: 0.8, y: 0.8 }}
         className="rounded-xl overflow-hidden w-[220px]"
@@ -122,6 +171,6 @@ export const VoucherCard: React.FC<VoucherCardProps> = ({
           </View>
         </View>
       </LinearGradient>
-    </Pressable>
+    </AnimatedTouchable>
   );
 };

@@ -4,8 +4,12 @@ import { StyleSheet, View } from 'react-native';
 import { colors } from '../styles/theme';
 
 interface BottomSheetContextProps {
-  showBottomSheet: (content: ReactNode, snapPoints?: string[]) => void;
+  showBottomSheet: (content: ReactNode, snapPoints?: string[], options?: BottomSheetOptions) => void;
   hideBottomSheet: () => void;
+}
+
+interface BottomSheetOptions {
+  hideHandle?: boolean;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextProps | undefined>(undefined);
@@ -18,12 +22,22 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
   const [isVisible, setIsVisible] = useState(false);
   const [content, setContent] = useState<ReactNode | null>(null);
   const [snapPoints, setSnapPoints] = useState<string[]>(['50%']); // Default snap points
+  const [hideHandle, setHideHandle] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const showBottomSheet = useCallback((newContent: ReactNode, newSnapPoints: string[] = ['30%']) => {
+  const showBottomSheet = useCallback((
+    newContent: ReactNode, 
+    newSnapPoints: string[] = ['30%'],
+    options?: BottomSheetOptions
+  ) => {
     console.log('Context: Showing bottom sheet');
+    if (newContent === null) {
+      hideBottomSheet();
+      return;
+    }
     setContent(newContent);
     setSnapPoints(newSnapPoints);
+    setHideHandle(options?.hideHandle || false);
     setIsVisible(true);
     bottomSheetRef.current?.expand(); // Expand to the first snap point
   }, []);
@@ -31,7 +45,10 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
   const hideBottomSheet = useCallback(() => {
     console.log('Context: Hiding bottom sheet');
     bottomSheetRef.current?.close();
-    // setIsVisible(false); // Visibility controlled by BottomSheet's onChange
+    setTimeout(() => {
+      setIsVisible(false);
+      setContent(null);
+    }, 200);
   }, []);
 
   const handleSheetChanges = useCallback((index: number) => {
@@ -68,7 +85,12 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
           onChange={handleSheetChanges}
           style={styles.bottomSheet}
           backdropComponent={renderBackdrop}
-          handleIndicatorStyle={styles.bottomSheetIndicator}
+          handleComponent={hideHandle ? () => null : undefined}
+          handleIndicatorStyle={!hideHandle ? styles.bottomSheetIndicator : undefined}
+          enableContentPanningGesture={false} // Disable content panning to avoid interference with scrolling
+          enableHandlePanningGesture={true}
+          keyboardBehavior="interactive"
+          android_keyboardInputMode="adjustResize"
         >
           <BottomSheetView style={styles.bottomSheetContent}>
             {content}

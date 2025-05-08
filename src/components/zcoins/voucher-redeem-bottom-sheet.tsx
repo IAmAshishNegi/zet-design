@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, ImageSourcePropType, ScrollView, StyleSheet } from "react-native";
+import { View, Image, ImageSourcePropType, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useBottomSheet } from "../../context/bottom-sheet-context";
-import { H3, SH1, B2, B3, SH6, Button } from "../ui";
+import { H3, SH1, B2, B3, SH6, B5, Button } from "../ui";
 import LottieView from "lottie-react-native";
 import { useRouter } from "expo-router";
+import { InfoIcon } from "../ui/icons";
 
 interface VoucherRedeemBottomSheetProps {
   voucherTitle: string;
@@ -70,23 +71,33 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        <View className="flex-row justify-between items-center mb-4">
+          <H3>Redeem Voucher</H3>
+          <TouchableOpacity 
+            onPress={handleGoToMyVouchers}
+            className="bg-neutral-100 px-3 py-1.5 rounded-full"
+          >
+            <B5 className="text-neutral-700">My Vouchers</B5>
+          </TouchableOpacity>
+        </View>
+        
         {/* Voucher Card */}
         <View className="items-center mb-6">
           <LinearGradient
-            colors={[backgroundColorOne, backgroundColorTwo]}
+            colors={[backgroundColorOne, backgroundColorTwo] as const}
             start={{ x: 0.45, y: 0.45 }}
             end={{ x: 0.8, y: 0.8 }}
-            className="rounded-xl overflow-hidden w-full"
+            className="rounded-xl overflow-hidden w-full shadow-md"
           >
             <View className="flex-col justify-between p-4">
-              <View className="flex-row gap-2 items-center justify-start">
-                <View className="rounded-md overflow-hidden border border-white/30">
+              <View className="flex-row gap-3 items-center justify-start">
+                <View className="rounded-md overflow-hidden border border-white/30 shadow-sm">
                   <Image
                     source={
                       voucherImage ||
                       require("../../assets/images/vouchersNew.webp")
                     }
-                    className="w-10 h-10"
+                    className="w-12 h-12"
                     resizeMode="contain"
                   />
                 </View>
@@ -95,7 +106,7 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
                     {voucherTitle}
                   </SH1>
                   {voucherValue && (
-                    <B2 className="text-white/80" numberOfLines={1}>
+                    <B2 className="text-white/90" numberOfLines={1}>
                       {voucherValue} Voucher
                     </B2>
                   )}
@@ -112,7 +123,7 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
         </View>
 
         {/* Details */}
-        <View className="mb-6">
+        <View className="bg-neutral-50 rounded-xl p-4 mb-6 shadow-sm">
           <View className="flex-row justify-between items-center mb-3">
             <B3 className="text-neutral-600">Voucher Value</B3>
             <SH6>{voucherValue}</SH6>
@@ -134,6 +145,16 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
               </View>
             </View>
           </View>
+        </View>
+        
+        {/* Information box */}
+        <View className="bg-blue-50 rounded-xl p-4 mb-6 flex-row">
+          <View className="mr-3 mt-0.5">
+            <InfoIcon size={16} color="#3b82f6" />
+          </View>
+          <B3 className="text-blue-700 flex-1">
+            After redemption, your voucher will be processed within 24-48 hours. You can check your voucher status in "My Vouchers" section.
+          </B3>
         </View>
       </ScrollView>
 
@@ -180,7 +201,7 @@ const SuccessView: React.FC<SuccessViewProps> = ({
           />
           <H3 className="text-center mt-2">Voucher Redeemed Successfully</H3>
           <B3 className="text-center text-neutral-600 mt-3 px-6">
-            It will take 24-48 hrs to process your voucher request. Please check my voucher section in ZCoin to view your voucher details.
+            It will take 24-48 hrs to process your voucher request. Please check "My Vouchers" section to view your voucher details.
           </B3>
         </View>
       </ScrollView>
