@@ -28,7 +28,7 @@ function SpotlightSection({
   showIndicators = false,
   onActionPress,
   containerStyle,
-  itemHeight = 280,
+  itemHeight = 240,
   itemWidth,
   headerIconStyle
 }: SpotlightSectionProps) {

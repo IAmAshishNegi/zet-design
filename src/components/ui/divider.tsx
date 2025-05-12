@@ -85,12 +85,13 @@ export const Divider = ({
   
   // Section divider consists of 3 stacked dividers with different colors
   return (
+    
     <View className={`${className} bg-neutral-100`}>
       <View 
-      className='bg-neutral-0 h-4 w-full rounded-b-full'/>
+      className='bg-neutral-0 h-3 w-full rounded-b-full'/>
       <View className='bg-neutral-100 h-2 w-full'/>
       <View 
-      className='bg-neutral-0 h-4 w-full rounded-t-full'/>
+      className='bg-neutral-0 h-3 w-full rounded-t-full'/>
     </View>
   );
 };

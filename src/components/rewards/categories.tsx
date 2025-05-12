@@ -31,7 +31,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CARD_WIDTH_PERCENTAGE = 0.28; // 20% width
+const CARD_WIDTH_PERCENTAGE = 0.26; // 20% width
 
 // Reusable component for recharge cards
 function RewardCategories({ 
@@ -45,17 +45,17 @@ function RewardCategories({
 }) {
   return (
     <View 
-      className="border border-neutral-900/5 py-4 rounded-xl bg-white"
+      className="py-3 rounded-2xl bg-neutral-100/80"
       style={[
         styles.categoryCard,
         isLast ? { marginRight: 16 } : { marginRight: 10 }
       ]}
     >
       <View className="flex-col items-center justify-center gap-1 w-full overflow-hidden rounded-xl">
-        <View className="mb-1">
+        <View>
           <Image
             source={imageSource}
-            className="w-[52px] h-[52px]"
+            className="w-11 h-11"
             resizeMode="cover"
           />
         </View>
@@ -72,23 +72,23 @@ export function RewardCategoriesSection() {
   // Card data array
   const rechargeCards = [
     {
-      imageSource: require("../../assets/images/reward/travelNewColor.webp"),
+      imageSource: require("../../assets/images/reward/travel3d.webp"),
       title: "Travel"
     },
     {
-      imageSource: require("../../assets/images/reward/shoppingNewColor.webp"),
+      imageSource: require("../../assets/images/reward/shopping3d.webp"),
       title: "Shopping"
     },
     {
-      imageSource: require("../../assets/images/reward/dineNewColor.webp"),
+      imageSource: require("../../assets/images/reward/food3d.webp"),
       title: "Dine Out"
     },
     {
-      imageSource: require("../../assets/images/reward/fashionNewColor.webp"),
+      imageSource: require("../../assets/images/reward/fashion3d.webp"),
       title: "Fashion"
     },
     {
-      imageSource: require("../../assets/images/reward/groceryNewColor.webp"),
+      imageSource: require("../../assets/images/reward/grocery3d.webp"),
       title: "Groceries"
     },
   
@@ -97,17 +97,17 @@ export function RewardCategoriesSection() {
   return (
     <View className="relative overflow-hidden">
       <LinearGradient
-        colors={["#f3ecf6", "#efece5", "#f3ecf6"] as const}
+        colors={["#ffffff", "#ffffff", "#ffffff"] as const}
         start={{ x: -0.01, y: 0.5 }}
         end={{ x: 0.7, y: 1 }}
         locations={[0, 0.6, 1] as const}
-        className="absolute left-0 right-0 top-0 bottom-0 h-full w-full"
+        className="absolute left-0 right-0 top-0 bottom-0 w-full"
       />
 
       <View className="pb-5">
-        <View className="mb-5 pt-6 px-3">
+        <View className="mb-5 px-3">
           <View>
-            <SH6 className="text-neutral-900">Rewards Categories</SH6>
+            <SH6 className="text-neutral-900">Voucher Categories</SH6>
           </View>
         </View>
 

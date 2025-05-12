@@ -9,7 +9,7 @@ import Reanimated, {
   runOnJS
 } from 'react-native-reanimated';
 import { ScrollView } from 'react-native-gesture-handler';
-import { H4, B2, B3, Button, H5, SH1, H6, H7 } from '../ui';
+import { H4, B2, B3, Button, H5, SH1, H6, H7, SH2 } from '../ui';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // Use Reanimated's ScrollView for smooth animations
@@ -302,14 +302,14 @@ function SpotlightCarousel({
                           </View>
                         )}
                         
-                        <SH1 style={{
+                        <SH2 style={{
                           color: colors.neutral[0],
                           marginBottom: 8,
                           ...(titleStyle || {})
-                        }}>{item.title}</SH1>
+                        }}>{item.title}</SH2>
                         
                         {item.showSubtitle !== false && item.subtitle && (
-                          <B3 style={styles.subtitle}>{item.subtitle}</B3>
+                          <B3 className='text-neutral-0/50'>{item.subtitle}</B3>
                         )}
                         
                         {item.showStatistic !== false && item.statistic && (
@@ -327,7 +327,7 @@ function SpotlightCarousel({
                         {item.showCta !== false && item.ctaLabel && (
                           <Button
                             variant="filled"
-                            size="md"
+                            size="sm"
                             color="neutral-0"
                             onPress={item.onPress}
                             textStyle={{ color: colors.primary[900], fontWeight: '600' }}
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 16,
     justifyContent: 'space-between',
-    padding: 24,
+    padding: 16,
   },
   contentContainer: {
     flex: 1,
@@ -400,8 +400,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   headerIcon: {
-    width: 48,
-    height: 48,
+    width: 42,
+    height: 42,
     borderRadius: 8,
   },
   subtitle: {

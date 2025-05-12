@@ -28,7 +28,10 @@ export {default as CheckboxEmptyIcon} from './CheckboxEmptyIcon';
 export {default as ChevronLeftIcon} from './ChevronLeftIcon';
 export {default as CopyIcon} from './CopyIcon';
 export { default as CrossIcon } from './CrossIcon';
-
+export {default as CalendarRupeeIcon} from './CalendarRupeeIcon';
+export {default as ZcoinInIcon} from './ZcoinInIcon';
+export {default as ZcoinOutIcon} from './ZcoinOutIcon';
+export {default as ZcoinIcon} from './ZcoinIcon';
 // Filter chip icons
 export {default as FoodIcon} from './FoodIcon';
 export {default as ShoppingIcon} from './ShoppingIcon';

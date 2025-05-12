@@ -8,6 +8,7 @@ import {
 import {
   JoiningBenefits,
   JoiningBenefitsSection,
+  RewardCategoriesSection,
 } from "../../components/rewards";
 import { UpiSection } from "../../components/payments";
 import { PromoBanner } from "../../components/carousel";
@@ -23,7 +24,8 @@ import { CreditScoreScale } from "../../components/credit-score";
 import { colors } from "../../styles/theme";
 import { Link } from "expo-router";
 import { useBottomSheet } from "../../context/bottom-sheet-context";
-
+import SingleProductBanner from "../product-banner/single-product-banner";
+import { OttSection } from "../../components/rewards";
 interface HomeContentProps {
   isPostActivation: boolean;
   spotlightData: SpotlightItem[];
@@ -141,19 +143,33 @@ const HomeContent: React.FC<HomeContentProps> = ({
       <View className='px-3 mb-8'>
         <JoiningBenefitsSection />
       </View> */}
-      <View className="px-3 mb-9">
+      {/* <View className="px-3 mb-9">
         <UpiSection />
-      </View>
+      </View> */}
       <View>
-        <RechargeSection />
-        {/* <RechargeSectionScroll /> */}
+        {/* <RechargeSection /> */}
+        <RechargeSectionScroll />
       </View>
-      <View>
+
+      <View className="mt-7">
+        <SingleProductBanner />
+      </View>
+      {/* <Divider variant='section' thickness={4} color={colors.neutral[100]} /> */}
+      <View className="mb-2">
         <DiscountSection />
       </View>
-      <View className=" mb-2">
-        <DiscountBanner />
+      {/* <View className="mb-2">
+        <RewardCategoriesSection />
+      </View> */}
+      <View>
+        <OttSection />
       </View>
+      {/* <View>
+        <RewardCategoriesSection />
+      </View> */}
+      {/* <View className=" mb-2">
+        <DiscountBanner />
+      </View> */}
       {/* <View className='mt-8'>
         <PromoBanner
          
@@ -179,8 +195,8 @@ const HomeContent: React.FC<HomeContentProps> = ({
           spotlightData={patchedSpotlightData}
           autoPlay={false}
           duration={5000}
-          itemHeight={240}
-          itemWidth={200}
+          itemHeight={200}
+          itemWidth={180}
           headerIconStyle={{
             marginBottom: 12,
           }}

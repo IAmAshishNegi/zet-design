@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Platform } from 'react-native';
 import { RedeemVoucherCard } from './redeem-voucher-card';
+import { useUser } from '../../context/user-context';
+import { useBottomSheet } from '../../context/bottom-sheet-context';
+import { VoucherRedeemBottomSheet } from './voucher-redeem-bottom-sheet';
 
 // Sample top redeemed voucher data
 const TOP_REDEEMED_VOUCHERS = [
@@ -48,11 +51,54 @@ const TOP_REDEEMED_VOUCHERS = [
 
 interface TopRedeemedVouchersCarouselProps {
   containerStyle?: any;
+  minCoinsRequired?: number;
 }
 
 export const TopRedeemedVouchersCarousel: React.FC<TopRedeemedVouchersCarouselProps> = ({ 
-  containerStyle 
+  containerStyle,
+  minCoinsRequired = 500
 }) => {
+  const { userInfo } = useUser();
+  const hasEnoughCoins = userInfo.zcoins.balance >= minCoinsRequired;
+  
+  // Safely access the bottom sheet context
+  let bottomSheetContext;
+  try {
+    bottomSheetContext = useBottomSheet();
+  } catch (error) {
+    console.warn("BottomSheet context not available in TopRedeemedVouchersCarousel");
+    bottomSheetContext = {
+      showBottomSheet: () => {},
+      hideBottomSheet: () => {}
+    };
+  }
+  
+  const { showBottomSheet } = bottomSheetContext;
+
+  // Handle redeem action for the voucher
+  const handleRedeemPress = (voucher: any) => {
+    if (!hasEnoughCoins) {
+      console.log("Not enough coins to redeem");
+      return;
+    }
+    
+    // Show the bottom sheet with voucher redemption details
+    showBottomSheet(
+      <VoucherRedeemBottomSheet 
+        voucherTitle={voucher.title}
+        voucherValue={voucher.voucherValue}
+        zCoinsRequired={voucher.zCoinsRequired}
+        voucherImage={voucher.voucherImage}
+        backgroundColorOne={voucher.backgroundColorOne}
+        backgroundColorTwo={voucher.backgroundColorTwo}
+        id={voucher.id}
+      />,
+      ['60%']
+    );
+    
+    console.log(`Redeeming voucher ${voucher.id} - ${voucher.title}`);
+  };
+
   return (
     <View style={containerStyle} className="mb-1">
       <ScrollView 
@@ -61,7 +107,7 @@ export const TopRedeemedVouchersCarousel: React.FC<TopRedeemedVouchersCarouselPr
         contentContainerStyle={{ paddingRight: 16, paddingLeft: 12 }}
       >
         {TOP_REDEEMED_VOUCHERS.map((voucher) => (
-          <View key={voucher.id} style={{ width: 240, marginRight: 12 }}>
+          <View key={voucher.id} style={{ width: 240, marginRight: 12, opacity: hasEnoughCoins ? 1 : 1 }}>
             <RedeemVoucherCard
               id={voucher.id}
               title={voucher.title}
@@ -71,7 +117,7 @@ export const TopRedeemedVouchersCarousel: React.FC<TopRedeemedVouchersCarouselPr
               backgroundColorOne={voucher.backgroundColorOne}
               backgroundColorTwo={voucher.backgroundColorTwo}
               textColor={voucher.textColor}
-              onPress={() => console.log(`Voucher ${voucher.id} pressed`)}
+              onRedeem={() => handleRedeemPress(voucher)}
             />
           </View>
         ))}

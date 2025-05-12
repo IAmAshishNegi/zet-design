@@ -1,0 +1,1 @@
+import SingleProductBanner from "./single-product-banner";

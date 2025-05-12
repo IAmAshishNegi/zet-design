@@ -7,3 +7,4 @@ export { RedemptionOptionsStack } from './redemption-options-stack';
 export { TopRedeemedVouchersCarousel } from './top-redeemed-vouchers-carousel';
 export { RedeemBrandVoucherCard } from './redeem-brand-voucher-card';
 export { TopBrandVoucherCard } from './top-brand-voucher-card';
+export { RedemptionSectionMain } from './redemption-section-main';

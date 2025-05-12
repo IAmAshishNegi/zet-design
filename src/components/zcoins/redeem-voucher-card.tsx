@@ -23,6 +23,15 @@ import Animated, {
   withTiming,
   Easing 
 } from "react-native-reanimated";
+import { useUser } from "../../context/user-context";
+import { LockIcon } from "../ui/icons";
+import { colors } from "../../styles/theme";
+
+// Define bottom sheet context props based on the actual implementation
+interface BottomSheetProps {
+  showBottomSheet: (content: React.ReactNode, snapPoints?: string[], options?: any) => void;
+  hideBottomSheet: () => void;
+}
 
 interface RedeemVoucherCardProps {
   title: string;
@@ -35,12 +44,14 @@ interface RedeemVoucherCardProps {
   voucherImage?: ImageSourcePropType;
   textColor?: string;
   id?: string;
+  bottomSheetContext?: BottomSheetProps;
 }
 
 // Create animated touchable component
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
-export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
+// The main component that uses the bottom sheet context
+const RedeemVoucherCard = ({
   title,
   zCoinsRequired,
   voucherValue,
@@ -51,8 +62,24 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
   voucherImage,
   textColor = "text-white",
   id,
-}) => {
-  const { showBottomSheet } = useBottomSheet();
+}: Omit<RedeemVoucherCardProps, 'bottomSheetContext'>) => {
+  // Get user info to check if they have enough coins
+  const { userInfo } = useUser();
+  const hasEnoughCoins = userInfo.zcoins.balance >= 500; // Minimum required coins
+  
+  // Always call hooks at the top level, not conditionally
+  let bottomSheetContext;
+  try {
+    bottomSheetContext = useBottomSheet();
+  } catch (error) {
+    // If context is not available, provide fallback empty functions
+    bottomSheetContext = {
+      showBottomSheet: () => {},
+      hideBottomSheet: () => {}
+    };
+  }
+  
+  const { showBottomSheet } = bottomSheetContext;
   
   // Animation values for press feedback
   const scale = useSharedValue(1);
@@ -88,6 +115,9 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
   };
 
   const handleRedeemPress = () => {
+    // Only allow redemption if user has enough coins
+    if (!hasEnoughCoins) return;
+    
     // Show bottom sheet with voucher details
     showBottomSheet(
       <VoucherRedeemBottomSheet 
@@ -151,36 +181,29 @@ export const RedeemVoucherCard: React.FC<RedeemVoucherCardProps> = ({
             <View className="border-t border-dashed border-white/20 w-full my-2" />
             <View className="absolute -right-6 h-4 w-4 rounded-full bg-white" />
           </View>
-
-          {/* <View className="flex-row justify-start items-center mt-2">
-            <B5 className="text-white/80">Redeem with {zCoinsRequired}</B5>
-            <View className="mx-[2.5px]">
-              <LottieView
-                source={require("../../assets/lottie/ZetCoins.json")}
-                autoPlay
-                loop
-                style={{
-                  width: 16,
-                  height: 16,
-                }}
-              />
-            </View>
-            <B5 className="text-white/80">ZCoins</B5>
-          </View> */}
           
           <View className="mt-3">
-            <Button 
-              variant="filled" 
-              size="sm" 
-              fullWidth 
-              color="neutral-0"
-              onPress={handleRedeemPress}
-            >
-              Redeem Voucher
-            </Button>
+            {hasEnoughCoins ? (
+              <Button 
+                variant="filled" 
+                size="sm" 
+                fullWidth 
+                color="neutral-0"
+                onPress={handleRedeemPress}
+              >
+                Redeem Voucher
+              </Button>
+            ) : (
+              <View className="flex-row items-center justify-center bg-[#e5e5e5] py-2 px-4 rounded-sm">
+                <LockIcon color={colors.neutral[700]} size={14} variant="stroke" strokeWidth={2} />
+                <B2 className="text-neutral-700 ml-1">500 Zcoins required</B2>
+              </View>
+            )}
           </View>
         </View>
       </LinearGradient>
     </AnimatedTouchable>
   );
-}; 
+};
+
+export { RedeemVoucherCard }; 

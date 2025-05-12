@@ -442,57 +442,56 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
                 </View>
               </View>
             </View>
-            <View className="mx-2 px-3 bg-neutral-0/90 rounded-2xl mt-4">
+            <View className="mx-2 px-3 bg-neutral-0/90 rounded-2xl mt-4 pb-4">
               <SH4 className="uppercase text-neutral-900/80 mt-5 mb-4">
                 HOW TO REDEEM {title} VOUCHERS
               </SH4>
-
+              <View>
+               
+                <View className="ml-4">
+                  <View className="mb-2">
+                    <B5 className="text-neutral-900/80">
+                      1. Go to the voucher screen.
+                    </B5>
+                  </View>
+                  <View className="mb-2">
+                    <B5 className="text-neutral-900/80">
+                      2. Click on the “Redeem” button.
+                    </B5>
+                  </View>
+                  <View className="mb-2">
+                    <B5 className="text-neutral-900/80">
+                      3. Enter the voucher code.
+                    </B5>
+                  </View>
+                  <View className="mb-2">
+                    <B5 className="text-neutral-900/80">
+                      4. Confirm the redemption.
+                    </B5>
+                  </View>
+                  <View className="mb-2">
+                    <B5 className="text-neutral-900/80">
+                      5. Wait for the confirmation message.
+                    </B5>
+                  </View>
+                  <View className="mb-2">
+                    <B5 className="text-neutral-900/80">
+                      6. Enjoy your reward.
+                    </B5>
+                  </View>
+                  <View className="mb-2">
+                    <B5 className="text-neutral-900/80">
+                      7. Check your account for the reward.
+                    </B5>
+                  </View>
+                </View>
+              </View>
             
              
 
-              <View className="flex-row items-center gap-2 py-3 px-3 bg-neutral-0 rounded-md">
-                {/* <CheckboxEmptyIcon size={20} /> */}
-                <SH2 className=" text-black">2x ZCoins with Zet Plus</SH2>
-              </View>
-
+             
             
-
-              {/* Order summary */}
-              <View className=" border-b border-[#cdced2] py-4 mb-4">
-               
-                <View className="flex-row justify-between">
-                  <B2 className="text-base font-medium text-neutral-900">
-                    You Save
-                  </B2>
-                  <SH3 className="text-[#048928]">
-                    ₹{zCoinsRupeeValue}
-                  </SH3>
-                </View>
-              </View>
-
-              {/* Payment button and reward points info in second section */}
-              <View className="pb-6">
-                <View className="flex-row justify-between items-center mb-1">
-                  <H7>
-                    You Pay
-                  </H7>
-                  <H7>
-                    ₹{finalAmount}
-                  </H7>
-                </View>
-                <View className="flex-row items-center">
-                  <B1 className=" text-neutral-500">& Get</B1>
-                  <SH1 className=" text-[#048928] ml-1">
-                    ₹{zCoinsRupeeValue}
-                  </SH1>
-                  <B1 className=" text-neutral-500 ml-1">
-                    as ZCoins
-                  </B1>
-                  {isZetPlusAdded && (
-                    <B1 className="text-[#048928] ml-1">(2x with Zet Plus)</B1>
-                  )}
-                </View>
-              </View>
+             
             </View>
           </View>
         </LinearGradient>

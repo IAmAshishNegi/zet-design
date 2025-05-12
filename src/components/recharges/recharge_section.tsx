@@ -36,12 +36,12 @@ interface RechargeCardProps {
 
 function RechargeCard({ image, label }: RechargeCardProps) {
   return (
-    <View className="w-[31.7%] border border-neutral-900/5 py-4 rounded-xl bg-white">
-      <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
-        <View>
+    <View className="w-[31%]  py-2 rounded-xl bg-white">
+      <View className="flex-col items-center justify-center gap-2 w-full rounded-full">
+        <View className="bg-white rounded-full">
           <Image
             source={image}
-            className="w-14 h-14"
+            className="w-12 h-12"
             resizeMode="cover"
           />
         </View>
@@ -55,56 +55,57 @@ function RechargeCard({ image, label }: RechargeCardProps) {
 
 const topRowCards = [
   {
-    image: require("../../assets/images/bills/electricity.webp"),
-    label: "Electricity Bill",
+    image: require("../../assets/images/bills/bulb3dNew2.webp"),
+    label: "Electricity",
   },
   {
-    image: require("../../assets/images/bills/mobile_recharge.webp"),
-    label: "Prepaid Recharge",
+    image: require("../../assets/images/bills/prepaid3DNew2.webp"),
+    label: "Prepaid",
   },
   {
-    image: require("../../assets/images/bills/postpaid.webp"),
-    label: "Postpaid Payment",
+    image: require("../../assets/images/bills/postpaid3d.webp"),
+    label: "Postpaid",
   },
 ];
 
 const bottomRowCards = [
   {
-    image: require("../../assets/images/bills/loan_pay.webp"),
-    label: "Loan EMI Payment",
+    image: require("../../assets/images/bills/loan3d.webp"),
+    label: "Loan EMI",
   },
   {
-    image: require("../../assets/images/bills/fastag.webp"),
-    label: "NHAI Fastag",
+    image: require("../../assets/images/bills/fastag3d.webp"),
+    label: "Fastag",
   },
   {
-    image: require("../../assets/images/bills/more.webp"),
-    label: "More options",
+    image: require("../../assets/images/bills/more3d.webp"),
+    label: "More",
   },
 ];
 
 export function RechargeSection() {
   return (
-    <View className="relative overflow-hidden">
+    <View className="relative overflow-hidden rounded-xl border border-neutral-900/10">
       <LinearGradient
-        colors={["#f4f0ea", "#f9fbfa", "#f4f0ea"] as const}
+        // colors={["#f4f0ea", "#f9fbfa", "#f4f0ea"] as const}
+        colors={["#ffffff", "#ffffff", "#ffffff"]}
         start={{ x: -0.01, y: 0.5 }}
         end={{ x: 0.7, y: 1 }}
         locations={[0, 0.6, 1] as const}
         className="absolute left-0 right-0 top-0 bottom-0 h-full w-full"
       />
 
-      <View className="px-3">
-        <View className="mb-5 mt-5">
-          <SH6 className="text-neutral-900">Recharges & Bill Payments </SH6>
+      <View>
+        <View className="mb-2 mt-5">
+          <SH6 className="text-neutral-900 px-5">Recharges & Bill Payments </SH6>
         </View>
 
-        <View className="flex-row mb-3 justify-between">
+        <View className="flex-row justify-between mb-2">
           {topRowCards.map(card => (
             <RechargeCard key={card.label} image={card.image} label={card.label} />
           ))}
         </View>
-        <View className="flex-row gap-2 pb-7 justify-between">
+        <View className="flex-row gap-2 justify-between mb-4">
           {bottomRowCards.map(card => (
             <RechargeCard key={card.label} image={card.image} label={card.label} />
           ))}

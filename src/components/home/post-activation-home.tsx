@@ -36,7 +36,7 @@ import {
   H7,
   B6,
 } from "../ui";
-import { CreditScoreIcon } from "../ui/icons";
+import { CreditScoreIcon, LockIcon } from "../ui/icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import AppBar from "./app-bar";
 import { RiveRef, Fit, Alignment } from "rive-react-native";
@@ -44,18 +44,13 @@ import { colors } from "../../styles/theme";
 import { Image } from "react-native";
 import LottieView from "lottie-react-native";
 import { useRouter } from "expo-router";
+import { useUser } from "../../context/user-context";
 
 interface PostActivationHomeProps {
-  creditScore: number;
-  creditScoreStatus: "good" | "fair" | "poor";
-  lastUpdated: string;
   navigation: BottomTabNavigationProp<any>;
   greeting: string;
-  name: string;
-  avatarImageUrl: string | null;
-  onAvatarPress: () => void;
   avatarVariant: "default" | "outline" | "small";
-  positiveChange?: boolean;
+  onAvatarPress: () => void;
 }
 
 // SlotMachineDigit Component for displaying individual digits with animation
@@ -170,17 +165,22 @@ const SlotMachineDigit = ({
 };
 
 const PostActivationHome: React.FC<PostActivationHomeProps> = ({
-  creditScore,
-  creditScoreStatus,
-  lastUpdated,
   navigation,
   greeting,
-  name,
-  avatarImageUrl,
   onAvatarPress,
   avatarVariant,
-  positiveChange = true,
 }) => {
+  const { userInfo } = useUser();
+  const { 
+    creditScore, 
+    creditScoreStatus, 
+    lastUpdated, 
+    name, 
+    avatarImageUrl, 
+    positiveChange = true,
+    zcoins 
+  } = userInfo;
+  
   const riveRef = useRef<RiveRef>(null);
   const redeemRiveRef = useRef<RiveRef>(null);
   const [playRedeemAnimation, setPlayRedeemAnimation] = useState(false);
@@ -370,16 +370,34 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
               >
                 <Pressable onPress={() => router.push('/zcoins-screen')}>
                   <SH7 className="text-black text-start text-sm opacity-80 uppercase">
-                  1000 ZCOINS
+                  {zcoins.balance} ZCOINS
                   </SH7>
-
+                  <View className="flex-row items-center gap-2">
+                  {zcoins.balance >= 500 ? (
                   <B4 className="text-black opacity-50 text-start">
                     Zoins Balance
                   </B4>
+                  ) : (
+                    <B4 className="text-black opacity-50 text-start">
+                      Need 500 Zcoins to redeem
+                    </B4>
+                  )}
+                  </View>
+                
                   <View className="mt-2 w-auto">
-                    <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#10b615] rounded-md px-2 py-1 self-start w-auto">
-                      REDEEM NOW
-                    </OverlineSm>
+                    {zcoins.balance >= 500 ? (
+                      <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#10b615] rounded-md px-2 py-1 self-start w-auto">
+                        REDEEM NOW
+                      </OverlineSm>
+                    ) : (
+                      // <View className="flex-row items-center bg-[#919191] rounded-md px-2 py-1 self-start">
+                      //   <LockIcon color="#ffffff" size={12} variant="stroke" strokeWidth={2} />
+                      //   <OverlineSm className="text-[#ffffff] text-center text-sm ml-1">
+                      //     LOCKED
+                      //   </OverlineSm>
+                      // </View>
+                      ""
+                    )}
                   </View>
                 </Pressable>
                 <View className="absolute -right-2 -bottom-1 opacity-90">

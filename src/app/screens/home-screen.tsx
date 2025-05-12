@@ -249,6 +249,47 @@ export default function HomeScreen() {
     };
   }, []);
 
+  // Render the appropriate home content based on application status
+  const renderHomeContent = () => {
+    if (isPostActivation) {
+      return (
+        <PostActivationHome
+          navigation={navigation}
+          greeting={greeting}
+          onAvatarPress={toggleAvatarImage}
+          avatarVariant={avatarVariant}
+        />
+      );
+    } else if (applicationStatus === APPLICATION_STATUS.IN_PROGRESS) {
+      return (
+        <InProcessHome
+          status={applicationStatus}
+          handleApplicationContinue={handleApplicationContinue}
+          greeting={greeting}
+          name={creditScoreData.name}
+          avatarImageUrl={avatarImageUrl}
+          onAvatarPress={toggleAvatarImage}
+          avatarVariant={avatarVariant}
+          positiveChange={creditScoreData.change >= 0}
+        />
+      );
+    } else {
+      return (
+        <PreActivationHome
+          riveScoreRef={riveScoreRef}
+          openApplicationStartSheet={openApplicationStartSheet}
+          navigateToCards={navigateToCards}
+          greeting={greeting}
+          name={creditScoreData.name}
+          avatarImageUrl={avatarImageUrl}
+          onAvatarPress={toggleAvatarImage}
+          avatarVariant={avatarVariant}
+          positiveChange={creditScoreData.change >= 0}
+        />
+      );
+    }
+  };
+
   return (
     <GestureHandlerRootView style={styles.rootContainer}>
       <View style={styles.container}>
@@ -262,43 +303,7 @@ export default function HomeScreen() {
           scrollEventThrottle={16}
         >
           {/* Render the appropriate home section based on application status */}
-          {isPostActivation ? (
-            <PostActivationHome 
-              creditScore={creditScoreData.score}
-              creditScoreStatus={creditScoreData.status}
-              lastUpdated={creditScoreData.lastUpdated}
-              navigation={navigation}
-              greeting={greeting}
-              name={creditScoreData.name}
-              avatarImageUrl={avatarImageUrl}
-              onAvatarPress={toggleAvatarImage}
-              avatarVariant={avatarVariant}
-              positiveChange={creditScoreData.change >= 0}
-            />
-          ) : isApplicationStarted ? (
-            <InProcessHome 
-              status={applicationStatus}
-              handleApplicationContinue={handleApplicationContinue}
-              greeting={greeting}
-              name={creditScoreData.name}
-              avatarImageUrl={avatarImageUrl}
-              onAvatarPress={toggleAvatarImage}
-              avatarVariant={avatarVariant}
-              positiveChange={creditScoreData.change >= 0}
-            />
-          ) : (
-            <PreActivationHome 
-              riveScoreRef={riveScoreRef}
-              openApplicationStartSheet={openApplicationStartSheet}
-              navigateToCards={navigateToCards}
-              greeting={greeting}
-              name={creditScoreData.name}
-              avatarImageUrl={avatarImageUrl}
-              onAvatarPress={toggleAvatarImage}
-              avatarVariant={avatarVariant}
-              positiveChange={creditScoreData.change >= 0}
-            />
-          )}
+          {renderHomeContent()}
           
           {/* Shared Home Content Section */}
           <HomeContent 

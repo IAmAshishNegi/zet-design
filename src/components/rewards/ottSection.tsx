@@ -20,6 +20,7 @@ import {
   H3,
   H6,
   H7,
+  H8,
   SH1,
   SH2,
   SH3,
@@ -31,7 +32,7 @@ import {
 
 // Get screen width for responsive sizing
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_WIDTH = SCREEN_WIDTH * 0.65;
+const CARD_WIDTH = SCREEN_WIDTH * 0.55;
 
 interface OttCardProps {
   logo: any;
@@ -57,8 +58,8 @@ const OttCard = ({
       style={styles.cardContainer}
       className="mr-4 rounded-xl overflow-hidden border-2 border-neutral-0/5"
     >
-      <LinearGradient colors={["#170b1d", "#170b1d"]} className="rounded-xl ">
-        <View className="p-0 relative h-[300px] ">
+      <LinearGradient colors={["#170b1d", "#170b1d"]} className="rounded-2xl ">
+        <View className="p-0 relative h-[240px] ">
           <View className="h-[35%] rounded-t-xl overflow-hidden">
             <View className="absolute z-10 top-0 left-0 w-full h-full bg-neutral-900/50" />
             <Image
@@ -73,7 +74,7 @@ const OttCard = ({
             )}
           </View>
 
-          <View className="absolute top-[28%] left-5 h-20 w-20 rounded-xl border-2 border-neutral-0/10 bg-neutral-900 justify-center items-center overflow-hidden">
+          <View className="absolute top-[28%] left-5 h-14 w-14 rounded-xl border-2 border-neutral-0/10 bg-neutral-900 justify-center items-center overflow-hidden">
             <Image
               source={logo}
               className="w-[80%] h-[80%]"
@@ -83,15 +84,15 @@ const OttCard = ({
           {/* <View className='pl-26 pt-4'>
           
           </View> */}
-          <View className="px-4 mt-18">
-            <H7 className="text-neutral-300">{title}</H7>
+          <View className="px-4 mt-13">
+            <H8 className="text-neutral-300">{title}</H8>
             {/* <B5 className="text-neutral-0/50 mt-0.5">
               {subtitle}
             </B5> */}
-            <B3 className="text-white mt-1">starts at {price}</B3>
+            <B3 className="text-white/50 mt-0.5">starts at {price}</B3>
           </View>
 
-          <Button className="absolute bottom-4 left-4 right-4">Buy Now</Button>
+          <Button size="sm" className="absolute bottom-4 left-4 right-4">Buy Now</Button>
         </View>
       </LinearGradient>
     </View>
@@ -150,10 +151,10 @@ export function OttSection() {
         colors={["#190224", "#2c0641"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0.5, y: 0.5 }}
-        className="py-5"
+        className="pt-6 pb-4"
       >
         <View>
-          <SH6 className="text-white ml-3 mb-5">
+          <SH6 className="text-white ml-3 mb-6">
             Your Favourite Shows @ Lower Prices
           </SH6>
         </View>

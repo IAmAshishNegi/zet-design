@@ -11,7 +11,7 @@ import {
   Pressable,
 } from "react-native";
 import { colors } from "../styles/theme";
-import { RewardIcon, ChevronLeftIcon, RupeeCoinIcon } from "../components/ui/icons";
+import { RewardIcon, ChevronLeftIcon, RupeeCoinIcon, LockIcon, InfoIcon } from "../components/ui/icons";
 import {
   H2,
   H3,
@@ -66,8 +66,10 @@ import Reanimated, {
   withDelay,
   runOnJS,
 } from "react-native-reanimated";
-import { RedeemVoucherSection, RedemptionOptionsCarousel } from "../components/zcoins";
+import { RedeemVoucherSection, RedemptionOptionsCarousel, RedemptionSectionMain } from "../components/zcoins";
 import { RedemptionOptionsStack, RedemptionOption } from "../components/zcoins/redemption-options-stack";
+import { useUser } from "../context/user-context";
+import { BottomSheetProvider } from "../context/bottom-sheet-context";
 
 const redemptionOptionData: RedemptionOption[] = [
   {
@@ -102,6 +104,9 @@ const redemptionOptionData: RedemptionOption[] = [
   }
 ];
 
+// Define minimum coins required for redemption
+const MIN_COINS_REQUIRED = 500;
+
 // Define constants for card width calculation
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CARD_WIDTH_PERCENTAGE = 280; // 40% width
@@ -111,9 +116,19 @@ const CARD_WIDTH_PERCENTAGE = 280; // 40% width
 
 export default function ZCoinsScreen() {
   const router = useRouter();
+  const { userInfo } = useUser();
+  const { zcoins } = userInfo;
+  
+  // Check if user has enough coins to redeem
+  const hasEnoughCoins = zcoins.balance >= MIN_COINS_REQUIRED;
   
   // Handle redemption option selection
   const handleRedemptionOptionSelect = (option: RedemptionOption) => {
+    // Only process if user has enough coins
+    if (!hasEnoughCoins) {
+      return;
+    }
+    
     console.log(`Selected option: ${option.id}`);
     
     if (option.id === '1') {
@@ -154,7 +169,7 @@ export default function ZCoinsScreen() {
   };
 
   return (
-    <>
+    <BottomSheetProvider>
       <Stack.Screen
         options={{
           headerShown: false,
@@ -189,10 +204,7 @@ export default function ZCoinsScreen() {
               <H3>Your Zcoins</H3>
             </View>
 
-         
-            <Pressable
-              onPress={() => router.push('/zcoin-statement-screen')}
-            >
+            <Pressable onPress={() => router.push("/zcoin-statement-screen")}>
               <View
                 className="flex-row items-start border-[1.3px] border-neutral-900/5 rounded-2xl py-5 px-4 bg-neutral-0 overflow-hidden mx-3 mb-2.5 mt-4"
                 style={cardShadowStyle}
@@ -202,53 +214,56 @@ export default function ZCoinsScreen() {
                   autoPlay
                   loop
                   style={{
-                    position: 'absolute',
+                    position: "absolute",
                     bottom: 0,
                     right: 0,
                     height: 40,
                     width: 40,
-                    
+
                     opacity: 0.9,
                   }}
                 />
                 <View className="flex-1">
                   <View className="flex-row items-center justify-start">
-                    <H7 className="text-neutral-900/80">1000</H7>
+                    <H7 className="text-neutral-900/80">{zcoins.balance}</H7>
                     <OverlineSm className="ml-2 mt-0.5 px-1.5 py-0.5 bg-[#2fa11e]/10 rounded-md text-[#2fa11e] mb-1">
-                      Worth ₹100
+                      Worth ₹{zcoins.cashValue}
                     </OverlineSm>
                   </View>
                   <SH8 className="text-neutral-900/40 uppercase mt-1">
                     COIN BALANCE
                   </SH8>
                   {/* <B9 className="text-neutral-900/30 capitalize mt-2">
-                    Total 20,000 Zcoins Earned
+                    Total {zcoins.totalEarned} Zcoins Earned
                   </B9> */}
                 </View>
               </View>
             </Pressable>
 
             <View className="flex-row justify-between px-3">
-              <View
-                className="flex-row w-[48.5%] items-center border-[1.3px] border-neutral-900/5 rounded-xl  px-4 pt-3 pb-5 bg-neutral-0 overflow-hidden justify-start align-middle"
-                style={cardShadowStyle}
+              <Pressable
+                onPress={() => router.push("/savings-statement-screen")}
+                className="w-[48.5%]"
               >
-               
-                 {/* <View className=" bg-[#2958f11b] rounded-full absolute w-13 h-12 -right-3 -bottom-3"> */}
-               
-                 <Image
-                  source={require("../assets/images/reward/savings3dY.webp")}
-                  className="w-12 h-12 opacity-90 absolute right-0 -bottom-1"
-                />
-               
+                <View
+                  className="flex-row w-full items-center border-[1.3px] border-neutral-900/5 rounded-xl  px-4 pt-3 pb-5 bg-neutral-0 overflow-hidden justify-start align-middle"
+                  style={cardShadowStyle}
+                >
+                  <Image
+                    source={require("../assets/images/reward/savings3dY.webp")}
+                    className="w-12 h-12 opacity-90 absolute -right-2 -bottom-1"
+                  />
 
-                <View className="flex-col">
-                  <SH8 className="text-neutral-900/40 uppercase mt-1.5">
-                    My SAVINGS
-                  </SH8>
-                  <SH7 className="text-neutral-900/80">₹100</SH7>
+                  <View className="flex-col">
+                    <SH8 className="text-neutral-900/40 uppercase mt-1.5">
+                      MY SAVINGS
+                    </SH8>
+                    <SH7 className="text-neutral-900/80">
+                      ₹{zcoins.savingsAmount}
+                    </SH7>
+                  </View>
                 </View>
-              </View>
+              </Pressable>
 
               {/* <View
                 className="flex-row items-start border-[1.3px] border-neutral-900/5 rounded-2xl py-4  px-3 bg-neutral-0 overflow-hidden"
@@ -270,25 +285,27 @@ export default function ZCoinsScreen() {
                 </View>
               </View> */}
 
-              <Pressable 
-                onPress={() => router.push('/my-vouchers-screen')}
-                className="w-[48.5%]" 
+              <Pressable
+                onPress={() => router.push("/my-vouchers-screen")}
+                className="w-[48.5%]"
               >
                 <View
-                  className="flex-row items-center border-[1.3px] border-neutral-900/5 rounded-xl pb-5 pt-2 px-4 bg-neutral-0 overflow-hidden justify-start align-middle"
+                  className="flex-row items-center border-[1.3px] border-neutral-900/5 rounded-xl pt-3 pb-5 px-4 bg-neutral-0 overflow-hidden justify-start align-middle"
                   style={cardShadowStyle}
-                >            
-                  <View className=" bg-[#f5c30d29] rounded-full absolute w-13 h-12 -right-3 -bottom-3">
-                    <Image
-                      source={require("../assets/images/reward/voucherNew.webp")}
-                      className="w-11 h-11 opacity-90 -mt-1"
-                    />
-                  </View>
+                >
+                  {/* <View className=" bg-[#f5c30d29] rounded-full absolute w-13 h-12 -right-3 -bottom-3"> */}
+                  <Image
+                    source={require("../assets/images/reward/voucher3d.webp")}
+                    className="w-11 h-11 opacity-90 -mt-1 absolute -right-2 -bottom-1"
+                  />
+                  {/* </View> */}
                   <View className="flex-col">
                     <SH8 className="text-neutral-900/40 uppercase mt-2">
-                      My Vouchers
+                      MY VOUCHERS
                     </SH8>
-                    <SH7 className="text-neutral-900/80">0 Vouchers</SH7>
+                    <SH7 className="text-neutral-900/80">
+                      {zcoins.vouchersCount} Vouchers
+                    </SH7>
                   </View>
                 </View>
               </Pressable>
@@ -297,26 +314,61 @@ export default function ZCoinsScreen() {
           </View>
         </LinearGradient>
         {/* Redeem Section Title */}
-        <View className="px-3 mt-3">
-          <SH6 className="text-neutral-900/80">Redeem your Zcoins</SH6>
+        <View className="px-3 mt-4">
+          <H5 className="text-neutral-900">Redeem your Zcoins</H5>
         </View>
 
+        {/* Show insufficient coins message if needed */}
+        {!hasEnoughCoins && (
+         
+            <View className="bg-[#fff3df] rounded-lg mx-3 px-3 pt-4 pb-8 mb-5">
+              <View className="flex-row gap-2">
+                {/* <LockIcon
+                  color={colors.error[500]}
+                  size={20}
+                  variant="filled"
+                  
+                /> */}
+                <SH3>
+                  Minimum {MIN_COINS_REQUIRED} Zcoins required to redeem vouchers or cash
+                </SH3>
+              </View>
+              <View className="mt-5">
+                <OverlineSm className="text-neutral-900/70">How to earn Zcoins?</OverlineSm>
+              </View>
+              <View className="mt-5 flex-row gap-2 w-[80%]">
+                <Image source={require('../assets/images/reward/payBill3d.webp')} className="w-10 h-10" />
+                <B2>
+                  Pay bill with your ZET card and earn Zcoins!
+                </B2>
+              </View>
+              <View className="mt-7 flex-row gap-2 w-[80%]">
+                <Image source={require('../assets/images/reward/buyVoucher3d.webp')} className="w-10 h-10" />
+                <B2>
+                Buy discounted vouchers from ZET app and earn Zcoins!
+                </B2>
+              </View>
+            </View>
+          
+        )}
+
         {/* Redemption Options Carousel */}
-        <View className="mt-2 mb-4">
+        {/* <View className="mt-2 mb-4">
           <RedemptionOptionsStack 
             data={redemptionOptions}
             itemHeight={240}
             onOptionSelect={handleRedemptionOptionSelect}
+            minCoinsRequired={500}
           />
-        </View>
+        </View> */}
+        <RedemptionSectionMain />
 
         {/* Display vouchers after options carousel */}
-      
 
         {/* Add some bottom padding */}
         <View className="h-5" />
       </ScrollView>
-    </>
+    </BottomSheetProvider>
   );
 }
 

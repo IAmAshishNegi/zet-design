@@ -10,7 +10,9 @@ import {
   SH3,
   B5,
   B4,
-  SH1
+  SH1,
+  OverlineSm,
+  SH2
 } from "../ui";
 import { colors } from "../../styles/theme";
 import Animated, { 
@@ -22,6 +24,7 @@ import Animated, {
 import LottieView from "lottie-react-native";
 import { useBottomSheet } from "../../context/bottom-sheet-context";
 import { VoucherSelectionScreen } from "../rewards/voucher-selection-screen";
+import { useUser } from "../../context/user-context";
 
 interface TopBrandVoucherCardProps {
   id: string;
@@ -52,13 +55,25 @@ export const TopBrandVoucherCard: React.FC<TopBrandVoucherCardProps> = ({
   imageSource,
   voucherImage,
   onPress,
-  backgroundColorOne = "#232F3E",
-  backgroundColorTwo = "#131A22",
-  buttonColor = "#FF9900",
+  backgroundColorOne = colors.primary[900],
+  backgroundColorTwo = colors.primary[800],
+  buttonColor = colors.primary[500],
   textColor = "text-white",
   coinPercentage = 5
 }) => {
-  const { showBottomSheet, hideBottomSheet } = useBottomSheet();
+  // Safely access bottom sheet context
+  let bottomSheetContext;
+  try {
+    bottomSheetContext = useBottomSheet();
+  } catch (error) {
+    // If context is not available, provide fallback empty functions
+    bottomSheetContext = {
+      showBottomSheet: () => {},
+      hideBottomSheet: () => {}
+    };
+  }
+  
+  const { showBottomSheet, hideBottomSheet } = bottomSheetContext;
   
   // Animation values for press feedback
   const scale = useSharedValue(1);
@@ -145,48 +160,46 @@ export const TopBrandVoucherCard: React.FC<TopBrandVoucherCardProps> = ({
           <View className="mb-1">
             <Image
               source={imageSource}
-              className="w-12 h-12"
+              className="w-10 h-10"
               resizeMode="cover"
             />
           </View>
           
           <View className="flex-col items-center justify-center">
-            <SH7 className="text-neutral-900 w-full text-center opacity-80 mb-1 mt-1">
+            <SH2 className="text-neutral-900 w-full text-center opacity-80 mt-1">
               {brandName}
-            </SH7>
-            {discount && (
-              <SH3 className="text-neutral-900/60 w-full text-center opacity-40">
+            </SH2>
+            
+            {/* {discount && (
+              <SH7 className="text-primary-500 px-2 rounded-sm">
                 {discount}
-              </SH3>
-            )}
+              </SH7>
+            )} */}
           </View>
         </View>
         
         {/* Divider */}
-        <View className="flex-row items-center pr-1 pl-2">
-          <View className="absolute -left-2 h-3 w-3 rounded-full bg-neutral-0" />
+        <View className="flex-row items-center px-2">
+          <View className="absolute -left-2 h-4 w-4 rounded-full bg-neutral-0" />
           <View className="border-t border-dashed border-neutral-200 w-full my-1" />
-          <View className="absolute -right-2 h-3 w-3 rounded-full bg-neutral-0" />
+          <View className="absolute -right-2 h-4 w-4 rounded-full bg-neutral-0" />
         </View>
         
-        {/* Bottom part with ZCoins info */}
-        <View className="px-2 pb-3 pt-1 h-2">
-          {/* <View className="flex-row justify-center items-center">
-            <B4 className="text-neutral-900/40 text-center">
-              Get {zCoinsBack}
-            </B4>
-            <View className="mx-[2px]">
-              <LottieView
-                source={require("../../assets/lottie/ZetCoins.json")}
-                autoPlay
-                loop
-                style={{
-                  width: 14,
-                  height: 14,
-                }}
-              />
-            </View>
-          </View> */}
+        {/* Bottom part with coin info */}
+        <View className="p-2 flex-row justify-center items-center">
+          <LottieView
+            source={require("../../assets/lottie/ZetCoins.json")}
+            autoPlay
+            loop
+            style={{
+              width: 14,
+              height: 14,
+              marginRight: 2,
+            }}
+          />
+          <OverlineSm className="text-neutral-900/60">
+            {zCoinsBack} back
+          </OverlineSm>
         </View>
       </View>
     </AnimatedTouchable>

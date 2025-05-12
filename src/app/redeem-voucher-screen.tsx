@@ -12,9 +12,14 @@ import { ChevronLeftIcon } from "../components/ui/icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { RedeemVoucherSection, TopRedeemedVouchersCarousel } from "../components/zcoins";
 import { BottomSheetProvider } from "../context/bottom-sheet-context";
+import { useUser } from "../context/user-context";
+
+const MIN_COINS_REQUIRED = 500;
 
 export default function RedeemVoucherScreen() {
   const router = useRouter();
+  const { userInfo } = useUser();
+  const hasEnoughCoins = userInfo.zcoins.balance >= MIN_COINS_REQUIRED;
 
   return (
     <BottomSheetProvider>
@@ -53,7 +58,7 @@ export default function RedeemVoucherScreen() {
           
           {/* Add the TopRedeemedVouchersCarousel component */}
           <View className="mt-4">
-            <TopRedeemedVouchersCarousel />
+            <TopRedeemedVouchersCarousel minCoinsRequired={MIN_COINS_REQUIRED} />
           </View>
           
           </View>
@@ -63,6 +68,15 @@ export default function RedeemVoucherScreen() {
             <SH6 className="mb-2">All Brand Vouchers</SH6>
             <RedeemVoucherSection />
           </View>
+          
+          {/* Show message if not enough coins */}
+          {!hasEnoughCoins && (
+            <View className="mx-3 mt-4 mb-3 bg-[#f9f1ff] rounded-lg p-3 flex-row items-center">
+              <B3 className="text-neutral-900/70 flex-1">
+                You need at least {MIN_COINS_REQUIRED} Zcoins to redeem vouchers. Keep earning more Zcoins through your card spends!
+              </B3>
+            </View>
+          )}
         </View>
       </ScrollView>
     </BottomSheetProvider>

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Image, ImageSourcePropType, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useBottomSheet } from "../../context/bottom-sheet-context";
-import { H3, SH1, B2, B3, SH6, B5, Button } from "../ui";
+import { H3, SH1, B2, B3, SH6, B5, Button, H5 } from "../ui";
 import LottieView from "lottie-react-native";
 import { useRouter } from "expo-router";
 import { InfoIcon } from "../ui/icons";
@@ -27,27 +27,8 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
   id,
 }) => {
   const [isRedeemed, setIsRedeemed] = useState(false);
-  const { hideBottomSheet, showBottomSheet } = useBottomSheet();
+  const { hideBottomSheet } = useBottomSheet();
   const router = useRouter();
-
-  // Update bottom sheet height when switching to success view
-  useEffect(() => {
-    if (isRedeemed) {
-      // Close current bottom sheet and reopen with taller height for success view
-      hideBottomSheet();
-      
-      // Small delay to ensure smooth transition
-      setTimeout(() => {
-        showBottomSheet(
-          <SuccessView 
-            onContinueShopping={handleContinueShopping} 
-            onGoToMyVouchers={handleGoToMyVouchers} 
-          />, 
-          ['60%']
-        );
-      }, 100);
-    }
-  }, [isRedeemed]);
 
   const handleRedeemNow = () => {
     // Simulate voucher redemption
@@ -64,7 +45,17 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
     router.push("/my-vouchers-screen");
   };
 
-  // We'll only show the confirmation view now, success view is shown via useEffect
+  // Render confirmation view or success view based on isRedeemed state
+  if (isRedeemed) {
+    return (
+      <SuccessView 
+        onContinueShopping={handleContinueShopping} 
+        onGoToMyVouchers={handleGoToMyVouchers} 
+      />
+    );
+  }
+
+  // Confirmation view
   return (
     <View style={styles.container}>
       <ScrollView 
@@ -72,13 +63,13 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
         contentContainerStyle={styles.scrollContent}
       >
         <View className="flex-row justify-between items-center mb-4">
-          <H3>Redeem Voucher</H3>
-          <TouchableOpacity 
+          <H5>Redeem Voucher</H5>
+          {/* <TouchableOpacity 
             onPress={handleGoToMyVouchers}
             className="bg-neutral-100 px-3 py-1.5 rounded-full"
           >
             <B5 className="text-neutral-700">My Vouchers</B5>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         
         {/* Voucher Card */}
@@ -148,14 +139,14 @@ export const VoucherRedeemBottomSheet: React.FC<VoucherRedeemBottomSheetProps> =
         </View>
         
         {/* Information box */}
-        <View className="bg-blue-50 rounded-xl p-4 mb-6 flex-row">
+        {/* <View className="bg-blue-50 rounded-xl p-4 mb-6 flex-row">
           <View className="mr-3 mt-0.5">
             <InfoIcon size={16} color="#3b82f6" />
           </View>
           <B3 className="text-blue-700 flex-1">
-            After redemption, your voucher will be processed within 24-48 hours. You can check your voucher status in "My Vouchers" section.
+            Your voucher will be processed within 24-48 hours. You can check your voucher status in "My Vouchers" section.
           </B3>
-        </View>
+        </View> */}
       </ScrollView>
 
       {/* Fixed Button at bottom */}

@@ -4,6 +4,8 @@ import { colors } from '../../styles/theme';
 import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
 import { H5, B3, B7, Button, H6 } from '../ui';
+import { LockIcon } from '../ui/icons';
+import { useUser } from '../../context/user-context';
 
 const { width: WINDOW_WIDTH } = Dimensions.get('window');
 
@@ -28,16 +30,25 @@ interface RedemptionOptionsStackProps {
   containerStyle?: any;
   itemHeight?: number;
   onOptionSelect?: (option: RedemptionOption) => void;
+  minCoinsRequired?: number;
 }
 
 function RedemptionOptionsStack({
   data,
   containerStyle,
   itemHeight = 180,
-  onOptionSelect
+  onOptionSelect,
+  minCoinsRequired = 500
 }: RedemptionOptionsStackProps) {
+  const { userInfo } = useUser();
+  const hasEnoughCoins = userInfo.zcoins.balance >= minCoinsRequired;
 
   const handleCardPress = (option: RedemptionOption) => {
+    // Only proceed if user has enough coins
+    if (!hasEnoughCoins) {
+      return;
+    }
+    
     if (onOptionSelect) {
       onOptionSelect(option);
     } else if (option.onPress) {
@@ -66,7 +77,10 @@ function RedemptionOptionsStack({
               <ImageBackground
                 source={item.backgroundImage}
                 style={styles.card}
-                imageStyle={styles.backgroundImage}
+                imageStyle={[
+                  styles.backgroundImage,
+                  !hasEnoughCoins && styles.lockedBackground
+                ]}
               >
                 <LinearGradient
                   colors={gradientColors}
@@ -114,20 +128,27 @@ function RedemptionOptionsStack({
                       )}
                     </View>
 
-                    {item.showCta !== false && item.ctaLabel && (
+                    {item.showCta !== false && (
                       <View style={styles.buttonContainer}>
-                        <Button
-                          variant="filled"
-                          size="md"
-                          color="neutral-0"
-                          onPress={() => handleCardPress(item)}
-                          textStyle={{
-                            color: colors.primary[900],
-                            fontWeight: "600",
-                          }}
-                        >
-                          {item.ctaLabel}
-                        </Button>
+                        {hasEnoughCoins ? (
+                          <Button
+                            variant="filled"
+                            size="md"
+                            color="neutral-0"
+                            onPress={() => handleCardPress(item)}
+                            textStyle={{
+                              color: colors.primary[900],
+                              fontWeight: "600",
+                            }}
+                          >
+                            {item.ctaLabel}
+                          </Button>
+                        ) : (
+                          <View className="flex-row items-center justify-center bg-[#e5e5e5] py-2 px-4 rounded-xl">
+                            <LockIcon color={colors.neutral[700]} size={14} variant="stroke" strokeWidth={2} />
+                            <B3 className="text-neutral-700 ml-2 font-semibold">LOCKED</B3>
+                          </View>
+                        )}
                       </View>
                     )}
                   </View>
@@ -170,6 +191,9 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     borderRadius: 16,
+  },
+  lockedBackground: {
+    opacity: 0.7,
   },
   gradientOverlay: {
     position: 'absolute',

@@ -96,7 +96,7 @@ import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
     imageSource: require("../../assets/images/brands/puma.webp"),
     zCoinsBack: "750",
     voucherValue: "₹150",
-    backgroundColor: "#ededed",
+    backgroundColor: "#f2f3f5",
     backgroundColorOne: "#047BD5",
     backgroundColorTwo: "#0565ae",
     voucherImage: require("../../assets/images/brands/puma.webp"),
@@ -111,7 +111,7 @@ import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
     imageSource: require("../../assets/images/brands/dunzo.webp"),
     zCoinsBack: "400",
     voucherValue: "₹80",
-    backgroundColor: "#f2fefb",
+    backgroundColor: "#e9f9f5",
     backgroundColorOne: "#00D395",
     backgroundColorTwo: "#00B37D",
     voucherImage: require("../../assets/images/brands/dunzo.webp"),
@@ -151,8 +151,8 @@ export function DiscountSection() {
         className="absolute left-0 right-0 top-0 bottom-0 h-full w-full"
       />
 
-      <View className="px-3 pb-6">
-        <View className="mb-5 pt-8">
+      <View className="px-3">
+        <View className="mb-6 pt-8">
           <View className="flex-row items-center gap-2">
             <SH7
               className="text-[#ff1e5d] mb-1"
@@ -191,7 +191,7 @@ export function DiscountSection() {
           ))}
         </View>
 
-        <View className="flex-row pb-4 mt-4 justify-between">
+        <View className="flex-row pb-4 mt-2 justify-between">
           {bottomRowBrands.map((brand) => (
             <TopBrandVoucherCard
               key={brand.id}
