@@ -63,7 +63,7 @@ import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
     imageSource: require("../../assets/images/brands/myntra.webp"),
     zCoinsBack: "600",
     voucherValue: "₹120",
-    backgroundColor: "#FFF0F5",
+    backgroundColor: "#f5f5f5",
     backgroundColorOne: "#FF3F6C",
     backgroundColorTwo: "#E62955",
     voucherImage: require("../../assets/images/brands/myntra.webp"),
@@ -78,7 +78,7 @@ import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
     imageSource: require("../../assets/images/brands/flipkart.webp"),
     zCoinsBack: "550",
     voucherValue: "₹110",
-    backgroundColor: "#e8f5ff",
+    backgroundColor: "#f5f5f5",
     backgroundColorOne: "#047BD5",
     backgroundColorTwo: "#0565ae",
     voucherImage: require("../../assets/images/brands/flipkartLogo.webp"),
@@ -96,7 +96,7 @@ import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
     imageSource: require("../../assets/images/brands/puma.webp"),
     zCoinsBack: "750",
     voucherValue: "₹150",
-    backgroundColor: "#f2f3f5",
+    backgroundColor: "#f5f5f5",
     backgroundColorOne: "#047BD5",
     backgroundColorTwo: "#0565ae",
     voucherImage: require("../../assets/images/brands/puma.webp"),
@@ -111,7 +111,7 @@ import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
     imageSource: require("../../assets/images/brands/dunzo.webp"),
     zCoinsBack: "400",
     voucherValue: "₹80",
-    backgroundColor: "#e9f9f5",
+    backgroundColor: "#f5f5f5",
     backgroundColorOne: "#00D395",
     backgroundColorTwo: "#00B37D",
     voucherImage: require("../../assets/images/brands/dunzo.webp"),
@@ -126,7 +126,7 @@ import { TopBrandVoucherCard } from "../zcoins/top-brand-voucher-card";
     imageSource: require("../../assets/images/brands/zomato.webp"),
     zCoinsBack: "500",
     voucherValue: "₹100",
-    backgroundColor: "#ffeeee",
+    backgroundColor: "#f5f5f5",
     backgroundColorOne: "#CB202D",
     backgroundColorTwo: "#A61F2B",
     voucherImage: require("../../assets/images/brands/zomato.webp"),
@@ -152,7 +152,7 @@ export function DiscountSection() {
       />
 
       <View className="px-3">
-        <View className="mb-6 pt-8">
+        <View className="mb-6">
           <View className="flex-row items-center gap-2">
             <SH7
               className="text-[#ff1e5d] mb-1"

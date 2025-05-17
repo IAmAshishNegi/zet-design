@@ -67,7 +67,7 @@ export default function TypographyDebug() {
           {/* Test 4: SH2 with both */}
           <View style={styles.testCase}>
             <Text style={styles.testLabel}>SH2 with both:</Text>
-            <SH2 style={{fontFamily: 'THICCCBOI-Bold'}} className="text-primary-700">
+            <SH2 className="text-primary-700">
               SH2 with explicit fontFamily and className
             </SH2>
           </View>

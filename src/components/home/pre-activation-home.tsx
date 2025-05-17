@@ -17,6 +17,7 @@ interface PreActivationHomeProps {
   onAvatarPress: () => void;
   avatarVariant: 'default' | 'outline' | 'small';
   positiveChange?: boolean;
+  isZetPlus?: boolean;
 }
 
 const PreActivationHome: React.FC<PreActivationHomeProps> = ({
@@ -28,7 +29,8 @@ const PreActivationHome: React.FC<PreActivationHomeProps> = ({
   avatarImageUrl,
   onAvatarPress,
   avatarVariant,
-  positiveChange = true
+  positiveChange = true,
+  isZetPlus = false
 }) => {
   return (
     <>
@@ -40,6 +42,7 @@ const PreActivationHome: React.FC<PreActivationHomeProps> = ({
         onAvatarPress={onAvatarPress}
         avatarVariant={avatarVariant}
         positiveChange={positiveChange}
+        isZetPlus={isZetPlus}
         backgroundColor="transparent"
         paddingTop={Platform.OS === 'android' ? 28 : 58}
         paddingBottom={10}

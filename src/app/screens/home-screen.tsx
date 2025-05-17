@@ -30,6 +30,7 @@ import { useApplicationState, APPLICATION_STATUS } from '../../context/applicati
 import { ApplicationStatusCard } from '../../components/ui/application';
 import { CreditScoreScale } from '../../components/credit-score';
 import { AppBar, PreActivationHome, InProcessHome, PostActivationHome, HomeContent } from '../../components/home';
+import { useUser } from '../../context/user-context';
 
 // Constants
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
@@ -115,6 +116,7 @@ export default function HomeScreen() {
   const { hideTabBar, showTabBar } = useContext(TabBarVisibilityContext);
   const { showBottomSheet, hideBottomSheet } = useBottomSheet();
   const { applicationStatus, setApplicationStatus, isApplicationStarted } = useApplicationState();
+  const { userInfo } = useUser();
   const scrollRef = useRef<ScrollView>(null);
   const lastScrollY = useRef(0);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -156,6 +158,11 @@ export default function HomeScreen() {
     navigation.jumpTo('Cards');
   };
   
+  // Function to navigate to profile page instead of toggling avatar
+  const navigateToProfile = () => {
+    router.push('/profile');
+  };
+
   // Define the application start bottom sheet content
   const renderApplicationStartContent = useCallback(() => (
     <View style={{ flex: 1, paddingHorizontal: 5 }}>
@@ -256,8 +263,9 @@ export default function HomeScreen() {
         <PostActivationHome
           navigation={navigation}
           greeting={greeting}
-          onAvatarPress={toggleAvatarImage}
+          onAvatarPress={navigateToProfile}
           avatarVariant={avatarVariant}
+          isZetPlus={userInfo.zetPlus.isActive}
         />
       );
     } else if (applicationStatus === APPLICATION_STATUS.IN_PROGRESS) {
@@ -268,9 +276,10 @@ export default function HomeScreen() {
           greeting={greeting}
           name={creditScoreData.name}
           avatarImageUrl={avatarImageUrl}
-          onAvatarPress={toggleAvatarImage}
+          onAvatarPress={navigateToProfile}
           avatarVariant={avatarVariant}
           positiveChange={creditScoreData.change >= 0}
+          isZetPlus={userInfo.zetPlus.isActive}
         />
       );
     } else {
@@ -282,9 +291,10 @@ export default function HomeScreen() {
           greeting={greeting}
           name={creditScoreData.name}
           avatarImageUrl={avatarImageUrl}
-          onAvatarPress={toggleAvatarImage}
+          onAvatarPress={navigateToProfile}
           avatarVariant={avatarVariant}
           positiveChange={creditScoreData.change >= 0}
+          isZetPlus={userInfo.zetPlus.isActive}
         />
       );
     }

@@ -745,12 +745,12 @@ const OverlineMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
   return (
     <Typography 
       variant="12" 
-      weight="medium" 
+      weight="bold" 
       tracking="wide" 
       componentVariant="overlineMd"
       className={`uppercase ${className}`} 
       style={{
-        fontFamily: 'THICCCBOI-Medium',
+        fontFamily: 'THICCCBOI-Bold',
         ...(typeof style === 'object' ? style : {})
       }}
       {...otherProps} 

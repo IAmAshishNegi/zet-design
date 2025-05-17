@@ -46,12 +46,12 @@ function RechargeCard({
   isLast?: boolean;
 }) {
   return (
-    <View className={`mr-2.5 w-[17%] py-3 rounded-xl bg-neutral-100/80 ${isLast ? 'mr-[100px]' : ''}`}>
+    <View className={`mr-2.5 w-[16.5%] py-3 rounded-xl bg-neutral-100/80 ${isLast ? 'mr-[100px]' : ''}`}>
       <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
         <View>
           <Image
             source={imageSource}
-            className="w-11 h-11"
+            className="w-10 h-10"
             resizeMode="cover"
           />
         </View>
@@ -103,7 +103,7 @@ export function RechargeSectionScroll() {
         className="absolute left-0 right-0 top-0 bottom-0 h-full w-full"
       />
 
-      <View className="pb-3">
+      <View>
         <View className="mb-4 pt-3 px-3">
       
           <View className="flex-row items-center justify-between">

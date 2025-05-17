@@ -34,7 +34,7 @@ import {
   H2,
   ScoreDigit,
   H7,
-  B6,
+  B6
 } from "../ui";
 import { CreditScoreIcon, LockIcon } from "../ui/icons";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
@@ -51,6 +51,7 @@ interface PostActivationHomeProps {
   greeting: string;
   avatarVariant: "default" | "outline" | "small";
   onAvatarPress: () => void;
+  isZetPlus?: boolean;
 }
 
 // SlotMachineDigit Component for displaying individual digits with animation
@@ -169,6 +170,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
   greeting,
   onAvatarPress,
   avatarVariant,
+  isZetPlus = false
 }) => {
   const { userInfo } = useUser();
   const { 
@@ -319,6 +321,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
           onAvatarPress={onAvatarPress}
           avatarVariant={avatarVariant}
           positiveChange={positiveChange}
+          isZetPlus={isZetPlus}
           backgroundColor="transparent"
           paddingTop={Platform.OS === "android" ? 35 : 65}
           paddingBottom={15}
@@ -386,7 +389,7 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                 
                   <View className="mt-2 w-auto">
                     {zcoins.balance >= 500 ? (
-                      <OverlineSm className="text-[#ffffff] text-center text-sm bg-[#10b615] rounded-md px-2 py-1 self-start w-auto">
+                      <OverlineSm className="text-success-500 text-center text-sm rounded-md py-1 self-start w-auto">
                         REDEEM NOW
                       </OverlineSm>
                     ) : (
@@ -400,12 +403,12 @@ const PostActivationHome: React.FC<PostActivationHomeProps> = ({
                     )}
                   </View>
                 </Pressable>
-                <View className="absolute -right-2 -bottom-1 opacity-90">
+                <View className="absolute -right-1 -bottom-1">
                 <LottieView
-                  source={require("../../assets/lottie/ZetCoins.json")}
+                  source={require("../../assets/lottie/ZetCoinsNew.json")}
                   style={{
-                    width: 44,
-                    height: 44,
+                    width: 38,
+                    height: 38,
                   }}
                   autoPlay
                   loop

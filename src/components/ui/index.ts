@@ -8,6 +8,9 @@ export * from './icons';
 export * from './avatar';
 export * from './card';
 
+// Accordion
+export * from './accordion';
+
 // Rive Animation
 export { RiveAnimation } from './rive-animation';
 

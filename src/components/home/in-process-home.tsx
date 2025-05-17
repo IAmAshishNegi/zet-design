@@ -15,6 +15,7 @@ interface InProcessHomeProps {
   onAvatarPress: () => void;
   avatarVariant: 'default' | 'outline' | 'small';
   positiveChange?: boolean;
+  isZetPlus?: boolean;
 }
 
 const InProcessHome: React.FC<InProcessHomeProps> = ({
@@ -25,7 +26,8 @@ const InProcessHome: React.FC<InProcessHomeProps> = ({
   avatarImageUrl,
   onAvatarPress,
   avatarVariant,
-  positiveChange = true
+  positiveChange = true,
+  isZetPlus = false
 }) => {
   return (
     <>
@@ -37,6 +39,7 @@ const InProcessHome: React.FC<InProcessHomeProps> = ({
         onAvatarPress={onAvatarPress}
         avatarVariant={avatarVariant}
         positiveChange={positiveChange}
+        isZetPlus={isZetPlus}
         backgroundColor={colors.background[400]}
         paddingTop={Platform.OS === 'android' ? 32 : 62}
         paddingBottom={14}

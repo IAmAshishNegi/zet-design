@@ -10,6 +10,7 @@ interface BottomSheetContextProps {
 
 interface BottomSheetOptions {
   hideHandle?: boolean;
+  height?: string | number;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextProps | undefined>(undefined);
@@ -35,6 +36,15 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
       hideBottomSheet();
       return;
     }
+    
+    // Handle custom height if provided
+    if (options?.height) {
+      const height = typeof options.height === 'number' 
+        ? `${options.height}px` 
+        : options.height;
+      newSnapPoints = [height];
+    }
+    
     setContent(newContent);
     setSnapPoints(newSnapPoints);
     setHideHandle(options?.hideHandle || false);

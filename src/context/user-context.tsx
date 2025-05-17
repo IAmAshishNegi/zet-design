@@ -15,19 +15,33 @@ export interface UserInfo {
     totalEarned: number;
   };
   positiveChange?: boolean;
+  zetPlus: {
+    isActive: boolean;
+    activeSince: string | null;
+    stats: {
+      disputesRaised: number;
+      coinsEarned: number;
+      coinsValue: number;
+      videosWatched: number;
+    }
+  };
 }
 
 interface UserContextType {
   userInfo: UserInfo;
   updateUserInfo: (info: Partial<UserInfo>) => void;
   updateZcoins: (zcoinInfo: Partial<UserInfo['zcoins']>) => void;
+  updateZetPlus: (zetPlusInfo: Partial<UserInfo['zetPlus']>) => void;
+  activateZetPlus: () => void;
 }
 
 // Use mock data as the default values
 const UserContext = createContext<UserContextType>({
   userInfo: mockUserData,
   updateUserInfo: () => {},
-  updateZcoins: () => {}
+  updateZcoins: () => {},
+  updateZetPlus: () => {},
+  activateZetPlus: () => {}
 });
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -50,8 +64,36 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }));
   };
 
+  const updateZetPlus = (zetPlusInfo: Partial<UserInfo['zetPlus']>) => {
+    setUserInfo(prevInfo => ({
+      ...prevInfo,
+      zetPlus: {
+        ...prevInfo.zetPlus,
+        ...zetPlusInfo
+      }
+    }));
+  };
+
+  const activateZetPlus = () => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('en-US', { 
+      day: 'numeric', 
+      month: 'short',
+      year: 'numeric'
+    });
+    
+    setUserInfo(prevInfo => ({
+      ...prevInfo,
+      zetPlus: {
+        ...prevInfo.zetPlus,
+        isActive: true,
+        activeSince: formattedDate
+      }
+    }));
+  };
+
   return (
-    <UserContext.Provider value={{ userInfo, updateUserInfo, updateZcoins }}>
+    <UserContext.Provider value={{ userInfo, updateUserInfo, updateZcoins, updateZetPlus, activateZetPlus }}>
       {children}
     </UserContext.Provider>
   );

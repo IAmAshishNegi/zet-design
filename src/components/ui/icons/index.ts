@@ -39,3 +39,8 @@ export {default as TravelIcon} from './TravelIcon';
 export {default as GroceriesIcon} from './GroceriesIcon';
 export {default as BestValueIcon} from './BestValueIcon';
 export {default as HotSellingIcon} from './HotSellingIcon';
+export {default as ShieldIconLogo} from './ShieldIconLogo';
+export {default as ZetCoinLogoIcon} from './ZetCoinLogoIcon';
+export {default as CheckCircleIcon} from './CheckCircleIcon';
+export {default as CrossCircleIcon} from './CrossCircleIcon';
+export {default as CheckBadgeIcon} from './CheckBadgeIcon';

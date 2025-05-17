@@ -13,6 +13,8 @@ import { B3, H3, SH6, Button, H6, B4, OverlineSm, H7, B1 } from "../components/u
 import { ChevronLeftIcon, LockIcon } from "../components/ui/icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useUser } from "../context/user-context";
+import { useBottomSheet } from "../context/bottom-sheet-context";
+import { UpiConvertBottomSheet } from "../components/zcoins/upi-convert-bottom-sheet";
 import LottieView from "lottie-react-native";
 
 const MIN_COINS_REQUIRED = 500;
@@ -21,6 +23,7 @@ const CONVERSION_RATE = 0.2; // 1 Zcoin = ₹0.2
 export default function ConvertToCashScreen() {
   const router = useRouter();
   const { userInfo, updateZcoins } = useUser();
+  const { showBottomSheet } = useBottomSheet();
   const { zcoins } = userInfo;
   
   const hasEnoughCoins = zcoins.balance >= MIN_COINS_REQUIRED;
@@ -44,14 +47,22 @@ export default function ConvertToCashScreen() {
     const coinsNum = parseInt(coinsToConvert);
     if (isNaN(coinsNum) || coinsNum <= 0 || coinsNum > zcoins.balance) return;
     
-    // Update user's coin balance
-    updateZcoins({
-      balance: zcoins.balance - coinsNum,
-      cashValue: (zcoins.balance - coinsNum) * CONVERSION_RATE
-    });
-    
-    // Navigate back to zcoins screen
-    router.replace('/zcoins-screen');
+    // Show the UPI bottom sheet
+    showBottomSheet(
+      <UpiConvertBottomSheet 
+        amount={cashValue}
+        coinsToConvert={coinsToConvert}
+        onConversionSuccess={() => {
+          // Update user's coin balance
+          updateZcoins({
+            balance: zcoins.balance - coinsNum,
+            cashValue: (zcoins.balance - coinsNum) * CONVERSION_RATE
+          });
+        }}
+      />,
+      undefined,
+      { height: '60%' }
+    );
   };
 
   return (
@@ -169,7 +180,10 @@ export default function ConvertToCashScreen() {
                 2. Confirm the conversion
               </B4>
               <B4 className="text-neutral-900/70 mb-2">
-                3. The cash will be credited to your linked bank account within 24-48 hours
+                3. Enter your UPI ID for receiving the cash
+              </B4>
+              <B4 className="text-neutral-900/70 mb-2">
+                4. The cash will be credited to your UPI ID within 24-48 hours
               </B4>
               <View className="h-[1px] bg-neutral-300 my-3" />
               <B4 className="text-neutral-900/70">

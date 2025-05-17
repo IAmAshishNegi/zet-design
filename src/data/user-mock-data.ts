@@ -10,13 +10,23 @@ export const mockUserData: UserInfo = {
   creditScoreStatus: 'good',
   lastUpdated: '10 May',
   zcoins: {
-    balance: 200,
+    balance: 4000,
     cashValue: 200,
     savingsAmount: 200,
     vouchersCount: 1,
     totalEarned: 20000
   },
-  positiveChange: true
+  positiveChange: true,
+  zetPlus: {
+    isActive: true,
+    activeSince: 'March, 2025',
+    stats: {
+      disputesRaised: 0,
+      coinsEarned: 0,
+      coinsValue: 0,
+      videosWatched: 0
+    }
+  }
 };
 
 // Additional mock user profiles for testing different scenarios
@@ -32,6 +42,16 @@ export const mockUserProfiles = {
       savingsAmount: 0,
       vouchersCount: 0,
       totalEarned: 100
+    },
+    zetPlus: {
+      isActive: true,
+      activeSince: null,
+      stats: {
+        disputesRaised: 0,
+        coinsEarned: 0,
+        coinsValue: 0,
+        videosWatched: 0
+      }
     }
   },
   premiumUser: {
@@ -45,6 +65,16 @@ export const mockUserProfiles = {
       savingsAmount: 2500,
       vouchersCount: 3,
       totalEarned: 50000
+    },
+    zetPlus: {
+      isActive: true,
+      activeSince: '15 May 2023',
+      stats: {
+        disputesRaised: 3,
+        coinsEarned: 400,
+        coinsValue: 20,
+        videosWatched: 4
+      }
     }
   }
 }; 

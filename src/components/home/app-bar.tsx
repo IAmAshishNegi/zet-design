@@ -11,6 +11,7 @@ interface AppBarProps {
   onAvatarPress: () => void;
   avatarVariant: 'default' | 'outline' | 'small';
   positiveChange?: boolean;
+  isZetPlus?: boolean;
   // Style customization props
   containerStyle?: ViewStyle;
   greetingStyle?: TextStyle;
@@ -31,6 +32,7 @@ const AppBar: React.FC<AppBarProps> = ({
   onAvatarPress,
   avatarVariant,
   positiveChange = true,
+  isZetPlus = false,
   // Style customization props with defaults
   containerStyle,
   greetingStyle,
@@ -68,6 +70,7 @@ const AppBar: React.FC<AppBarProps> = ({
           size={48}
           className={positiveChange ? "shadow-success" : "shadow-error"}
           variant={avatarVariant}
+          isZetPlus={isZetPlus}
         />
       </Pressable>
       {/* <View style={styles.greetingContainer}>

@@ -7,6 +7,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { fontFamily, colors } from '../styles/theme';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BottomSheetProvider } from '../context/bottom-sheet-context';
+import { UserProvider } from '../context/user-context';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -46,18 +48,23 @@ function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar style="light" backgroundColor={colors.primary[900]} />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
-          <Stack.Screen name="components" options={{ title: 'Components' }} />
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="typography-debug" options={{ title: 'Typography Debug' }} />
-          <Stack.Screen name="zcoins-screen" options={{ title: 'ZCoins & Redemptions' }} />
-          <Stack.Screen name="redeem-voucher-screen" options={{ title: 'Redeem Voucher' }} />
-          <Stack.Screen name="convert-to-cash-screen" options={{ title: 'Convert to Cash' }} />
-          <Stack.Screen name="my-vouchers-screen" options={{ title: 'My Vouchers' }} />
-        </Stack>
+        <UserProvider>
+          <BottomSheetProvider>
+            <StatusBar style="light" backgroundColor={colors.primary[900]} />
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="design-system" options={{ title: 'Design System' }} />
+              <Stack.Screen name="components" options={{ title: 'Components' }} />
+              <Stack.Screen name="onboarding" />
+              <Stack.Screen name="typography-debug" options={{ title: 'Typography Debug' }} />
+              <Stack.Screen name="zcoins-screen" options={{ title: 'ZCoins & Redemptions' }} />
+              <Stack.Screen name="redeem-voucher-screen" options={{ title: 'Redeem Voucher' }} />
+              <Stack.Screen name="convert-to-cash-screen" options={{ title: 'Convert to Cash' }} />
+              <Stack.Screen name="my-vouchers-screen" options={{ title: 'My Vouchers' }} />
+              <Stack.Screen name="zplus-landing" options={{ title: 'Zet Plus' }} />
+            </Stack>
+          </BottomSheetProvider>
+        </UserProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

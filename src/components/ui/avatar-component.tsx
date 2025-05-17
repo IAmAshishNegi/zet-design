@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { View, Image } from 'react-native';
-import { H3 } from './typography/typography';
+import { View, Image, Text } from 'react-native';
+import { H3, OverlineSm } from './typography/typography';
 
 // Color palette for background colors when no image is provided
 const BACKGROUND_COLORS = [
@@ -24,6 +24,7 @@ type AvatarProps = {
   textColor?: string;
   className?: string;
   variant?: 'default' | 'outline' | 'small';
+  isZetPlus?: boolean;
 };
 
 const getInitials = (name?: string): string => {
@@ -59,6 +60,7 @@ export const Avatar = ({
   textColor = '#FFFFFF',
   className = '',
   variant = 'default',
+  isZetPlus = false,
 }: AvatarProps) => {
   const [imageError, setImageError] = useState(false);
   
@@ -86,38 +88,51 @@ export const Avatar = ({
     ${variant === 'small' ? 'border border-neutral-200' : ''}
     ${className}
   `.trim().replace(/\s+/g, ' ');
+
+  // Badge size as a proportion of avatar size
+  const badgeSize = size * 0.4;
   
   return (
-    <View
-      className={containerClassName}
-      style={{
-        width: effectiveSize,
-        height: effectiveSize,
-        borderRadius: effectiveBorderRadius,
-        backgroundColor: shouldShowImage ? 'transparent' : backgroundColor,
-      }}
-    >
-      {shouldShowImage ? (
-        <Image
-          source={{ uri: source }}
-          className="w-full h-full"
-          style={{
-            borderRadius: effectiveBorderRadius
-          }}
-          onError={() => setImageError(true)}
-        />
-      ) : (
-        <H3 
-          className={`
-            text-center 
-            ${variant === 'small' ? 'font-medium' : 'font-semibold'}
-          `}
-          style={{
-            color: textColor
-          }}
+    <View className="relative">
+      <View
+        className={containerClassName}
+        style={{
+          width: effectiveSize,
+          height: effectiveSize,
+          borderRadius: effectiveBorderRadius,
+          backgroundColor: shouldShowImage ? 'transparent' : backgroundColor,
+        }}
+      >
+        {shouldShowImage ? (
+          <Image
+            source={{ uri: source }}
+            className="w-full h-full"
+            style={{
+              borderRadius: effectiveBorderRadius
+            }}
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <H3 
+            className={`
+              text-center 
+              ${variant === 'small' ? 'font-medium' : 'font-semibold'}
+            `}
+            style={{
+              color: textColor
+            }}
+          >
+            {initials}
+          </H3>
+        )}
+      </View>
+      
+      {isZetPlus && (
+        <View 
+          className="absolute bg-yellow-300 items-center justify-center rounded-sm border border-white px-1.5 -bottom-1.5 left-[12%]"
         >
-          {initials}
-        </H3>
+          <OverlineSm style={{ fontSize: 9 }}>PLUS</OverlineSm>
+        </View>
       )}
     </View>
   );

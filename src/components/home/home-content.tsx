@@ -151,11 +151,12 @@ const HomeContent: React.FC<HomeContentProps> = ({
         <RechargeSectionScroll />
       </View>
 
-      <View className="mt-7">
+      <View className="mt-8 mb-5">
         <SingleProductBanner />
       </View>
-      {/* <Divider variant='section' thickness={4} color={colors.neutral[100]} /> */}
-      <View className="mb-2">
+
+      <Divider variant='section' thickness={2} color={colors.neutral[100]} />
+      <View className="mb-2 mt-5">
         <DiscountSection />
       </View>
       {/* <View className="mb-2">
