@@ -18,7 +18,7 @@ export const mockUserData: UserInfo = {
   },
   positiveChange: true,
   zetPlus: {
-    isActive: true,
+    isActive: false,
     activeSince: 'March, 2025',
     stats: {
       disputesRaised: 0,

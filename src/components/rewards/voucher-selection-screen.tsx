@@ -38,6 +38,7 @@ import LottieView from "lottie-react-native";
 import { ImageSourcePropType } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckboxEmptyIcon } from "../ui/icons";
+import { PaymentGatewayScreen } from "./payment-gateway-screen";
 
 interface DenominationOption {
   value: string;
@@ -134,6 +135,7 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
   const chipRefs = React.useRef<{
     [key: string]: { x: number; width: number };
   }>({});
+  const [showPaymentGateway, setShowPaymentGateway] = useState(false);
 
   // Pre-defined denomination options
   const denominationOptions: DenominationOption[] = [
@@ -219,6 +221,31 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Update the handle proceed function to show payment gateway screen
+  const handleProceed = () => {
+    setShowPaymentGateway(true);
+  };
+
+  // If payment gateway should be shown, render it instead
+  if (showPaymentGateway) {
+    return (
+      <PaymentGatewayScreen 
+        amount={finalAmount.toString()}
+        selectedAmount={selectedAmount}
+        voucherTitle={title}
+        voucherImage={voucherImage}
+        backgroundColorOne={backgroundColorOne}
+        backgroundColorTwo={backgroundColorTwo}
+        textColor={textColor}
+        buttonColor={buttonColor}
+        zCoinsBack={zCoinsBack}
+        coinsEarned={zCoinsEarned}
+        zCoinsRupeeValue={zCoinsRupeeValue}
+        isZetPlusAdded={isZetPlusAdded}
+      />
+    );
+  }
 
   return (
     <View style={{ 
@@ -456,7 +483,7 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
                   </View>
                   <View className="mb-2">
                     <B5 className="text-neutral-900/80">
-                      2. Click on the “Redeem” button.
+                      2. Click on the "Redeem" button.
                     </B5>
                   </View>
                   <View className="mb-2">
@@ -525,7 +552,7 @@ export const VoucherSelectionScreen: React.FC<VoucherSelectionScreenProps> = ({
             fullWidth
             size="xl"
             color="neutral-0"
-            onPress={() => onProceed(selectedAmount)}
+            onPress={handleProceed}
             label={`Continue to Pay ₹${finalAmount}`}
           />
         </View>
