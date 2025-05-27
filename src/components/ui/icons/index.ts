@@ -44,3 +44,4 @@ export {default as ZetCoinLogoIcon} from './ZetCoinLogoIcon';
 export {default as CheckCircleIcon} from './CheckCircleIcon';
 export {default as CrossCircleIcon} from './CrossCircleIcon';
 export {default as CheckBadgeIcon} from './CheckBadgeIcon';
+export {default as UserIcon} from './UserIcon';

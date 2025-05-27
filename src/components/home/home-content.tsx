@@ -143,9 +143,9 @@ const HomeContent: React.FC<HomeContentProps> = ({
       <View className='px-3 mb-8'>
         <JoiningBenefitsSection />
       </View> */}
-      {/* <View className="px-3 mb-9">
+      <View className="px-3 mb-5">
         <UpiSection />
-      </View> */}
+      </View>
       <View>
         {/* <RechargeSection /> */}
         <RechargeSectionScroll />

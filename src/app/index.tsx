@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { HomeIcon, ScoreIcon, CreditCardIcon, RewardIcon } from '../components/ui/icons';
+import { HomeIcon, ScoreIcon, CreditCardIcon, RewardIcon, UserIcon, QRCodeIcon } from '../components/ui/icons';
 import { colors } from '../styles/theme';
 import { B4, B3, B2, B5, B6, B1 } from '../components/ui/typography/typography';
 import { BottomSheetProvider } from '../context/bottom-sheet-context';
@@ -16,6 +16,7 @@ import { UserProvider } from '../context/user-context';
 import HomeScreen from './screens/home-screen';
 import ScoreScreen from './screens/score-screen';
 import CardsScreen from './screens/cards-screen';
+import ProfileScreen from './profile';
 
 const HAS_SEEN_ONBOARDING = 'has_seen_onboarding';
 const Tab = createBottomTabNavigator();
@@ -50,9 +51,28 @@ function TabBarButton({ children, onPress, accessibilityState = { selected: fals
     >
       <View style={styles.tabButtonInner}>
         {focused && <View style={styles.activeIndicator} />}
-        <View style={styles.tabButtonContent}>
+        <View>
           {children}
         </View>
+      </View>
+    </Pressable>
+  );
+}
+
+// Custom QR Scan button component
+function QRScanButton({ onPress }: { onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        
+        pressed && { opacity: 0.9 }
+      ]}
+      accessibilityRole="button"
+      accessibilityLabel="Scan QR Code"
+    >
+      <View className='bg-primary-500 rounded-xl p-3 border-[2px] border-neutral-0'>
+        <QRCodeIcon color="#ffffff" variant="stroke" size={28} />
       </View>
     </Pressable>
   );
@@ -80,6 +100,10 @@ export default function App() {
       useNativeDriver: true
     }).start();
     setTabBarVisible(true);
+  };
+
+  const handleScanPress = () => {
+    router.push('/scan');
   };
 
   // Check if user has seen onboarding
@@ -133,9 +157,9 @@ export default function App() {
                     tabBarLabel: ({ focused, color }) => {
                       // Only show label for active tab, and use B3 with larger font size
                       if (focused) {
-                        return <B5 style={{ color, marginTop: 0 }}>{route.name}</B5>;
+                        return <B5 style={{ color }} className='text-center'>{route.name}</B5>;
                       } else {
-                        return <B5 style={{ color, marginTop: 0 }}>{route.name}</B5>;
+                        return <B5 style={{ color}} className='text-center'>{route.name}</B5>;
                       }
                     },
                     tabBarIcon: ({ focused, color, size }) => {
@@ -146,7 +170,7 @@ export default function App() {
                       const inactiveColor = colors.neutral[500]; // Same as neutral[300] from theme
                       
                       const iconColor = focused ? activeColor : inactiveColor;
-                      const iconSize = focused ? 26 : 24;
+                      const iconSize = focused ? 24 : 22;
 
                       if (route.name === 'Home') {
                         return <HomeIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
@@ -154,6 +178,8 @@ export default function App() {
                         return <ScoreIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
                       } else if (route.name === 'Cards') {
                         return <CreditCardIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
+                      } else if (route.name === 'You') {
+                        return <UserIcon color={iconColor} variant={variant} size={iconSize} strokeWidth={1.8}/>;
                       }
                     },
                     tabBarBackground: () => (
@@ -166,12 +192,37 @@ export default function App() {
                     component={HomeScreen} 
                     options={{
                       headerShown: false,
-                      header: () => null
+                      header: () => null,
+                      tabBarItemStyle: { marginRight: -6 }
                     }}
                   />
-                  <Tab.Screen name="Score" component={ScoreScreen} />
-                  <Tab.Screen name="Cards" component={CardsScreen} />
+                  <Tab.Screen 
+                    name="Score" 
+                    component={ScoreScreen}
+                    options={{
+                      tabBarItemStyle: { marginRight: 24, marginLeft: -12 }
+                    }} 
+                  />
+                  <Tab.Screen 
+                    name="Cards" 
+                    component={CardsScreen}
+                    options={{
+                      tabBarItemStyle: { marginLeft: 24, marginRight: -12 }
+                    }}
+                  />
+                  <Tab.Screen 
+                    name="You" 
+                    component={ProfileScreen}
+                    options={{
+                      tabBarItemStyle: { marginLeft: -12 }
+                    }}
+                  />
                 </Tab.Navigator>
+
+                {/* Floating QR Scan Button - always visible */}
+                <View className='absolute bottom-6 self-center items-center justify-center z-999'>
+                  <QRScanButton onPress={handleScanPress} />
+                </View>
               </SafeAreaView>
             </TabBarVisibilityContext.Provider>
           </BottomSheetProvider>
@@ -222,7 +273,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 2,
   },
   tabButtonActive: {
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -237,14 +288,12 @@ const styles = StyleSheet.create({
   activeIndicator: {
     position: 'absolute',
     top: -10,
-    width: 56,
+    width: 24,
     height: 3,
-    backgroundColor: colors.primary[700],
+    backgroundColor: colors.primary[400],
     borderRadius: 1.5,
   },
-  tabButtonContent: {
-    padding: 4,
-    paddingBottom: 2,
-    alignItems: 'center',
-  }
+ 
+ 
+ 
 }); 

@@ -88,10 +88,6 @@ export default function ProfileScreen() {
   const { userInfo, activateZetPlus } = useUser();
   const { showBottomSheet } = useBottomSheet();
 
-  const handleClose = () => {
-    router.back();
-  };
-
   const handleLogout = () => {
     // Show confirmation bottom sheet
     showBottomSheet(
@@ -129,29 +125,16 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top', 'left', 'right']}>
+    <SafeAreaView className="flex-1 bg-white" edges={['left', 'right']}>
       <Stack.Screen
         options={{
           headerShown: false,
-          animation: 'slide_from_right',
         }}
       />
 
-      {/* Header */}
-      <View className="px-4 py-4 flex-row items-center justify-between">
-        <Pressable 
-          onPress={handleClose}
-          className="w-10 h-10 items-center justify-center rounded-full bg-neutral-100"
-        >
-          <CrossIcon size={20} color="#000000" />
-        </Pressable>
-        <H5>My Account</H5>
-        <View className="w-10" />
-      </View>
-
       <ScrollView className="flex-1">
         {/* User Profile Section */}
-        <View className="px-4 py-4 bg-neutral-50 mb-4">
+        <View className="px-4 py-6 bg-neutral-50 mb-4">
           <View className="flex-row items-center">
             <Avatar 
               source={userInfo.avatarImageUrl} 

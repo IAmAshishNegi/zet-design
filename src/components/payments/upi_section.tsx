@@ -29,7 +29,7 @@ export function UpiSection() {
           <SH6 className="text-neutral-900">Pay Via UPI & Win Rewards </SH6>
         </View>
 
-        <View className="flex-row pb-7">
+        <View className="flex-row pb-5">
           <View className="w-[25%]">
             <View className="flex-col items-center justify-center gap-2 w-full overflow-hidden rounded-xl">
             <LinearGradient
@@ -43,8 +43,8 @@ export function UpiSection() {
                
                 <QRCodeIcon
                   variant="duotone"
-                  width={30}
-                  height={30}
+                  width={26}
+                  height={26}
                   color={colors.primary[500]}
                   secondaryColor={colors.primary[100]}
                 />
@@ -52,7 +52,7 @@ export function UpiSection() {
               </View>
               </LinearGradient>
               <SH4 className="text-neutral-900 w-full text-center px-2 opacity-80">
-                Scan any QR Code
+                Scan & Pay
               </SH4>
             </View>
           </View>
@@ -66,7 +66,7 @@ export function UpiSection() {
                   locations={[0, 0.5, 1.2] as const}
                   className="rounded-xl overflow-hidden"
                 >
-              <View className=" rounded-xl p-3 mb-1 border-[1.3px] bg-neutral-0/0 border-primary-500/10 overflow-hidden">
+              <View className=" rounded-xl p-2.5 mb-1 border-[1.3px] bg-neutral-0/0 border-primary-500/10 overflow-hidden">
                
                 <SendMoneyIcon
                   variant="duotone"
@@ -79,7 +79,7 @@ export function UpiSection() {
               </View>
               </LinearGradient>
               <SH4 className="text-neutral-900 w-full text-center px-2 opacity-80">
-                Money Transfer
+                 Transfer
               </SH4>
             </View>
           </View>
@@ -93,7 +93,7 @@ export function UpiSection() {
                   locations={[0, 0.5, 1.2] as const}
                   className="rounded-xl overflow-hidden"
                 >
-              <View className=" rounded-xl p-3 mb-1 border-[1.3px] bg-neutral-0/0 border-primary-500/10 overflow-hidden">
+              <View className=" rounded-xl p-2.5 mb-1 border-[1.3px] bg-neutral-0/0 border-primary-500/10 overflow-hidden">
                
                 <RupeeBillIcon
                   variant="duotone"
@@ -106,7 +106,7 @@ export function UpiSection() {
               </View>
               </LinearGradient>
               <SH4 className="text-neutral-900 w-full text-center px-2 opacity-80">
-                Balance & History
+                Balance
               </SH4>
             </View>
           </View>
@@ -120,7 +120,7 @@ export function UpiSection() {
                   locations={[0, 0.5, 1.2] as const}
                   className="rounded-xl overflow-hidden"
                 >
-              <View className=" rounded-xl p-3 mb-1 border-[1.3px] bg-neutral-0/0 border-primary-500/10 overflow-hidden">
+              <View className=" rounded-xl p-2.5 mb-1 border-[1.3px] bg-neutral-0/0 border-primary-500/10 overflow-hidden">
                
                 <UpiLogoIcon
                   width={26}
@@ -130,12 +130,13 @@ export function UpiSection() {
               </View>
               </LinearGradient>
               <SH4 className="text-neutral-900 w-full text-center px-2 opacity-80">
-                All UPI Services
+                All Services
               </SH4>
             </View>
           </View>
         </View>
-        
+       
+      
         <View className="h-[1px] bg-neutral-900/10 mx-5 mb-3"/>
         <View className="flex-row items-start gap-1 py-1.5 px-5 rounded-full w-full mx-auto justify-between align-middle">
           <View className="w-fit flex-row items-center justify-center align-middle gap-2">
@@ -162,7 +163,11 @@ export function UpiSection() {
             />
           </View>
         </View>
+        
       </View>
+      <View className="flex-row items-center justify-center gap-2">
+          <Image source={require("../../assets/images/powerbyUPI.webp")} className="w-full h-8 mt-6" />
+        </View>
     </View>
   );
 }

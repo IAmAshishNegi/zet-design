@@ -68,8 +68,8 @@ export function RechargeSectionScroll() {
   // Card data array
   const rechargeCards = [
     {
-      imageSource: require("../../assets/images/bills/bulb3dNew2.webp"),
-      title: "Electricity"
+      imageSource: require("../../assets/images/bills/transaction3d.webp"),
+      title: "Transaction"
     },
     {
       imageSource: require("../../assets/images/bills/prepaid3DNew2.webp"),
