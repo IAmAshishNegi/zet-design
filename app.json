@@ -24,7 +24,8 @@
       "package": "com.anonymous.zet_design"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
       [
@@ -36,9 +37,7 @@
       "expo-asset"
     ],
     "assetBundlePatterns": [
-      "**/*",
-      "assets/**/*",
-      "src/assets/**/*",
+      "src/assets/fonts/*.ttf",
       "src/assets/rive/*.riv"
     ],
     "extra": {
@@ -46,6 +45,10 @@
         "projectId": "your-project-id"
       },
       "enableRiveReactNative": true
+    },
+    "optimization": {
+      "minify": true,
+      "treeshake": true
     }
   }
 }

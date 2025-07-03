@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
 import { fontFamily, lineHeight as themeLineHeight } from '../../../styles/theme';
 import { responsive } from '../../../utils/responsive';
@@ -23,15 +23,15 @@ interface TypographyProps extends TextProps {
   maxScale?: number;
 }
 
-// Map weights directly to font family names to ensure correct font selection
+// ** Performance Optimization: Memoized font family map **
 const fontFamilyMap = {
   'regular': 'THICCCBOI-Regular',
   'medium': 'THICCCBOI-Medium',
   'semibold': 'THICCCBOI-SemiBold',
   'bold': 'THICCCBOI-Bold'
-};
+} as const;
 
-// Map fontSize variants to actual numeric values
+// ** Performance Optimization: Memoized font size map **
 const fontSizeMap = {
   // Named sizes
   'xs': 12,
@@ -55,7 +55,7 @@ const fontSizeMap = {
   '24': 24,
   '32': 32,
   '40': 40,
-};
+} as const;
 
 // Map component types to their specific line heights
 const lineHeightMap = {
@@ -71,7 +71,8 @@ const lineHeightMap = {
   'b9': themeLineHeight.b9,
 };
 
-function Typography({ 
+// ** Performance Optimization: Memoized Typography component **
+const Typography = memo<TypographyProps>(({ 
   variant = 'base', 
   weight = 'regular',
   tracking = 'normal',
@@ -83,137 +84,164 @@ function Typography({
   maxScale = 1.2,
   children, 
   ...rest 
-}: TypographyProps) {
+}) => {
   
-  // Construct class names using standard Tailwind patterns
-  const classes = [
+  // ** Performance Optimization: Memoize class names **
+  const classes = useMemo(() => [
     // Letter spacing class
     `tracking-${tracking}`,
     
     // User's additional classes
     className
-  ].filter(Boolean).join(' ');
+  ].filter(Boolean).join(' '), [tracking, className]);
 
-  // Get the numeric font size from our map
-  const baseFontSize = fontSizeMap[variant] || 16; // Default to 16 if not found
-  
-  // Apply responsive scaling if enabled
-  const fontSize = isResponsive 
-    ? responsive.fontSize(baseFontSize, minScale, maxScale)
-    : baseFontSize;
-  
-  // Apply styles directly including both fontFamily and fontSize
-  // This ensures both are applied correctly regardless of Tailwind/NativeWind behavior
-  const combinedStyle = {
-    fontFamily: fontFamilyMap[weight],
-    fontSize: fontSize,
-    ...(typeof style === 'object' ? style : {}),
-  };
+  // ** Performance Optimization: Memoize font calculations **
+  const computedStyle = useMemo(() => {
+    // Get the numeric font size from our map
+    const baseFontSize = fontSizeMap[variant] || 16; // Default to 16 if not found
+    
+    // Apply responsive scaling if enabled
+    const fontSize = isResponsive 
+      ? responsive.fontSize(baseFontSize, minScale, maxScale)
+      : baseFontSize;
+    
+    // Apply styles directly including both fontFamily and fontSize
+    // This ensures both are applied correctly regardless of Tailwind/NativeWind behavior
+    return {
+      fontFamily: fontFamilyMap[weight],
+      fontSize: fontSize,
+      ...(typeof style === 'object' ? style : {}),
+    };
+  }, [variant, weight, isResponsive, minScale, maxScale, style]);
 
   return (
     <Text 
       className={classes} 
-      style={combinedStyle}
+      style={computedStyle}
       {...rest}
     >
       {children}
     </Text>
   );
-}
+});
 
-// ----- Heading Components -----
+// Set display name for debugging
+Typography.displayName = 'Typography';
 
-const H1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+// ----- Heading Components (Memoized) -----
+
+const H1 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="40" weight="bold" tracking="tight" {...props} />
-);
+));
+H1.displayName = 'H1';
 
-const H2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const H2 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="32" weight="bold" tracking="tight" {...props} />
-);
+));
+H2.displayName = 'H2';
 
-const H3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const H3 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="24" weight="bold" tracking="tight" {...props} />
-);
+));
+H3.displayName = 'H3';
 
-const H4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const H4 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="20" weight="bold" tracking="tight" {...props} />
-);
+));
+H4.displayName = 'H4';
 
-const H5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const H5 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="18" weight="bold" tracking="tight" {...props} />
-);
+));
+H5.displayName = 'H5';
 
-const H6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const H6 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="16" weight="bold" tracking="tight" {...props} />
-);
+));
+H6.displayName = 'H6';
 
-const H7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const H7 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="18" weight="semibold" tracking="tight" {...props} />
-);
+));
+H7.displayName = 'H7';
 
-// ----- SubHeading Components -----
+// ----- SubHeading Components (Memoized) -----
 
-const SH1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const SH1 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="16" weight="semibold" tracking="tight" {...props} />
-);
+));
+SH1.displayName = 'SH1';
 
-const SH2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const SH2 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="14" weight="bold" tracking="tight" {...props} />
-);
+));
+SH2.displayName = 'SH2';
 
-const SH3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const SH3 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="14" weight="semibold" tracking="tight" {...props} />
-);
+));
+SH3.displayName = 'SH3';
 
-const SH4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const SH4 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="12" weight="semibold" tracking="tight" {...props} />
-);
+));
+SH4.displayName = 'SH4';
 
-const SH5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const SH5 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="12" weight="bold" tracking="tight" {...props} />
-);
+));
+SH5.displayName = 'SH5';
 
-// ----- Body Components -----
+// ----- Body Components (Memoized) -----
 
-const B1: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B1 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="16" weight="medium" tracking="tight" {...props} />
-);
+));
+B1.displayName = 'B1';
 
-const B2: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B2 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="14" weight="medium" tracking="tight" {...props} />
-);
+));
+B2.displayName = 'B2';
 
-const B3: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B3 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="14" weight="regular" tracking="tight" {...props} />
-);
+));
+B3.displayName = 'B3';
 
-const B4: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B4 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="12" weight="medium" tracking="tight" {...props} />
-);
+));
+B4.displayName = 'B4';
 
-const B5: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B5 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="12" weight="regular" tracking="tight" {...props} />
-);
+));
+B5.displayName = 'B5';
 
-const B6: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B6 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="16" weight="regular" tracking="tight" {...props} />
-);
+));
+B6.displayName = 'B6';
 
-const B7: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B7 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="13" weight="medium" tracking="normal" {...props} />
-);
+));
+B7.displayName = 'B7';
 
-const B8: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B8 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="13" weight="regular" tracking="normal" {...props} />
-);
+));
+B8.displayName = 'B8';
 
-const B9: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const B9 = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="11" weight="medium" tracking="normal" {...props} />
-);
+));
+B9.displayName = 'B9';
 
-// ----- Link Components -----
+// ----- Link Components (Memoized) -----
 
-const LinkText: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = ({ className = '', ...props }) => (
+const LinkText = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>(({ className = '', ...props }) => (
   <Typography 
     variant="16" 
     weight="medium" 
@@ -221,9 +249,10 @@ const LinkText: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'
     className={`text-primary-600 underline ${className}`} 
     {...props} 
   />
-);
+));
+LinkText.displayName = 'LinkText';
 
-const LinkTextSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = ({ className = '', ...props }) => (
+const LinkTextSm = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>(({ className = '', ...props }) => (
   <Typography 
     variant="14" 
     weight="medium" 
@@ -231,9 +260,10 @@ const LinkTextSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
     className={`text-primary-600 underline ${className}`} 
     {...props} 
   />
-);
+));
+LinkTextSm.displayName = 'LinkTextSm';
 
-const LinkTextXs: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = ({ className = '', ...props }) => (
+const LinkTextXs = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>(({ className = '', ...props }) => (
   <Typography 
     variant="12" 
     weight="medium" 
@@ -241,25 +271,29 @@ const LinkTextXs: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
     className={`text-primary-600 underline ${className}`} 
     {...props} 
   />
-);
+));
+LinkTextXs.displayName = 'LinkTextXs';
 
-// ----- Button Components -----
+// ----- Button Components (Memoized) -----
 
-const ButtonLg: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const ButtonLg = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="16" weight="semibold" tracking="tight" {...props} />
-);
+));
+ButtonLg.displayName = 'ButtonLg';
 
-const ButtonMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const ButtonMd = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="14" weight="semibold" tracking="tight" {...props} />
-);
+));
+ButtonMd.displayName = 'ButtonMd';
 
-const ButtonSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = (props) => (
+const ButtonSm = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>((props) => (
   <Typography variant="12" weight="semibold" tracking="tight" {...props} />
-);
+));
+ButtonSm.displayName = 'ButtonSm';
 
-// ----- Overline Components -----
+// ----- Overline Components (Memoized) -----
 
-const OverlineMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = ({ className = '', ...props }) => (
+const OverlineMd = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>(({ className = '', ...props }) => (
   <Typography 
     variant="12" 
     weight="medium" 
@@ -267,9 +301,10 @@ const OverlineMd: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
     className={`uppercase ${className}`} 
     {...props} 
   />
-);
+));
+OverlineMd.displayName = 'OverlineMd';
 
-const OverlineSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>> = ({ className = '', ...props }) => (
+const OverlineSm = memo<Omit<TypographyProps, 'variant' | 'weight' | 'tracking'>>(({ className = '', ...props }) => (
   <Typography 
     variant="10" 
     weight="semibold" 
@@ -277,7 +312,8 @@ const OverlineSm: React.FC<Omit<TypographyProps, 'variant' | 'weight' | 'trackin
     className={`uppercase ${className}`} 
     {...props} 
   />
-);
+));
+OverlineSm.displayName = 'OverlineSm';
 
 // Utility function to set the app-wide font scale
 // This can be called from settings or elsewhere to adjust all text sizes

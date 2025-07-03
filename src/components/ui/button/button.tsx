@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { 
   TouchableOpacity, 
   TouchableOpacityProps, 
@@ -17,7 +17,7 @@ type ButtonVariant = 'filled' | 'outlined' | 'text';
 type ButtonColor = string; // Allow any color string from theme
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
-// Size configuration for the button with responsive scaling
+// ** Performance Optimization: Memoized size configuration **
 const getButtonSizes = (isResponsive = true) => ({
   sm: isResponsive ? responsive.height(36) : 36,
   md: isResponsive ? responsive.height(40) : 40,
@@ -25,7 +25,7 @@ const getButtonSizes = (isResponsive = true) => ({
   xl: isResponsive ? responsive.height(56) : 56
 });
 
-// Padding configuration for the button with responsive scaling
+// ** Performance Optimization: Memoized padding configuration **
 const getButtonPaddings = (isResponsive = true) => ({
   sm: isResponsive ? responsive.width(12) : 12,
   md: isResponsive ? responsive.width(16) : 16,
@@ -50,7 +50,8 @@ interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
   responsive?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({
+// ** Performance Optimization: Memoized Button component **
+const Button = memo<ButtonProps>(({
   variant = 'filled',
   color = 'primary-100',
   size = 'md',
@@ -67,16 +68,18 @@ const Button: React.FC<ButtonProps> = ({
   responsive: isResponsive = true,
   ...rest
 }) => {
-  // Parse the color into base and shade (e.g., "primary-600" -> "primary" and "600")
-  const colorParts = color.split('-');
-  const colorBase = colorParts[0] || 'primary';
-  const colorShade = colorParts.length > 1 ? colorParts[1] : '100';
-  
-  // For filled buttons, use a darker shade (600) if not specified for better contrast
-  const filledShade = variant === 'filled' && colorParts.length === 1 ? '600' : colorShade;
-  
-  // Helper to get color from theme
-  const getThemeColor = (base: string, shade: string) => {
+  // ** Performance Optimization: Memoize color parsing **
+  const colorParts = useMemo(() => {
+    const parts = color.split('-');
+    const colorBase = parts[0] || 'primary';
+    const colorShade = parts.length > 1 ? parts[1] : '100';
+    // For filled buttons, use a darker shade (600) if not specified for better contrast
+    const filledShade = variant === 'filled' && parts.length === 1 ? '600' : colorShade;
+    return { colorBase, colorShade, filledShade };
+  }, [color, variant]);
+
+  // ** Performance Optimization: Memoize theme color getter **
+  const getThemeColor = useCallback((base: string, shade: string) => {
     try {
       // @ts-ignore - accessing colors dynamically
       return colors[base]?.[shade] || '#000';
@@ -84,10 +87,12 @@ const Button: React.FC<ButtonProps> = ({
       console.warn(`Color ${base}-${shade} not found in theme`);
       return '#000';
     }
-  };
+  }, []);
 
-  // Get the appropriate colors based on variant and state
-  const getColors = () => {
+  // ** Performance Optimization: Memoize color calculations **
+  const colorScheme = useMemo(() => {
+    const { colorBase, filledShade } = colorParts;
+    
     // Default styles
     let backgroundColor = 'transparent';
     let textColor = getThemeColor(colorBase, filledShade);
@@ -109,7 +114,7 @@ const Button: React.FC<ButtonProps> = ({
       if (variant === 'filled') {
         backgroundColor = getThemeColor(colorBase, filledShade);
         // Use white text for dark backgrounds, dark text for light backgrounds
-        const shadeNum = parseInt(colorShade);
+        const shadeNum = parseInt(colorParts.colorShade);
         textColor = shadeNum <= 300 ? getThemeColor(colorBase, '800') : '#ffffff';
       } else if (variant === 'outlined') {
         borderColor = getThemeColor(colorBase, filledShade);
@@ -117,59 +122,65 @@ const Button: React.FC<ButtonProps> = ({
     }
     
     return { backgroundColor, textColor, borderColor };
-  };
+  }, [colorParts, variant, disabled, getThemeColor]);
 
-  // Get calculated colors
-  const { backgroundColor, textColor, borderColor } = getColors();
-
-  // Determine the width class based on fullWidth
-  const getWidthClass = () => fullWidth ? 'w-full' : '';
-
-  // Combine all Tailwind classes
-  const buttonClasses = [
+  // ** Performance Optimization: Memoize class names **
+  const buttonClasses = useMemo(() => [
     // Base button styles
     'flex flex-row items-center justify-center',
     'rounded-md',
     // Width class
-    getWidthClass(),
+    fullWidth ? 'w-full' : '',
     // Additional classes provided by user
     className
-  ].filter(Boolean).join(' ');
+  ].filter(Boolean).join(' '), [fullWidth, className]);
 
-  // Determine which typography component to use based on size
-  const TextComponent = size === 'sm' 
-    ? ButtonSm 
-    : size === 'lg' || size === 'xl' 
-      ? ButtonLg 
-      : ButtonMd;
+  // ** Performance Optimization: Memoize text component selection **
+  const TextComponent = useMemo(() => {
+    return size === 'sm' 
+      ? ButtonSm 
+      : size === 'lg' || size === 'xl' 
+        ? ButtonLg 
+        : ButtonMd;
+  }, [size]);
 
-  // Get responsive button sizes
-  const BUTTON_SIZES = getButtonSizes(isResponsive);
-  const BUTTON_PADDINGS = getButtonPaddings(isResponsive);
+  // ** Performance Optimization: Memoize button styles **
+  const buttonStyles = useMemo(() => {
+    const BUTTON_SIZES = getButtonSizes(isResponsive);
+    const BUTTON_PADDINGS = getButtonPaddings(isResponsive);
+    
+    return {
+      height: BUTTON_SIZES[size],
+      paddingHorizontal: BUTTON_PADDINGS[size],
+      backgroundColor: colorScheme.backgroundColor,
+      borderWidth: variant === 'outlined' ? 1 : 0,
+      borderColor: colorScheme.borderColor,
+      ...(typeof style === 'object' ? style : {}),
+    };
+  }, [size, isResponsive, colorScheme, variant, style]);
 
-  // Apply all styles directly
-  const buttonStyles = {
-    height: BUTTON_SIZES[size],
-    paddingHorizontal: BUTTON_PADDINGS[size],
-    backgroundColor,
-    borderWidth: variant === 'outlined' ? 1 : 0,
-    borderColor,
-    ...(typeof style === 'object' ? style : {}),
-  };
-
-  // Function to render children properly
-  const renderChildren = () => {
+  // ** Performance Optimization: Memoize children rendering function **
+  const renderChildren = useCallback(() => {
     // If children is a string, wrap it in the appropriate text component
     if (typeof children === 'string') {
       return (
-        <TextComponent style={{ color: textColor }} responsive={isResponsive}>
+        <TextComponent style={{ color: colorScheme.textColor }} responsive={isResponsive}>
           {children}
         </TextComponent>
       );
     }
     // Otherwise return the children as is
     return children;
-  };
+  }, [children, TextComponent, colorScheme.textColor, isResponsive]);
+
+  // ** Performance Optimization: Memoize icon styles **
+  const iconMarginStyle = useMemo(() => 
+    isResponsive ? { marginRight: responsive.spacing(8) } : undefined
+  , [isResponsive]);
+
+  const endIconMarginStyle = useMemo(() => 
+    isResponsive ? { marginLeft: responsive.spacing(8) } : undefined
+  , [isResponsive]);
 
   return (
     <Pressable
@@ -182,18 +193,18 @@ const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator 
           size="small" 
-          color={textColor} 
+          color={colorScheme.textColor} 
         />
       ) : (
         <>
           {startIcon && (
-            <View className="mr-2" style={isResponsive ? { marginRight: responsive.spacing(8) } : undefined}>
+            <View className="mr-2" style={iconMarginStyle}>
               {startIcon}
             </View>
           )}
           
           {label && (
-            <TextComponent style={{ color: textColor }} responsive={isResponsive}>
+            <TextComponent style={{ color: colorScheme.textColor }} responsive={isResponsive}>
               {label}
             </TextComponent>
           )}
@@ -201,7 +212,7 @@ const Button: React.FC<ButtonProps> = ({
           {renderChildren()}
           
           {endIcon && (
-            <View className="ml-2" style={isResponsive ? { marginLeft: responsive.spacing(8) } : undefined}>
+            <View className="ml-2" style={endIconMarginStyle}>
               {endIcon}
             </View>
           )}
@@ -209,6 +220,9 @@ const Button: React.FC<ButtonProps> = ({
       )}
     </Pressable>
   );
-};
+});
+
+// Set display name for debugging
+Button.displayName = 'Button';
 
 export { Button, type ButtonProps, type ButtonVariant, type ButtonColor, type ButtonSize }; 

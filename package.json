@@ -6,7 +6,11 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "analyze-bundle": "npx expo export --dump-assetmap --platform ios --dev",
+    "analyze-bundle-prod": "npx expo export --dump-assetmap --platform ios",
+    "performance-test": "npm run analyze-bundle && echo 'Bundle analysis complete - check dist/assetmap.json for details'",
+    "clean-cache": "expo start --clear && npx react-native-clean-project"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.1.2",
